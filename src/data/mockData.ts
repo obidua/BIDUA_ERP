@@ -282,6 +282,32 @@ export const mockTasks: Task[] = [
     dueDate: '2025-01-15',
     project: 'Sales Planning',
     tags: ['strategy', 'sales', 'planning'],
+    createdAt: '2025-01-01',
+    updatedAt: '2025-01-10',
+    comments: [
+      {
+        id: 'c1',
+        taskId: '1',
+        authorId: '1',
+        authorName: 'Priya Sharma',
+        content: 'Started working on market analysis section',
+        createdAt: '2025-01-02T09:00:00Z',
+        type: 'comment',
+      },
+      {
+        id: 'c2',
+        taskId: '1',
+        authorId: '1',
+        authorName: 'Priya Sharma',
+        content: 'Progress update: Completed competitor analysis and market research. Moving to strategy formulation phase.',
+        createdAt: '2025-01-08T14:30:00Z',
+        type: 'progress-update',
+        metadata: {
+          progressPercentage: 65,
+          hoursWorked: 12,
+        },
+      },
+    ],
   },
   {
     id: '2',
@@ -296,6 +322,9 @@ export const mockTasks: Task[] = [
     dueDate: '2025-01-20',
     project: 'Product Launch',
     tags: ['marketing', 'campaign', 'skincare'],
+    createdAt: '2025-01-05',
+    updatedAt: '2025-01-05',
+    comments: [],
   },
   {
     id: '3',
@@ -310,6 +339,9 @@ export const mockTasks: Task[] = [
     dueDate: '2025-01-18',
     project: 'Product Launch',
     tags: ['social-media', 'content', 'marketing'],
+    createdAt: '2025-01-12',
+    updatedAt: '2025-01-12',
+    comments: [],
   },
   {
     id: '4',
@@ -324,6 +356,45 @@ export const mockTasks: Task[] = [
     dueDate: '2025-01-15',
     project: 'Market Analysis',
     tags: ['research', 'analysis', 'strategy'],
+    createdAt: '2025-01-08',
+    updatedAt: '2025-01-12',
+    comments: [
+      {
+        id: 'c3',
+        taskId: '4',
+        authorId: '3',
+        authorName: 'employee',
+        content: 'Task accepted. Starting with competitor research.',
+        createdAt: '2025-01-08T10:00:00Z',
+        type: 'status-change',
+        metadata: {
+          oldValue: 'pending',
+          newValue: 'in-progress',
+        },
+      },
+      {
+        id: 'c4',
+        taskId: '4',
+        authorId: '3',
+        authorName: 'employee',
+        content: 'Work Report: Completed research on 3 major competitors (Lakme, Olay, Nivea). Gathered pricing data and analyzed their Q4 2024 campaigns. Found key insights about premium segment positioning. Next: analyzing market trends and consumer behavior data.',
+        createdAt: '2025-01-10T16:45:00Z',
+        type: 'work-report',
+        metadata: {
+          progressPercentage: 40,
+          hoursWorked: 6,
+        },
+      },
+      {
+        id: 'c5',
+        taskId: '4',
+        authorId: '2',
+        authorName: 'Priya Sharma',
+        content: 'Great progress! Please also include analysis of their digital marketing strategies.',
+        createdAt: '2025-01-11T09:15:00Z',
+        type: 'comment',
+      },
+    ],
   },
   {
     id: '5',
@@ -338,6 +409,9 @@ export const mockTasks: Task[] = [
     dueDate: '2025-01-20',
     project: 'Customer Experience',
     tags: ['feedback', 'analysis', 'customer-experience'],
+    createdAt: '2025-01-13',
+    updatedAt: '2025-01-13',
+    comments: [],
   },
   {
     id: '6',
@@ -355,6 +429,30 @@ export const mockTasks: Task[] = [
     tags: ['website', 'content', 'marketing'],
     createdAt: '2025-01-05',
     updatedAt: '2025-01-09T16:30:00Z',
+    comments: [
+      {
+        id: 'c6',
+        taskId: '6',
+        authorId: '3',
+        authorName: 'employee',
+        content: 'Task completed successfully. Updated 15 product descriptions and uploaded 25 high-quality images. All content is now live on the website.',
+        createdAt: '2025-01-09T16:30:00Z',
+        type: 'work-report',
+        metadata: {
+          progressPercentage: 100,
+          hoursWorked: 8,
+        },
+      },
+      {
+        id: 'c7',
+        taskId: '6',
+        authorId: '2',
+        authorName: 'Amit Patel',
+        content: 'Excellent work! The website looks much better now.',
+        createdAt: '2025-01-10T08:00:00Z',
+        type: 'comment',
+      },
+    ],
   },
   {
     id: '7',
@@ -371,6 +469,7 @@ export const mockTasks: Task[] = [
     tags: ['research', 'analysis', 'strategy', 'competitors'],
     createdAt: '2025-01-14',
     updatedAt: '2025-01-14',
+    comments: [],
   },
   {
     id: '8',
@@ -387,6 +486,30 @@ export const mockTasks: Task[] = [
     tags: ['email-marketing', 'automation', 'skincare', 'launch'],
     createdAt: '2025-01-08',
     updatedAt: '2025-01-12',
+    comments: [
+      {
+        id: 'c8',
+        taskId: '8',
+        authorId: '3',
+        authorName: 'employee',
+        content: 'Work Report: Email templates designed and tested. Automation sequences configured for 3 customer segments. Integration with CRM completed. Remaining: final testing and launch approval.',
+        createdAt: '2025-01-12T11:20:00Z',
+        type: 'work-report',
+        metadata: {
+          progressPercentage: 75,
+          hoursWorked: 10,
+        },
+      },
+      {
+        id: 'c9',
+        taskId: '8',
+        authorId: '2',
+        authorName: 'Amit Patel',
+        content: 'Looks good! Please schedule a demo for tomorrow before final launch.',
+        createdAt: '2025-01-12T15:30:00Z',
+        type: 'comment',
+      },
+    ],
   },
 ];
 

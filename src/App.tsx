@@ -281,6 +281,7 @@ function App() {
             user={user}
             employee={currentEmployee}
             tasks={tasks}
+            employees={employees}
             leaveRequests={leaveRequests}
             attendanceData={attendanceData}
             salarySlips={mockSalarySlips}

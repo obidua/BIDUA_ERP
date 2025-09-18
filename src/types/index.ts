@@ -122,7 +122,7 @@ export interface Task {
   updatedAt: string;
   project?: string;
   tags: string[];
-  comments?: TaskComment[];
+  comments: TaskComment[];
 }
 
 export interface TaskComment {
@@ -132,7 +132,14 @@ export interface TaskComment {
   authorName: string;
   content: string;
   createdAt: string;
-  type: 'comment' | 'status-change' | 'progress-update';
+  type: 'comment' | 'status-change' | 'progress-update' | 'work-report';
+  metadata?: {
+    oldValue?: string;
+    newValue?: string;
+    progressPercentage?: number;
+    hoursWorked?: number;
+    attachments?: string[];
+  };
 }
 
 export interface Performance {

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { User, Task } from '../../types';
+import TaskDetailModal from '../common/TaskDetailModal';
 import {
   CheckSquare,
   Clock,
@@ -10,12 +11,15 @@ import {
   Calendar,
   User as UserIcon,
   Target,
+  MessageSquare,
+  BarChart3,
 } from 'lucide-react';
 
 interface EmployeeTaskViewProps {
   user: User;
   tasks: Task[];
   updateTask: (id: string, task: Partial<Task>) => void;
+  employees: Employee[];
   addNotification?: (message: string, type: 'success' | 'info' | 'warning' | 'error') => void;
 }
 
@@ -23,10 +27,13 @@ const EmployeeTaskView: React.FC<EmployeeTaskViewProps> = ({
   user,
   tasks,
   updateTask,
+  employees,
   addNotification,
 }) => {
   const [statusFilter, setStatusFilter] = useState<string>('all');
   const [priorityFilter, setPriorityFilter] = useState<string>('all');
+  const [selectedTask, setSelectedTask] = useState<Task | null>(null);
+  const [showTaskModal, setShowTaskModal] = useState(false);
 
   const myTasks = tasks.filter(t => t.assignedTo === user.username);
 
@@ -76,13 +83,34 @@ const EmployeeTaskView: React.FC<EmployeeTaskViewProps> = ({
   };
 
   const handleAddComment = (taskId: string, taskTitle: string) => {
-    // In a real app, this would open a comment modal
-    addNotification?.(`Comment added to task "${taskTitle}"`, 'info');
+    const task = myTasks.find(t => t.id === taskId);
+    if (task) {
+      setSelectedTask(task);
+      setShowTaskModal(true);
+    }
   };
 
   const handleViewReport = (taskId: string, taskTitle: string) => {
-    // In a real app, this would show detailed task report
-    addNotification?.(`Viewing detailed report for "${taskTitle}"`, 'info');
+    const task = myTasks.find(t => t.id === taskId);
+    if (task) {
+      setSelectedTask(task);
+      setShowTaskModal(true);
+    }
+  };
+
+  const handleAddTaskComment = (taskId: string, comment: Omit<TaskComment, 'id' | 'taskId'>) => {
+    const newComment = {
+      id: `c${Date.now()}`,
+      taskId,
+      ...comment,
+    };
+    
+    updateTask(taskId, {
+      comments: [...(selectedTask?.comments || []), newComment],
+      updatedAt: new Date().toISOString(),
+    });
+    
+    addNotification?.(`${comment.type === 'work-report' ? 'Work report' : 'Comment'} added successfully`, 'success');
   };
 
   const getStatusColor = (status: string) => {
@@ -271,17 +299,17 @@ const EmployeeTaskView: React.FC<EmployeeTaskViewProps> = ({
                 <div className="flex space-x-2">
                   <button
                     onClick={() => handleAddComment(task.id, task.title)}
-                    className="flex items-center space-x-1 px-3 py-1 text-xs bg-slate-50 text-slate-600 rounded-lg hover:bg-slate-100 transition-colors"
+                    className="flex items-center space-x-1 px-3 py-1 text-xs bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-100 transition-colors"
                   >
-                    <span>💬</span>
-                    <span>Comment</span>
+                    <MessageSquare className="w-3 h-3" />
+                    <span>Updates</span>
                   </button>
                   <button
                     onClick={() => handleViewReport(task.id, task.title)}
                     className="flex items-center space-x-1 px-3 py-1 text-xs bg-purple-50 text-purple-600 rounded-lg hover:bg-purple-100 transition-colors"
                   >
-                    <span>📊</span>
-                    <span>Report</span>
+                    <BarChart3 className="w-3 h-3" />
+                    <span>Details</span>
                   </button>
                 </div>
               </div>
@@ -349,6 +377,22 @@ const EmployeeTaskView: React.FC<EmployeeTaskViewProps> = ({
           <h3 className="text-lg font-medium text-slate-900 mb-2">No tasks found</h3>
           <p className="text-slate-600">No tasks match your current filters</p>
         </div>
+      )}
+
+      {/* Task Detail Modal */}
+      {showTaskModal && selectedTask && (
+        <TaskDetailModal
+          task={selectedTask}
+          currentUser={user}
+          employees={employees}
+          onClose={() => {
+            setShowTaskModal(false);
+            setSelectedTask(null);
+          }}
+          onUpdateTask={updateTask}
+          onAddComment={handleAddTaskComment}
+          addNotification={addNotification}
+        />
       )}
     </div>
   );

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Task, User, Lead, Employee } from '../../types';
 import TaskForm from './TaskForm';
+import TaskDetailModal from '../common/TaskDetailModal';
 import {
   CheckSquare,
   Plus,
@@ -14,6 +15,7 @@ import {
   Play,
   CheckCircle2,
   Timer,
+  MessageSquare,
 } from 'lucide-react';
 
 interface TaskManagementProps {
@@ -39,6 +41,8 @@ const TaskManagement: React.FC<TaskManagementProps> = ({
 }) => {
   const [showForm, setShowForm] = useState(false);
   const [editingTask, setEditingTask] = useState<Task | null>(null);
+  const [selectedTask, setSelectedTask] = useState<Task | null>(null);
+  const [showTaskModal, setShowTaskModal] = useState(false);
   const [statusFilter, setStatusFilter] = useState<string>('all');
   const [priorityFilter, setPriorityFilter] = useState<string>('all');
 
@@ -178,6 +182,28 @@ const TaskManagement: React.FC<TaskManagementProps> = ({
     setEditingTask(null);
   };
 
+  const handleViewTaskDetails = (task: Task) => {
+    setSelectedTask(task);
+    setShowTaskModal(true);
+  };
+
+  const handleAddTaskComment = (taskId: string, comment: Omit<TaskComment, 'id' | 'taskId'>) => {
+    const task = tasks.find(t => t.id === taskId);
+    if (task) {
+      const newComment = {
+        id: `c${Date.now()}`,
+        taskId,
+        ...comment,
+      };
+      
+      updateTask(taskId, {
+        comments: [...task.comments, newComment],
+        updatedAt: new Date().toISOString(),
+      });
+      
+      addNotification?.(`${comment.type === 'work-report' ? 'Work report' : 'Comment'} added to task`, 'success');
+    }
+  };
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -413,7 +439,12 @@ const TaskManagement: React.FC<TaskManagementProps> = ({
               
               <div className="flex space-x-2">
                 <button className="px-3 py-1 text-sm bg-slate-50 text-slate-600 rounded-lg hover:bg-slate-100 transition-colors">
-                  View Details
+                  <button 
+                    onClick={() => handleViewTaskDetails(task)}
+                    className="px-3 py-1 text-sm bg-slate-50 text-slate-600 rounded-lg hover:bg-slate-100 transition-colors"
+                  >
+                    View Details
+                  </button>
                 </button>
                 {user.role !== 'employee' && (
                   <button 
@@ -423,6 +454,13 @@ const TaskManagement: React.FC<TaskManagementProps> = ({
                     Edit
                   </button>
                 )}
+                <button 
+                  onClick={() => handleViewTaskDetails(task)}
+                  className="flex items-center space-x-1 px-3 py-1 text-sm bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-100 transition-colors"
+                >
+                  <MessageSquare className="w-3 h-3" />
+                  <span>Updates ({task.comments.length})</span>
+                </button>
               </div>
             </div>
             
@@ -453,6 +491,22 @@ const TaskManagement: React.FC<TaskManagementProps> = ({
           customers={leads}
           onSubmit={handleSubmitTask}
           onCancel={handleCancelTask}
+        />
+      )}
+
+      {/* Task Detail Modal */}
+      {showTaskModal && selectedTask && (
+        <TaskDetailModal
+          task={selectedTask}
+          currentUser={user}
+          employees={employees}
+          onClose={() => {
+            setShowTaskModal(false);
+            setSelectedTask(null);
+          }}
+          onUpdateTask={updateTask}
+          onAddComment={handleAddTaskComment}
+          addNotification={addNotification}
         />
       )}
     </div>

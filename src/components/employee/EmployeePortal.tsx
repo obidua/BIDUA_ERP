@@ -25,6 +25,7 @@ interface EmployeePortalProps {
   user: User;
   employee: Employee;
   tasks: Task[];
+  employees: Employee[];
   leaveRequests: LeaveRequest[];
   attendanceData: Attendance[];
   salarySlips: SalarySlip[];
@@ -40,6 +41,7 @@ const EmployeePortal: React.FC<EmployeePortalProps> = ({
   user,
   employee,
   tasks,
+  employees,
   leaveRequests,
   attendanceData,
   salarySlips,
@@ -81,6 +83,7 @@ const EmployeePortal: React.FC<EmployeePortalProps> = ({
             user={user}
             tasks={tasks}
             updateTask={updateTask}
+            employees={employees}
             addNotification={addNotification}
           />
         );
