@@ -297,3 +297,44 @@ export const mockPayroll: Payroll[] = [
     status: 'processed',
   },
 ];
+
+// Mock salary slips data
+export const mockSalarySlips = [
+  {
+    id: '1',
+    employeeId: 'BID001',
+    employeeName: 'Priya Sharma',
+    month: 'December',
+    year: 2024,
+    basicSalary: 70000,
+    allowances: { hra: 10000, transport: 3000, medical: 2000, other: 0 },
+    deductions: { pf: 8400, esi: 0, tax: 5000, other: 0 },
+    overtime: 5000,
+    grossSalary: 90000,
+    netSalary: 81600,
+    generatedAt: '2024-12-31T10:00:00Z',
+  },
+];
+
+// Mock documents data
+export const mockDocuments = [
+  {
+    id: '1',
+    employeeId: 'BID001',
+    type: 'offer-letter',
+    title: 'Offer Letter - Sales Manager',
+    fileName: 'offer_letter_priya_sharma.pdf',
+    fileUrl: '/documents/offer_letter_priya_sharma.pdf',
+    uploadedAt: '2023-03-10T10:00:00Z',
+    uploadedBy: 'HR Department',
+    size: 245760,
+    isPublic: false,
+  },
+];
+
+// Mock geofence locations
+export const mockGeofenceLocations = [
+  { id: '1', name: 'Mumbai Office', latitude: 19.0760, longitude: 72.8777, radius: 100, isActive: true },
+  { id: '2', name: 'Pune Office', latitude: 18.5204, longitude: 73.8567, radius: 100, isActive: true },
+  { id: '3', name: 'Bangalore Office', latitude: 12.9716, longitude: 77.5946, radius: 100, isActive: true },
+];
