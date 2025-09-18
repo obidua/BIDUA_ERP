@@ -1,349 +1,926 @@
-import React, { useState } from 'react';
-import { User, Employee, SalarySlip } from '../../types';
-import {
-  DollarSign,
-  Download,
-  Eye,
-  Calendar,
-  TrendingUp,
-  PieChart,
-  FileText,
-  CreditCard,
-} from 'lucide-react';
+import { User, Lead, SupportTicket, Employee, Attendance, LeaveRequest, Task, Performance, Payroll } from '../types';
 
-interface EmployeeSalaryProps {
-  user: User;
-  employee: Employee;
-  salarySlips: SalarySlip[];
-  addNotification?: (message: string, type: 'success' | 'info' | 'warning' | 'error') => void;
-}
+// Static Users for Authentication
+export const mockUsers: User[] = [
+  {
+    id: '1',
+    username: 'admin',
+    email: 'admin@bidua.com',
+    role: 'admin',
+    department: 'IT',
+    isActive: true,
+  },
+  {
+    id: '2',
+    username: 'manager',
+    email: 'manager@bidua.com',
+    role: 'manager',
+    department: 'Sales',
+    isActive: true,
+  },
+  {
+    id: '3',
+    username: 'employee',
+    email: 'employee@bidua.com',
+    role: 'employee',
+    department: 'Marketing',
+    isActive: true,
+  },
+];
 
+// Static password for all users (in real app, this would be hashed)
+export const staticPassword = 'bidua123';
 
-const EmployeeSalary: React.FC<EmployeeSalaryProps> = ({
-  user,
-  employee,
-  salarySlips,
-  addNotification,
-}) => {
-  const [selectedSlip, setSelectedSlip] = useState<SalarySlip | null>(null);
-  const [showSlipModal, setShowSlipModal] = useState(false);
+// CRM Mock Data
+export const mockLeads: Lead[] = [
+  {
+    id: '1',
+    name: 'Rajesh Kumar',
+    email: 'rajesh@techcorp.com',
+    phone: '+91 98765 43210',
+    company: 'TechCorp Solutions',
+    status: 'hot',
+    stage: 'negotiation',
+    value: 500000,
+    source: 'Website',
+    assignedTo: 'Priya Sharma',
+    lastContact: '2025-01-10',
+    nextFollowUp: '2025-01-15',
+    notes: 'Interested in enterprise beauty products package',
+    createdAt: '2024-12-15',
+  },
+  {
+    id: '2',
+    name: 'Anita Desai',
+    email: 'anita@beautyworld.com',
+    phone: '+91 87654 32109',
+    company: 'Beauty World Retail',
+    status: 'warm',
+    stage: 'proposal',
+    value: 250000,
+    source: 'Referral',
+    assignedTo: 'Amit Patel',
+    lastContact: '2025-01-08',
+    nextFollowUp: '2025-01-12',
+    notes: 'Looking for bulk skincare products',
+    createdAt: '2024-12-20',
+  },
+  {
+    id: '3',
+    name: 'Vikram Singh',
+    email: 'vikram@luxuryspas.com',
+    phone: '+91 76543 21098',
+    company: 'Luxury Spas Chain',
+    status: 'cold',
+    stage: 'lead',
+    value: 750000,
+    source: 'Trade Show',
+    assignedTo: 'Sneha Reddy',
+    lastContact: '2025-01-05',
+    nextFollowUp: '2025-01-20',
+    notes: 'Potential for spa product line partnership',
+    createdAt: '2024-12-10',
+  },
+];
 
-  const mySalarySlips = salarySlips;
-  const latestSlip = mySalarySlips[0];
+export const mockSupportTickets: SupportTicket[] = [
+  {
+    id: '1',
+    title: 'Product Quality Issue - Face Cream',
+    description: 'Customer reported skin irritation after using our premium face cream',
+    customerId: '1',
+    customerName: 'Meera Joshi',
+    priority: 'high',
+    status: 'in-progress',
+    assignedTo: 'Customer Care Team',
+    createdAt: '2025-01-10',
+    category: 'Quality',
+  },
+  {
+    id: '2',
+    title: 'Delayed Delivery - Order #BC2024001',
+    description: 'Order placed 5 days ago, still not delivered',
+    customerId: '2',
+    customerName: 'Rohit Gupta',
+    priority: 'medium',
+    status: 'open',
+    assignedTo: 'Logistics Team',
+    createdAt: '2025-01-09',
+    category: 'Delivery',
+  },
+];
 
-  const handleDownloadSlip = (slip: SalarySlip) => {
-    // In a real app, this would generate and download a PDF
-    addNotification?.(`Salary slip for ${slip.month} ${slip.year} downloaded successfully`, 'success');
-  };
+// HRMS Mock Data
+export const mockEmployees: Employee[] = [
+  {
+    id: '1',
+    employeeId: 'BID001',
+    name: 'Priya Sharma',
+    email: 'priya.sharma@bidua.com',
+    phone: '+91 98765 43210',
+    department: 'Sales',
+    designation: 'Sales Manager',
+    manager: 'Rajesh Kumar',
+    joiningDate: '2023-03-15',
+    salary: 850000,
+    status: 'active',
+    address: 'Mumbai, Maharashtra',
+    emergencyContact: '+91 98765 43211',
+    documents: ['Aadhar', 'PAN', 'Degree Certificate'],
+  },
+  {
+    id: '2',
+    employeeId: 'BID002',
+    name: 'Amit Patel',
+    email: 'amit.patel@bidua.com',
+    phone: '+91 87654 32109',
+    department: 'Marketing',
+    designation: 'Marketing Executive',
+    manager: 'Priya Sharma',
+    joiningDate: '2023-07-01',
+    salary: 650000,
+    status: 'active',
+    address: 'Pune, Maharashtra',
+    emergencyContact: '+91 87654 32110',
+    documents: ['Aadhar', 'PAN', 'Experience Letter'],
+  },
+  {
+    id: '3',
+    employeeId: 'BID003',
+    name: 'Sneha Reddy',
+    email: 'sneha.reddy@bidua.com',
+    phone: '+91 76543 21098',
+    department: 'R&D',
+    designation: 'Product Developer',
+    manager: 'Dr. Kavitha Nair',
+    joiningDate: '2023-05-10',
+    salary: 750000,
+    status: 'active',
+    address: 'Bangalore, Karnataka',
+    emergencyContact: '+91 76543 21099',
+    documents: ['Aadhar', 'PAN', 'PhD Certificate'],
+  },
+  {
+    id: '4',
+    employeeId: 'BID004',
+    name: 'Rahul Verma',
+    email: 'employee@bidua.com',
+    phone: '+91 65432 10987',
+    department: 'Marketing',
+    designation: 'Marketing Specialist',
+    manager: 'Amit Patel',
+    joiningDate: '2023-09-01',
+    salary: 550000,
+    status: 'active',
+    address: 'Delhi, India',
+    emergencyContact: '+91 65432 10988',
+    documents: ['Aadhar', 'PAN', 'Graduation Certificate'],
+    bankAccount: {
+      accountNumber: '1234567890123456',
+      bankName: 'HDFC Bank',
+      ifscCode: 'HDFC0001234',
+      accountHolderName: 'Rahul Verma',
+    },
+    personalDetails: {
+      dateOfBirth: '1995-06-15',
+      gender: 'male',
+      maritalStatus: 'single',
+      nationality: 'Indian',
+      bloodGroup: 'B+',
+    },
+  },
+];
 
-  const handleViewSlip = (slip: SalarySlip) => {
-    setSelectedSlip(slip);
-    setShowSlipModal(true);
-  };
+export const mockAttendance: Attendance[] = [
+  {
+    id: '1',
+    employeeId: 'BID001',
+    employeeName: 'Priya Sharma',
+    date: '2025-01-10',
+    clockIn: '09:15',
+    clockOut: '18:30',
+    totalHours: 9.25,
+    status: 'present',
+    location: 'Mumbai Office',
+  },
+  {
+    id: '2',
+    employeeId: 'BID002',
+    employeeName: 'Amit Patel',
+    date: '2025-01-10',
+    clockIn: '09:45',
+    clockOut: '18:15',
+    totalHours: 8.5,
+    status: 'late',
+    location: 'Pune Office',
+  },
+  {
+    id: '3',
+    employeeId: 'BID004',
+    employeeName: 'Rahul Verma',
+    date: '2025-01-10',
+    clockIn: '09:00',
+    clockOut: '18:00',
+    totalHours: 9.0,
+    status: 'present',
+    location: 'Delhi Office',
+  },
+];
 
-  const calculateYearlyStats = () => {
-    const currentYear = new Date().getFullYear();
-    const yearlySlips = mySalarySlips.filter(slip => slip.year === currentYear);
-    
-    return {
-      totalEarnings: yearlySlips.reduce((sum, slip) => sum + slip.grossSalary, 0),
-      totalDeductions: yearlySlips.reduce((sum, slip) => sum + Object.values(slip.deductions).reduce((a, b) => a + b, 0), 0),
-      totalNetPay: yearlySlips.reduce((sum, slip) => sum + slip.netSalary, 0),
-      avgMonthlyPay: yearlySlips.length > 0 ? yearlySlips.reduce((sum, slip) => sum + slip.netSalary, 0) / yearlySlips.length : 0,
-    };
-  };
+export const mockLeaveRequests: LeaveRequest[] = [
+  {
+    id: '1',
+    employeeId: 'BID001',
+    employeeName: 'Priya Sharma',
+    leaveType: 'annual',
+    startDate: '2025-01-20',
+    endDate: '2025-01-25',
+    days: 5,
+    reason: 'Family vacation',
+    status: 'pending',
+    appliedAt: '2025-01-10',
+  },
+  {
+    id: '2',
+    employeeId: 'BID003',
+    employeeName: 'Sneha Reddy',
+    leaveType: 'sick',
+    startDate: '2025-01-12',
+    endDate: '2025-01-12',
+    days: 1,
+    reason: 'Fever and cold',
+    status: 'approved',
+    appliedAt: '2025-01-11',
+    approvedBy: 'Dr. Kavitha Nair',
+    approvedAt: '2025-01-11',
+  },
+  {
+    id: '3',
+    employeeId: 'BID004',
+    employeeName: 'Rahul Verma',
+    leaveType: 'casual',
+    startDate: '2025-01-18',
+    endDate: '2025-01-19',
+    days: 2,
+    reason: 'Personal work',
+    status: 'pending',
+    appliedAt: '2025-01-10',
+  },
+];
 
-  const yearlyStats = calculateYearlyStats();
+export const mockTasks: Task[] = [
+  {
+    id: '1',
+    title: 'Q1 Sales Strategy Planning',
+    description: 'Develop comprehensive sales strategy for Q1 2025',
+    assignedTo: 'Priya Sharma',
+    assignedBy: 'Rajesh Kumar',
+    priority: 'high',
+    status: 'in-progress',
+    progress: 65,
+    startDate: '2025-01-01',
+    dueDate: '2025-01-15',
+    project: 'Sales Planning',
+    tags: ['strategy', 'sales', 'planning'],
+    createdAt: '2025-01-01',
+    updatedAt: '2025-01-10',
+    comments: [
+      {
+        id: 'c1',
+        taskId: '1',
+        authorId: '1',
+        authorName: 'Priya Sharma',
+        content: 'Started working on market analysis section',
+        createdAt: '2025-01-02T09:00:00Z',
+        type: 'comment',
+      },
+      {
+        id: 'c2',
+        taskId: '1',
+        authorId: '1',
+        authorName: 'Priya Sharma',
+        content: 'Progress update: Completed competitor analysis and market research. Moving to strategy formulation phase.',
+        createdAt: '2025-01-08T14:30:00Z',
+        type: 'progress-update',
+        metadata: {
+          progressPercentage: 65,
+          hoursWorked: 12,
+        },
+      },
+    ],
+  },
+  {
+    id: '2',
+    title: 'New Product Launch Campaign',
+    description: 'Create marketing campaign for new skincare line',
+    assignedTo: 'Amit Patel',
+    assignedBy: 'Priya Sharma',
+    priority: 'urgent',
+    status: 'pending',
+    progress: 25,
+    startDate: '2025-01-05',
+    dueDate: '2025-01-20',
+    project: 'Product Launch',
+    tags: ['marketing', 'campaign', 'skincare'],
+    createdAt: '2025-01-05',
+    updatedAt: '2025-01-05',
+    comments: [],
+  },
+  {
+    id: '3',
+    title: 'Social Media Content Creation',
+    description: 'Create engaging social media content for new product launch',
+    assignedTo: 'employee',
+    assignedBy: 'Amit Patel',
+    priority: 'medium',
+    status: 'pending',
+    progress: 0,
+    startDate: '2025-01-12',
+    dueDate: '2025-01-18',
+    project: 'Product Launch',
+    tags: ['social-media', 'content', 'marketing'],
+    createdAt: '2025-01-12',
+    updatedAt: '2025-01-12',
+    comments: [],
+  },
+  {
+    id: '4',
+    title: 'Market Research Analysis',
+    description: 'Analyze competitor pricing and market trends for Q1 strategy',
+    assignedTo: 'employee',
+    assignedBy: 'Priya Sharma',
+    priority: 'high',
+    status: 'in-progress',
+    progress: 40,
+    startDate: '2025-01-08',
+    dueDate: '2025-01-15',
+    project: 'Market Analysis',
+    tags: ['research', 'analysis', 'strategy'],
+    createdAt: '2025-01-08',
+    updatedAt: '2025-01-12',
+    comments: [
+      {
+        id: 'c3',
+        taskId: '4',
+        authorId: '3',
+        authorName: 'employee',
+        content: 'Task accepted. Starting with competitor research.',
+        createdAt: '2025-01-08T10:00:00Z',
+        type: 'status-change',
+        metadata: {
+          oldValue: 'pending',
+          newValue: 'in-progress',
+        },
+      },
+      {
+        id: 'c4',
+        taskId: '4',
+        authorId: '3',
+        authorName: 'employee',
+        content: 'Work Report: Completed research on 3 major competitors (Lakme, Olay, Nivea). Gathered pricing data and analyzed their Q4 2024 campaigns. Found key insights about premium segment positioning. Next: analyzing market trends and consumer behavior data.',
+        createdAt: '2025-01-10T16:45:00Z',
+        type: 'work-report',
+        metadata: {
+          progressPercentage: 40,
+          hoursWorked: 6,
+        },
+      },
+      {
+        id: 'c5',
+        taskId: '4',
+        authorId: '2',
+        authorName: 'Priya Sharma',
+        content: 'Great progress! Please also include analysis of their digital marketing strategies.',
+        createdAt: '2025-01-11T09:15:00Z',
+        type: 'comment',
+      },
+    ],
+  },
+  {
+    id: '5',
+    title: 'Customer Feedback Analysis',
+    description: 'Analyze customer feedback from recent product launches and prepare improvement recommendations',
+    assignedTo: 'employee',
+    assignedBy: 'Amit Patel',
+    priority: 'medium',
+    status: 'pending',
+    progress: 0,
+    startDate: '2025-01-13',
+    dueDate: '2025-01-20',
+    project: 'Customer Experience',
+    tags: ['feedback', 'analysis', 'customer-experience'],
+    createdAt: '2025-01-13',
+    updatedAt: '2025-01-13',
+    comments: [],
+  },
+  {
+    id: '6',
+    title: 'Website Content Update',
+    description: 'Update product descriptions and images on company website',
+    assignedTo: 'employee',
+    assignedBy: 'Amit Patel',
+    priority: 'low',
+    status: 'completed',
+    progress: 100,
+    startDate: '2025-01-05',
+    dueDate: '2025-01-10',
+    completedAt: '2025-01-09T16:30:00Z',
+    project: 'Website Management',
+    tags: ['website', 'content', 'marketing'],
+    createdAt: '2025-01-05',
+    updatedAt: '2025-01-09T16:30:00Z',
+    comments: [
+      {
+        id: 'c6',
+        taskId: '6',
+        authorId: '3',
+        authorName: 'employee',
+        content: 'Task completed successfully. Updated 15 product descriptions and uploaded 25 high-quality images. All content is now live on the website.',
+        createdAt: '2025-01-09T16:30:00Z',
+        type: 'work-report',
+        metadata: {
+          progressPercentage: 100,
+          hoursWorked: 8,
+        },
+      },
+      {
+        id: 'c7',
+        taskId: '6',
+        authorId: '2',
+        authorName: 'Amit Patel',
+        content: 'Excellent work! The website looks much better now.',
+        createdAt: '2025-01-10T08:00:00Z',
+        type: 'comment',
+      },
+    ],
+  },
+  {
+    id: '7',
+    title: 'Competitor Analysis Report',
+    description: 'Research and analyze top 5 competitors in beauty industry for strategic planning',
+    assignedTo: 'employee',
+    assignedBy: 'Priya Sharma',
+    priority: 'urgent',
+    status: 'pending',
+    progress: 0,
+    startDate: '2025-01-15',
+    dueDate: '2025-01-17',
+    project: 'Strategic Planning',
+    tags: ['research', 'analysis', 'strategy', 'competitors'],
+    createdAt: '2025-01-14',
+    updatedAt: '2025-01-14',
+    comments: [],
+  },
+  {
+    id: '8',
+    title: 'Email Marketing Campaign Setup',
+    description: 'Set up automated email marketing campaign for new skincare product line launch',
+    assignedTo: 'employee',
+    assignedBy: 'Amit Patel',
+    priority: 'high',
+    status: 'in-progress',
+    progress: 75,
+    startDate: '2025-01-08',
+    dueDate: '2025-01-16',
+    project: 'Product Launch',
+    tags: ['email-marketing', 'automation', 'skincare', 'launch'],
+    createdAt: '2025-01-08',
+    updatedAt: '2025-01-12',
+    comments: [
+      {
+        id: 'c8',
+        taskId: '8',
+        authorId: '3',
+        authorName: 'employee',
+        content: 'Work Report: Email templates designed and tested. Automation sequences configured for 3 customer segments. Integration with CRM completed. Remaining: final testing and launch approval.',
+        createdAt: '2025-01-12T11:20:00Z',
+        type: 'work-report',
+        metadata: {
+          progressPercentage: 75,
+          hoursWorked: 10,
+        },
+      },
+      {
+        id: 'c9',
+        taskId: '8',
+        authorId: '2',
+        authorName: 'Amit Patel',
+        content: 'Looks good! Please schedule a demo for tomorrow before final launch.',
+        createdAt: '2025-01-12T15:30:00Z',
+        type: 'comment',
+      },
+    ],
+  },
+];
 
-  return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h2 className="text-2xl font-bold text-slate-900">Salary & Payroll</h2>
-          <p className="text-slate-600">View salary details and download pay slips</p>
-        </div>
-      </div>
+export const mockPerformance: Performance[] = [
+  {
+    id: '1',
+    employeeId: 'BID001',
+    employeeName: 'Priya Sharma',
+    period: 'Q4 2024',
+    overallRating: 4.5,
+    kpis: [
+      { name: 'Sales Target', target: 100, achieved: 115, rating: 5 },
+      { name: 'Customer Satisfaction', target: 90, achieved: 92, rating: 4 },
+      { name: 'Team Leadership', target: 85, achieved: 88, rating: 4 },
+    ],
+    managerFeedback: 'Excellent performance, exceeded sales targets consistently',
+    goals: ['Increase team productivity', 'Expand client base'],
+    achievements: ['Best Sales Manager Q4', 'Led successful product launch'],
+    areasOfImprovement: ['Time management', 'Delegation skills'],
+    reviewDate: '2024-12-31',
+    reviewedBy: 'Rajesh Kumar',
+  },
+];
 
-      {/* Current Salary Overview */}
-      <div className="bg-gradient-to-r from-emerald-500 to-teal-500 rounded-xl p-6 text-white">
-        <h3 className="text-lg font-semibold mb-4">Current Salary Breakdown</h3>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <div className="text-center">
-            <p className="text-2xl font-bold">₹{employee.salary.toLocaleString()}</p>
-            <p className="text-emerald-100 text-sm">Monthly CTC</p>
-          </div>
-          <div className="text-center">
-            <p className="text-2xl font-bold">₹{latestSlip?.basicSalary.toLocaleString() || '0'}</p>
-            <p className="text-emerald-100 text-sm">Basic Salary</p>
-          </div>
-          <div className="text-center">
-            <p className="text-2xl font-bold">₹{latestSlip ? Object.values(latestSlip.allowances).reduce((a, b) => a + b, 0).toLocaleString() : '0'}</p>
-            <p className="text-emerald-100 text-sm">Allowances</p>
-          </div>
-          <div className="text-center">
-            <p className="text-2xl font-bold">₹{latestSlip?.netSalary.toLocaleString() || '0'}</p>
-            <p className="text-emerald-100 text-sm">Net Pay</p>
-          </div>
-        </div>
-      </div>
+export const mockPayroll: Payroll[] = [
+  {
+    id: '1',
+    employeeId: 'BID001',
+    employeeName: 'Priya Sharma',
+    month: 'December',
+    year: 2024,
+    basicSalary: 70000,
+    allowances: 15000,
+    deductions: 8500,
+    overtime: 5000,
+    netSalary: 81500,
+    status: 'paid',
+    payDate: '2024-12-31',
+  },
+  {
+    id: '2',
+    employeeId: 'BID002',
+    employeeName: 'Amit Patel',
+    month: 'December',
+    year: 2024,
+    basicSalary: 54000,
+    allowances: 10000,
+    deductions: 6400,
+    overtime: 2000,
+    netSalary: 59600,
+    status: 'processed',
+  },
+  {
+    id: '3',
+    employeeId: 'BID004',
+    employeeName: 'Rahul Verma',
+    month: 'December',
+    year: 2024,
+    basicSalary: 45000,
+    allowances: 8000,
+    deductions: 5400,
+    overtime: 1500,
+    netSalary: 49100,
+    status: 'paid',
+    payDate: '2024-12-31',
+  },
+];
 
-      {/* Yearly Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <div className="bg-white rounded-lg shadow-sm border border-slate-200 p-4">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm text-slate-600">YTD Earnings</p>
-              <p className="text-2xl font-bold text-green-600">₹{yearlyStats.totalEarnings.toLocaleString()}</p>
-            </div>
-            <div className="bg-green-50 p-2 rounded-lg">
-              <TrendingUp className="w-5 h-5 text-green-600" />
-            </div>
-          </div>
-        </div>
+// Mock salary slips data (detailed breakdown)
+export const mockSalarySlips = [
+  {
+    id: '1',
+    employeeId: 'BID001',
+    employeeName: 'Priya Sharma',
+    month: 'December',
+    year: 2024,
+    basicSalary: 70000,
+    allowances: { hra: 10000, transport: 3000, medical: 2000, other: 0 },
+    deductions: { pf: 8400, esi: 0, tax: 5000, other: 0 },
+    overtime: 5000,
+    grossSalary: 90000,
+    netSalary: 81600,
+    generatedAt: '2024-12-31T10:00:00Z',
+  },
+  {
+    id: '2',
+    employeeId: 'BID004',
+    employeeName: 'Rahul Verma',
+    month: 'December',
+    year: 2024,
+    basicSalary: 45000,
+    allowances: { hra: 6000, transport: 1500, medical: 500, other: 0 },
+    deductions: { pf: 5400, esi: 0, tax: 2000, other: 0 },
+    overtime: 1500,
+    grossSalary: 53000,
+    netSalary: 47100,
+    generatedAt: '2024-12-31T10:00:00Z',
+  },
+  {
+    id: '3',
+    employeeId: 'BID004',
+    employeeName: 'Rahul Verma',
+    month: 'November',
+    year: 2024,
+    basicSalary: 45000,
+    allowances: { hra: 6000, transport: 1500, medical: 500, other: 0 },
+    deductions: { pf: 5400, esi: 0, tax: 2000, other: 0 },
+    overtime: 0,
+    grossSalary: 51500,
+    netSalary: 44100,
+    generatedAt: '2024-11-30T10:00:00Z',
+  },
+  {
+    id: '4',
+    employeeId: 'BID002',
+    employeeName: 'Amit Patel',
+    month: 'December',
+    year: 2024,
+    basicSalary: 54000,
+    allowances: { hra: 8000, transport: 2000, medical: 1500, other: 500 },
+    deductions: { pf: 6480, esi: 0, tax: 3500, other: 0 },
+    overtime: 2000,
+    grossSalary: 68000,
+    netSalary: 58020,
+    generatedAt: '2024-12-31T10:00:00Z',
+  },
+];
 
-        <div className="bg-white rounded-lg shadow-sm border border-slate-200 p-4">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm text-slate-600">YTD Deductions</p>
-              <p className="text-2xl font-bold text-red-600">₹{yearlyStats.totalDeductions.toLocaleString()}</p>
-            </div>
-            <div className="bg-red-50 p-2 rounded-lg">
-              <PieChart className="w-5 h-5 text-red-600" />
-            </div>
-          </div>
-        </div>
+// Mock documents data (comprehensive document library)
+export const mockDocuments = [
+  {
+    id: '1',
+    employeeId: 'BID001',
+    type: 'offer-letter',
+    title: 'Offer Letter - Sales Manager',
+    fileName: 'offer_letter_priya_sharma.pdf',
+    fileUrl: '/documents/offer_letter_priya_sharma.pdf',
+    uploadedAt: '2023-03-10T10:00:00Z',
+    uploadedBy: 'HR Department',
+    size: 245760,
+    isPublic: false,
+  },
+  {
+    id: '2',
+    employeeId: 'BID004',
+    type: 'offer-letter',
+    title: 'Offer Letter - Marketing Specialist',
+    fileName: 'offer_letter_rahul_verma.pdf',
+    fileUrl: '/documents/offer_letter_rahul_verma.pdf',
+    uploadedAt: '2023-08-25T10:00:00Z',
+    uploadedBy: 'HR Department',
+    size: 198432,
+    isPublic: false,
+  },
+  {
+    id: '5',
+    employeeId: 'BID004',
+    type: 'salary-slip',
+    title: 'Salary Slip - November 2024',
+    fileName: 'salary_slip_nov_2024_rahul.pdf',
+    fileUrl: '/documents/salary_slip_nov_2024_rahul.pdf',
+    uploadedAt: '2024-11-30T15:00:00Z',
+    uploadedBy: 'Payroll System',
+    size: 123890,
+    isPublic: false,
+  },
+  {
+    id: '6',
+    employeeId: 'BID004',
+    type: 'experience-letter',
+    title: 'Experience Letter - TechStart Solutions',
+    fileName: 'experience_letter_techstart_rahul.pdf',
+    fileUrl: '/documents/experience_letter_techstart_rahul.pdf',
+    uploadedAt: '2023-08-20T11:30:00Z',
+    uploadedBy: 'HR Department',
+    size: 187654,
+    isPublic: false,
+  },
+  {
+    id: '7',
+    employeeId: 'BID004',
+    type: 'other',
+    title: 'Training Certificate - Digital Marketing',
+    fileName: 'training_cert_digital_marketing_rahul.pdf',
+    fileUrl: '/documents/training_cert_digital_marketing_rahul.pdf',
+    uploadedAt: '2024-06-15T16:45:00Z',
+    uploadedBy: 'Training Department',
+    size: 234567,
+    isPublic: false,
+  },
+  {
+    id: '8',
+    employeeId: 'BID004',
+    type: 'other',
+    title: 'Performance Appraisal - Q3 2024',
+    fileName: 'performance_appraisal_q3_2024_rahul.pdf',
+    fileUrl: '/documents/performance_appraisal_q3_2024_rahul.pdf',
+    uploadedAt: '2024-10-01T12:00:00Z',
+    uploadedBy: 'HR Department',
+    size: 345678,
+    isPublic: false,
+  },
+  {
+    id: '9',
+    employeeId: 'BID001',
+    type: 'salary-slip',
+    title: 'Salary Slip - November 2024',
+    fileName: 'salary_slip_nov_2024_priya.pdf',
+    fileUrl: '/documents/salary_slip_nov_2024_priya.pdf',
+    uploadedAt: '2024-11-30T15:00:00Z',
+    uploadedBy: 'Payroll System',
+    size: 134567,
+    isPublic: false,
+  },
+  {
+    id: '10',
+    employeeId: 'BID002',
+    type: 'offer-letter',
+    title: 'Offer Letter - Marketing Executive',
+    fileName: 'offer_letter_amit_patel.pdf',
+    fileUrl: '/documents/offer_letter_amit_patel.pdf',
+    uploadedAt: '2023-06-25T14:00:00Z',
+    uploadedBy: 'HR Department',
+    size: 256789,
+    isPublic: false,
+  },
+  {
+    id: '11',
+    employeeId: 'BID004',
+    type: 'policy',
+    title: 'Employee Handbook 2024',
+    fileName: 'employee_handbook_2024.pdf',
+    fileUrl: '/documents/employee_handbook_2024.pdf',
+    uploadedAt: '2024-01-01T09:00:00Z',
+    uploadedBy: 'HR Department',
+    size: 2048576,
+    isPublic: true,
+  },
+  {
+    id: '12',
+    employeeId: 'BID004',
+    type: 'policy',
+    title: 'Code of Conduct 2024',
+    fileName: 'code_of_conduct_2024.pdf',
+    fileUrl: '/documents/code_of_conduct_2024.pdf',
+    uploadedAt: '2024-01-15T08:00:00Z',
+    uploadedBy: 'HR Department',
+    size: 567890,
+    isPublic: true,
+  },
+  {
+    id: '13',
+    employeeId: 'BID001',
+    type: 'policy',
+    title: 'Employee Benefits Guide 2024',
+    fileName: 'employee_benefits_guide_2024.pdf',
+    fileUrl: '/documents/employee_benefits_guide_2024.pdf',
+    uploadedAt: '2024-02-01T10:00:00Z',
+    uploadedBy: 'HR Department',
+    size: 1234567,
+    isPublic: true,
+  },
+  {
+    id: '14',
+    employeeId: 'BID003',
+    type: 'offer-letter',
+    title: 'Offer Letter - Product Developer',
+    fileName: 'offer_letter_sneha_reddy.pdf',
+    fileUrl: '/documents/offer_letter_sneha_reddy.pdf',
+    uploadedAt: '2023-05-05T10:00:00Z',
+    uploadedBy: 'HR Department',
+    size: 267890,
+    isPublic: false,
+  },
+  {
+    id: '15',
+    employeeId: 'BID004',
+    type: 'other',
+    title: 'Health Insurance Card',
+    fileName: 'health_insurance_rahul.pdf',
+    fileUrl: '/documents/health_insurance_rahul.pdf',
+    uploadedAt: '2023-09-15T14:20:00Z',
+    uploadedBy: 'HR Department',
+    size: 98765,
+    isPublic: false,
+  },
+  {
+    id: '3',
+    employeeId: 'BID004',
+    type: 'id-card',
+    title: 'Employee ID Card',
+    fileName: 'id_card_rahul_verma.pdf',
+    fileUrl: '/documents/id_card_rahul_verma.pdf',
+    uploadedAt: '2023-09-01T09:00:00Z',
+    uploadedBy: 'Admin Department',
+    size: 145678,
+    isPublic: false,
+  },
+  {
+    id: '4',
+    employeeId: 'BID004',
+    type: 'salary-slip',
+    title: 'Salary Slip - December 2024',
+    fileName: 'salary_slip_dec_2024_rahul.pdf',
+    fileUrl: '/documents/salary_slip_dec_2024_rahul.pdf',
+    uploadedAt: '2024-12-31T15:00:00Z',
+    uploadedBy: 'Payroll System',
+    size: 123456,
+    isPublic: false,
+  },
+  {
+    id: '5',
+    employeeId: 'BID001',
+    type: 'salary-slip',
+    title: 'Salary Slip - November 2024',
+    fileName: 'salary_slip_nov_2024_priya.pdf',
+    fileUrl: '/documents/salary_slip_nov_2024_priya.pdf',
+    uploadedAt: '2024-11-30T15:00:00Z',
+    uploadedBy: 'Payroll System',
+    size: 134567,
+    isPublic: false,
+  },
+  {
+    id: '6',
+    employeeId: 'BID004',
+    type: 'experience-letter',
+    title: 'Experience Letter - Previous Company',
+    fileName: 'experience_letter_rahul_previous.pdf',
+    fileUrl: '/documents/experience_letter_rahul_previous.pdf',
+    uploadedAt: '2023-08-20T11:30:00Z',
+    uploadedBy: 'HR Department',
+    size: 187654,
+    isPublic: false,
+  },
+  {
+    id: '7',
+    employeeId: 'BID004',
+    type: 'policy',
+    title: 'Code of Conduct 2024',
+    fileName: 'code_of_conduct_2024.pdf',
+    fileUrl: '/documents/code_of_conduct_2024.pdf',
+    uploadedAt: '2024-01-15T08:00:00Z',
+    uploadedBy: 'HR Department',
+    size: 567890,
+    isPublic: true,
+  },
+  {
+    id: '8',
+    employeeId: 'BID004',
+    type: 'other',
+    title: 'Training Certificate - Digital Marketing',
+    fileName: 'training_cert_digital_marketing_rahul.pdf',
+    fileUrl: '/documents/training_cert_digital_marketing_rahul.pdf',
+    uploadedAt: '2024-06-15T16:45:00Z',
+    uploadedBy: 'Training Department',
+    size: 234567,
+    isPublic: false,
+  },
+  {
+    id: '9',
+    employeeId: 'BID001',
+    type: 'policy',
+    title: 'Employee Benefits Guide 2024',
+    fileName: 'employee_benefits_guide_2024.pdf',
+    fileUrl: '/documents/employee_benefits_guide_2024.pdf',
+    uploadedAt: '2024-02-01T10:00:00Z',
+    uploadedBy: 'HR Department',
+    size: 1234567,
+    isPublic: true,
+  },
+  {
+    id: '10',
+    employeeId: 'BID004',
+    type: 'salary-slip',
+    title: 'Salary Slip - November 2024',
+    fileName: 'salary_slip_nov_2024_rahul.pdf',
+    fileUrl: '/documents/salary_slip_nov_2024_rahul.pdf',
+    uploadedAt: '2024-11-30T15:00:00Z',
+    uploadedBy: 'Payroll System',
+    size: 123890,
+    isPublic: false,
+  },
+  {
+    id: '11',
+    employeeId: 'BID002',
+    type: 'offer-letter',
+    title: 'Offer Letter - Marketing Executive',
+    fileName: 'offer_letter_amit_patel.pdf',
+    fileUrl: '/documents/offer_letter_amit_patel.pdf',
+    uploadedAt: '2023-06-25T14:00:00Z',
+    uploadedBy: 'HR Department',
+    size: 256789,
+    isPublic: false,
+  },
+  {
+    id: '12',
+    employeeId: 'BID004',
+    type: 'other',
+    title: 'Performance Appraisal - Q3 2024',
+    fileName: 'performance_appraisal_q3_2024_rahul.pdf',
+    fileUrl: '/documents/performance_appraisal_q3_2024_rahul.pdf',
+    uploadedAt: '2024-10-01T12:00:00Z',
+    uploadedBy: 'HR Department',
+    size: 345678,
+    isPublic: false,
+  },
+];
 
-        <div className="bg-white rounded-lg shadow-sm border border-slate-200 p-4">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm text-slate-600">YTD Net Pay</p>
-              <p className="text-2xl font-bold text-blue-600">₹{yearlyStats.totalNetPay.toLocaleString()}</p>
-            </div>
-            <div className="bg-blue-50 p-2 rounded-lg">
-              <DollarSign className="w-5 h-5 text-blue-600" />
-            </div>
-          </div>
-        </div>
-
-        <div className="bg-white rounded-lg shadow-sm border border-slate-200 p-4">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm text-slate-600">Avg Monthly</p>
-              <p className="text-2xl font-bold text-purple-600">₹{yearlyStats.avgMonthlyPay.toLocaleString()}</p>
-            </div>
-            <div className="bg-purple-50 p-2 rounded-lg">
-              <Calendar className="w-5 h-5 text-purple-600" />
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Bank Account Details */}
-      {employee.bankAccount && (
-        <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
-          <h3 className="text-lg font-semibold text-slate-900 mb-4 flex items-center">
-            <CreditCard className="w-5 h-5 mr-2" />
-            Bank Account Details
-          </h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <p className="text-sm text-slate-600">Account Holder</p>
-              <p className="font-medium text-slate-900">{employee.bankAccount.accountHolderName}</p>
-            </div>
-            <div>
-              <p className="text-sm text-slate-600">Bank Name</p>
-              <p className="font-medium text-slate-900">{employee.bankAccount.bankName}</p>
-            </div>
-            <div>
-              <p className="text-sm text-slate-600">Account Number</p>
-              <p className="font-medium text-slate-900">****{employee.bankAccount.accountNumber.slice(-4)}</p>
-            </div>
-            <div>
-              <p className="text-sm text-slate-600">IFSC Code</p>
-              <p className="font-medium text-slate-900">{employee.bankAccount.ifscCode}</p>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Salary Slips */}
-      <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
-        <h3 className="text-lg font-semibold text-slate-900 mb-4">Salary Slips</h3>
-        <div className="overflow-x-auto">
-          <table className="w-full">
-            <thead className="bg-slate-50 border-b border-slate-200">
-              <tr>
-                <th className="text-left py-3 px-4 font-medium text-slate-900">Period</th>
-                <th className="text-left py-3 px-4 font-medium text-slate-900">Basic Salary</th>
-                <th className="text-left py-3 px-4 font-medium text-slate-900">Allowances</th>
-                <th className="text-left py-3 px-4 font-medium text-slate-900">Deductions</th>
-                <th className="text-left py-3 px-4 font-medium text-slate-900">Net Pay</th>
-                <th className="text-left py-3 px-4 font-medium text-slate-900">Actions</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-slate-200">
-              {mySalarySlips.map((slip) => (
-                <tr key={slip.id} className="hover:bg-slate-50 transition-colors">
-                  <td className="py-4 px-4">
-                    <div className="flex items-center space-x-2">
-                      <Calendar className="w-4 h-4 text-slate-400" />
-                      <span className="font-medium text-slate-900">{slip.month} {slip.year}</span>
-                    </div>
-                  </td>
-                  <td className="py-4 px-4 text-slate-900">₹{slip.basicSalary.toLocaleString()}</td>
-                  <td className="py-4 px-4 text-green-600">+₹{Object.values(slip.allowances).reduce((a, b) => a + b, 0).toLocaleString()}</td>
-                  <td className="py-4 px-4 text-red-600">-₹{Object.values(slip.deductions).reduce((a, b) => a + b, 0).toLocaleString()}</td>
-                  <td className="py-4 px-4 font-bold text-slate-900">₹{slip.netSalary.toLocaleString()}</td>
-                  <td className="py-4 px-4">
-                    <div className="flex space-x-2">
-                      <button
-                        onClick={() => handleViewSlip(slip)}
-                        className="p-1 text-slate-400 hover:text-blue-600 transition-colors"
-                        title="View Slip"
-                      >
-                        <Eye className="w-4 h-4" />
-                      </button>
-                      <button
-                        onClick={() => handleDownloadSlip(slip)}
-                        className="p-1 text-slate-400 hover:text-green-600 transition-colors"
-                        title="Download Slip"
-                      >
-                        <Download className="w-4 h-4" />
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-      {/* Salary Slip Modal */}
-      {showSlipModal && selectedSlip && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-xl shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto m-4">
-            <div className="flex items-center justify-between p-6 border-b border-slate-200">
-              <h3 className="text-lg font-semibold text-slate-900">
-                Salary Slip - {selectedSlip.month} {selectedSlip.year}
-              </h3>
-              <button
-                onClick={() => setShowSlipModal(false)}
-                className="text-slate-400 hover:text-slate-600 transition-colors"
-              >
-                ×
-              </button>
-            </div>
-            
-            <div className="p-6">
-              {/* Company Header */}
-              <div className="text-center mb-6 pb-4 border-b border-slate-200">
-                <h2 className="text-xl font-bold text-slate-900">BIDUA Industries Pvt. Ltd.</h2>
-                <p className="text-slate-600">Salary Slip</p>
-              </div>
-
-              {/* Employee Details */}
-              <div className="grid grid-cols-2 gap-4 mb-6">
-                <div>
-                  <p className="text-sm text-slate-600">Employee Name</p>
-                  <p className="font-medium text-slate-900">{selectedSlip.employeeName}</p>
-                </div>
-                <div>
-                  <p className="text-sm text-slate-600">Employee ID</p>
-                  <p className="font-medium text-slate-900">{selectedSlip.employeeId}</p>
-                </div>
-                <div>
-                  <p className="text-sm text-slate-600">Department</p>
-                  <p className="font-medium text-slate-900">{employee.department}</p>
-                </div>
-                <div>
-                  <p className="text-sm text-slate-600">Designation</p>
-                  <p className="font-medium text-slate-900">{employee.designation}</p>
-                </div>
-              </div>
-
-              {/* Salary Breakdown */}
-              <div className="grid grid-cols-2 gap-6">
-                {/* Earnings */}
-                <div>
-                  <h4 className="font-semibold text-slate-900 mb-3">Earnings</h4>
-                  <div className="space-y-2">
-                    <div className="flex justify-between">
-                      <span className="text-slate-600">Basic Salary</span>
-                      <span className="font-medium">₹{selectedSlip.basicSalary.toLocaleString()}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-slate-600">HRA</span>
-                      <span className="font-medium">₹{selectedSlip.allowances.hra.toLocaleString()}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-slate-600">Transport</span>
-                      <span className="font-medium">₹{selectedSlip.allowances.transport.toLocaleString()}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-slate-600">Medical</span>
-                      <span className="font-medium">₹{selectedSlip.allowances.medical.toLocaleString()}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-slate-600">Overtime</span>
-                      <span className="font-medium">₹{selectedSlip.overtime.toLocaleString()}</span>
-                    </div>
-                    <div className="flex justify-between font-semibold border-t pt-2">
-                      <span>Gross Salary</span>
-                      <span>₹{selectedSlip.grossSalary.toLocaleString()}</span>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Deductions */}
-                <div>
-                  <h4 className="font-semibold text-slate-900 mb-3">Deductions</h4>
-                  <div className="space-y-2">
-                    <div className="flex justify-between">
-                      <span className="text-slate-600">PF</span>
-                      <span className="font-medium">₹{selectedSlip.deductions.pf.toLocaleString()}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-slate-600">ESI</span>
-                      <span className="font-medium">₹{selectedSlip.deductions.esi.toLocaleString()}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-slate-600">Tax</span>
-                      <span className="font-medium">₹{selectedSlip.deductions.tax.toLocaleString()}</span>
-                    </div>
-                    <div className="flex justify-between font-semibold border-t pt-2">
-                      <span>Total Deductions</span>
-                      <span>₹{Object.values(selectedSlip.deductions).reduce((a, b) => a + b, 0).toLocaleString()}</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Net Pay */}
-              <div className="mt-6 pt-4 border-t border-slate-200">
-                <div className="flex justify-between items-center bg-green-50 p-4 rounded-lg">
-                  <span className="text-lg font-semibold text-slate-900">Net Pay</span>
-                  <span className="text-2xl font-bold text-green-600">₹{selectedSlip.netSalary.toLocaleString()}</span>
-                </div>
-              </div>
-
-              {/* Actions */}
-              <div className="flex justify-end space-x-3 mt-6">
-                <button
-                  onClick={() => handleDownloadSlip(selectedSlip)}
-                  className="flex items-center space-x-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
-                >
-                  <Download className="w-4 h-4" />
-                  <span>Download PDF</span>
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-    </div>
-  );
-};
-
-export default EmployeeSalary;
+// Mock geofence locations
+export const mockGeofenceLocations = [
+  { id: '1', name: 'Mumbai Office', latitude: 19.0760, longitude: 72.8777, radius: 100, isActive: true },
+  { id: '2', name: 'Pune Office', latitude: 18.5204, longitude: 73.8567, radius: 100, isActive: true },
+  { id: '3', name: 'Bangalore Office', latitude: 12.9716, longitude: 77.5946, radius: 100, isActive: true },
+];

@@ -1,350 +1,955 @@
-import React, { useState } from 'react';
-import { User, Lead, Employee, Task, SupportTicket, LeaveRequest, Payroll, Attendance } from '../types';
-import {
-  BarChart3,
-  TrendingUp,
-  Users,
-  DollarSign,
-  Calendar,
-  Download,
-  Filter,
-  FileText,
-  PieChart,
-  Activity,
-  Clock,
-  Target,
-  Award,
-  Building2,
-  CheckSquare,
-  AlertTriangle,
-} from 'lucide-react';
+import { User, Lead, SupportTicket, Employee, Attendance, LeaveRequest, Task, Performance, Payroll } from '../types';
 
-interface ReportsModuleProps {
-  user: User;
-  leads: Lead[];
-  employees: Employee[];
-  tasks: Task[];
-  supportTickets: SupportTicket[];
-  leaveRequests: LeaveRequest[];
-  payrollData: Payroll[];
-  attendanceData: Attendance[];
-}
+// Static Users for Authentication
+export const mockUsers: User[] = [
+  {
+    id: '1',
+    username: 'admin',
+    email: 'admin@bidua.com',
+    role: 'admin',
+    department: 'IT',
+    isActive: true,
+  },
+  {
+    id: '2',
+    username: 'manager',
+    email: 'manager@bidua.com',
+    role: 'manager',
+    department: 'Sales',
+    isActive: true,
+  },
+  {
+    id: '3',
+    username: 'employee',
+    email: 'employee@bidua.com',
+    role: 'employee',
+    department: 'Marketing',
+    isActive: true,
+  },
+];
 
-const ReportsModule: React.FC<ReportsModuleProps> = ({
-  user,
-  leads,
-  employees,
-  tasks,
-  supportTickets,
-  leaveRequests,
-  payrollData,
-  attendanceData,
-}) => {
-  const [selectedPeriod, setSelectedPeriod] = useState('monthly');
-  const [selectedReport, setSelectedReport] = useState('overview');
+// Static password for all users (in real app, this would be hashed)
+export const staticPassword = 'bidua123';
 
-  // Calculate metrics
-  const totalRevenue = leads.reduce((sum, lead) => sum + lead.value, 0);
-  const activeEmployees = employees.filter(e => e.status === 'active').length;
-  const completedTasks = tasks.filter(t => t.status === 'completed').length;
-  const pendingTasks = tasks.filter(t => t.status === 'pending').length;
-  const openTickets = supportTickets.filter(t => t.status === 'open').length;
-  const pendingLeaves = leaveRequests.filter(l => l.status === 'pending').length;
-  const totalPayroll = payrollData.reduce((sum, p) => sum + p.netSalary, 0);
-  const conversionRate = leads.length > 0 ? (leads.filter(l => l.stage === 'closed-won').length / leads.length) * 100 : 0;
+// CRM Mock Data
+export const mockLeads: Lead[] = [
+  {
+    id: '1',
+    name: 'Rajesh Kumar',
+    email: 'rajesh@techcorp.com',
+    phone: '+91 98765 43210',
+    company: 'TechCorp Solutions',
+    status: 'hot',
+    stage: 'negotiation',
+    value: 500000,
+    source: 'Website',
+    assignedTo: 'Priya Sharma',
+    lastContact: '2025-01-10',
+    nextFollowUp: '2025-01-15',
+    notes: 'Interested in enterprise beauty products package',
+    createdAt: '2024-12-15',
+  },
+  {
+    id: '2',
+    name: 'Anita Desai',
+    email: 'anita@beautyworld.com',
+    phone: '+91 87654 32109',
+    company: 'Beauty World Retail',
+    status: 'warm',
+    stage: 'proposal',
+    value: 250000,
+    source: 'Referral',
+    assignedTo: 'Amit Patel',
+    lastContact: '2025-01-08',
+    nextFollowUp: '2025-01-12',
+    notes: 'Looking for bulk skincare products',
+    createdAt: '2024-12-20',
+  },
+  {
+    id: '3',
+    name: 'Vikram Singh',
+    email: 'vikram@luxuryspas.com',
+    phone: '+91 76543 21098',
+    company: 'Luxury Spas Chain',
+    status: 'cold',
+    stage: 'lead',
+    value: 750000,
+    source: 'Trade Show',
+    assignedTo: 'Sneha Reddy',
+    lastContact: '2025-01-05',
+    nextFollowUp: '2025-01-20',
+    notes: 'Potential for spa product line partnership',
+    createdAt: '2024-12-10',
+  },
+  {
+    id: '4',
+    name: 'Sunita Agarwal',
+    email: 'sunita@glamourstore.com',
+    phone: '+91 65432 10987',
+    company: 'Glamour Store Chain',
+    status: 'warm',
+    stage: 'proposal',
+    value: 350000,
+    source: 'Cold Call',
+    assignedTo: 'Priya Sharma',
+    lastContact: '2025-01-12',
+    nextFollowUp: '2025-01-16',
+    notes: 'Interested in premium makeup line for retail stores',
+    createdAt: '2024-12-28',
+  },
+  {
+    id: '5',
+    name: 'Kiran Mehta',
+    email: 'kiran@beautypalace.com',
+    phone: '+91 54321 09876',
+    company: 'Beauty Palace',
+    status: 'hot',
+    stage: 'closed-won',
+    value: 450000,
+    source: 'Referral',
+    assignedTo: 'Amit Patel',
+    lastContact: '2025-01-11',
+    nextFollowUp: '2025-01-18',
+];
 
-  // Department-wise employee distribution
-  const departmentStats = employees.reduce((acc, emp) => {
-    acc[emp.department] = (acc[emp.department] || 0) + 1;
-    return acc;
-  }, {} as Record<string, number>);
+export const mockSupportTickets: SupportTicket[] = [
+  {
+    id: '1',
+    title: 'Product Quality Issue - Face Cream',
+    description: 'Customer reported skin irritation after using our premium face cream',
+    customerId: '1',
+    customerName: 'Meera Joshi',
+    priority: 'high',
+    status: 'in-progress',
+    assignedTo: 'Customer Care Team',
+    createdAt: '2025-01-10',
+    category: 'Quality',
+  },
+  {
+    id: '2',
+    title: 'Delayed Delivery - Order #BC2024001',
+    description: 'Order placed 5 days ago, still not delivered',
+    customerId: '2',
+    customerName: 'Rohit Gupta',
+    priority: 'medium',
+    status: 'open',
+    assignedTo: 'Logistics Team',
+    createdAt: '2025-01-09',
+    category: 'Delivery',
+  },
+];
 
-  // Task completion rate by priority
-  const taskStats = {
-    urgent: tasks.filter(t => t.priority === 'urgent'),
-    high: tasks.filter(t => t.priority === 'high'),
-    medium: tasks.filter(t => t.priority === 'medium'),
-    low: tasks.filter(t => t.priority === 'low'),
-  };
+// HRMS Mock Data
+export const mockEmployees: Employee[] = [
+  {
+    id: '1',
+    employeeId: 'BID001',
+    name: 'Priya Sharma',
+    email: 'priya.sharma@bidua.com',
+    phone: '+91 98765 43210',
+    department: 'Sales',
+    designation: 'Sales Manager',
+    manager: 'Rajesh Kumar',
+    joiningDate: '2023-03-15',
+    salary: 850000,
+    status: 'active',
+    address: 'Mumbai, Maharashtra',
+    emergencyContact: '+91 98765 43211',
+    documents: ['Aadhar', 'PAN', 'Degree Certificate'],
+  },
+  {
+    id: '2',
+    employeeId: 'BID002',
+    name: 'Amit Patel',
+    email: 'amit.patel@bidua.com',
+    phone: '+91 87654 32109',
+    department: 'Marketing',
+    designation: 'Marketing Executive',
+    manager: 'Priya Sharma',
+    joiningDate: '2023-07-01',
+    salary: 650000,
+    status: 'active',
+    address: 'Pune, Maharashtra',
+    emergencyContact: '+91 87654 32110',
+    documents: ['Aadhar', 'PAN', 'Experience Letter'],
+  },
+  {
+    id: '3',
+    employeeId: 'BID003',
+    name: 'Sneha Reddy',
+    email: 'sneha.reddy@bidua.com',
+    phone: '+91 76543 21098',
+    department: 'R&D',
+    designation: 'Product Developer',
+    manager: 'Dr. Kavitha Nair',
+    joiningDate: '2023-05-10',
+    salary: 750000,
+    status: 'active',
+    address: 'Bangalore, Karnataka',
+    emergencyContact: '+91 76543 21099',
+    documents: ['Aadhar', 'PAN', 'PhD Certificate'],
+  },
+  {
+    id: '4',
+    employeeId: 'BID004',
+    name: 'Rahul Verma',
+    email: 'employee@bidua.com',
+    phone: '+91 65432 10987',
+    department: 'Marketing',
+    designation: 'Marketing Specialist',
+    manager: 'Amit Patel',
+    joiningDate: '2023-09-01',
+    salary: 550000,
+    status: 'active',
+    address: 'Delhi, India',
+    emergencyContact: '+91 65432 10988',
+    documents: ['Aadhar', 'PAN', 'Graduation Certificate'],
+    bankAccount: {
+      accountNumber: '1234567890123456',
+      bankName: 'HDFC Bank',
+      ifscCode: 'HDFC0001234',
+      accountHolderName: 'Rahul Verma',
+    },
+    personalDetails: {
+      dateOfBirth: '1995-06-15',
+      gender: 'male',
+      maritalStatus: 'single',
+      nationality: 'Indian',
+      bloodGroup: 'B+',
+    },
+  },
+];
 
-  const reportTypes = [
-    { id: 'overview', name: 'Executive Overview', icon: BarChart3 },
-    { id: 'sales', name: 'Sales Performance', icon: TrendingUp },
-    { id: 'hr', name: 'HR Analytics', icon: Users },
-    { id: 'financial', name: 'Financial Reports', icon: DollarSign },
-    { id: 'operational', name: 'Operational Metrics', icon: Activity },
-  ];
+export const mockAttendance: Attendance[] = [
+  {
+    id: '1',
+    employeeId: 'BID001',
+    employeeName: 'Priya Sharma',
+    date: '2025-01-10',
+    clockIn: '09:15',
+    clockOut: '18:30',
+    totalHours: 9.25,
+    status: 'present',
+    location: 'Mumbai Office',
+  },
+  {
+    id: '2',
+    employeeId: 'BID002',
+    employeeName: 'Amit Patel',
+    date: '2025-01-10',
+    clockIn: '09:45',
+    clockOut: '18:15',
+    totalHours: 8.5,
+    status: 'late',
+    location: 'Pune Office',
+  },
+  {
+    id: '3',
+    employeeId: 'BID004',
+    employeeName: 'Rahul Verma',
+    date: '2025-01-10',
+    clockIn: '09:00',
+    clockOut: '18:00',
+    totalHours: 9.0,
+    status: 'present',
+    location: 'Delhi Office',
+  },
+];
 
-  const renderOverviewReport = () => (
-    <div className="space-y-6">
-      {/* Executive Summary Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-medium text-slate-600">Total Revenue</p>
-              <p className="text-3xl font-bold text-emerald-600">₹{(totalRevenue / 100000).toFixed(1)}L</p>
-              <p className="text-sm text-emerald-600 mt-1 flex items-center">
-                <TrendingUp className="w-4 h-4 mr-1" />
-                +15.3% vs last month
-              </p>
-            </div>
-            <div className="bg-emerald-50 p-3 rounded-lg">
-              <DollarSign className="w-6 h-6 text-emerald-600" />
-            </div>
-          </div>
-        </div>
+export const mockLeaveRequests: LeaveRequest[] = [
+  {
+    id: '1',
+    employeeId: 'BID001',
+    employeeName: 'Priya Sharma',
+    leaveType: 'annual',
+    startDate: '2025-01-20',
+    endDate: '2025-01-25',
+    days: 5,
+    reason: 'Family vacation',
+    status: 'pending',
+    appliedAt: '2025-01-10',
+  },
+  {
+    id: '2',
+    employeeId: 'BID003',
+    employeeName: 'Sneha Reddy',
+    leaveType: 'sick',
+    startDate: '2025-01-12',
+    endDate: '2025-01-12',
+    days: 1,
+    reason: 'Fever and cold',
+    status: 'approved',
+    appliedAt: '2025-01-11',
+    approvedBy: 'Dr. Kavitha Nair',
+    approvedAt: '2025-01-11',
+  },
+  {
+    id: '3',
+    employeeId: 'BID004',
+    employeeName: 'Rahul Verma',
+    leaveType: 'casual',
+    startDate: '2025-01-18',
+    endDate: '2025-01-19',
+    days: 2,
+    reason: 'Personal work',
+    status: 'pending',
+    appliedAt: '2025-01-10',
+  },
+];
 
-        <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-medium text-slate-600">Active Employees</p>
-              <p className="text-3xl font-bold text-blue-600">{activeEmployees}</p>
-              <p className="text-sm text-blue-600 mt-1">
-                {((activeEmployees / employees.length) * 100).toFixed(1)}% active rate
-              </p>
-            </div>
-            <div className="bg-blue-50 p-3 rounded-lg">
-              <Users className="w-6 h-6 text-blue-600" />
-            </div>
-          </div>
-        </div>
+export const mockTasks: Task[] = [
+  {
+    id: '1',
+    title: 'Q1 Sales Strategy Planning',
+    description: 'Develop comprehensive sales strategy for Q1 2025',
+    assignedTo: 'Priya Sharma',
+    assignedBy: 'Rajesh Kumar',
+    priority: 'high',
+    status: 'in-progress',
+    progress: 65,
+    startDate: '2025-01-01',
+    dueDate: '2025-01-15',
+    project: 'Sales Planning',
+    tags: ['strategy', 'sales', 'planning'],
+    createdAt: '2025-01-01',
+    updatedAt: '2025-01-10',
+    comments: [
+      {
+        id: 'c1',
+        taskId: '1',
+        authorId: '1',
+        authorName: 'Priya Sharma',
+        content: 'Started working on market analysis section',
+        createdAt: '2025-01-02T09:00:00Z',
+        type: 'comment',
+      },
+      {
+        id: 'c2',
+        taskId: '1',
+        authorId: '1',
+        authorName: 'Priya Sharma',
+        content: 'Progress update: Completed competitor analysis and market research. Moving to strategy formulation phase.',
+        createdAt: '2025-01-08T14:30:00Z',
+        type: 'progress-update',
+        metadata: {
+          progressPercentage: 65,
+          hoursWorked: 12,
+        },
+      },
+    ],
+  },
+  {
+    id: '2',
+    title: 'New Product Launch Campaign',
+    description: 'Create marketing campaign for new skincare line',
+    assignedTo: 'Amit Patel',
+    assignedBy: 'Priya Sharma',
+    priority: 'urgent',
+    status: 'pending',
+    progress: 25,
+    startDate: '2025-01-05',
+    dueDate: '2025-01-20',
+    project: 'Product Launch',
+    tags: ['marketing', 'campaign', 'skincare'],
+    createdAt: '2025-01-05',
+    updatedAt: '2025-01-05',
+    comments: [],
+  },
+  {
+    id: '3',
+    title: 'Social Media Content Creation',
+    description: 'Create engaging social media content for new product launch',
+    assignedTo: 'employee',
+    assignedBy: 'Amit Patel',
+    priority: 'medium',
+    status: 'pending',
+    progress: 0,
+    startDate: '2025-01-12',
+    dueDate: '2025-01-18',
+    project: 'Product Launch',
+    tags: ['social-media', 'content', 'marketing'],
+    createdAt: '2025-01-12',
+    updatedAt: '2025-01-12',
+    comments: [],
+  },
+  {
+    id: '4',
+    title: 'Market Research Analysis',
+    description: 'Analyze competitor pricing and market trends for Q1 strategy',
+    assignedTo: 'employee',
+    assignedBy: 'Priya Sharma',
+    priority: 'high',
+    status: 'in-progress',
+    progress: 40,
+    startDate: '2025-01-08',
+    dueDate: '2025-01-15',
+    project: 'Market Analysis',
+    tags: ['research', 'analysis', 'strategy'],
+    createdAt: '2025-01-08',
+    updatedAt: '2025-01-12',
+    comments: [
+      {
+        id: 'c3',
+        taskId: '4',
+        authorId: '3',
+        authorName: 'employee',
+        content: 'Task accepted. Starting with competitor research.',
+        createdAt: '2025-01-08T10:00:00Z',
+        type: 'status-change',
+        metadata: {
+          oldValue: 'pending',
+          newValue: 'in-progress',
+        },
+      },
+      {
+        id: 'c4',
+        taskId: '4',
+        authorId: '3',
+        authorName: 'employee',
+        content: 'Work Report: Completed research on 3 major competitors (Lakme, Olay, Nivea). Gathered pricing data and analyzed their Q4 2024 campaigns. Found key insights about premium segment positioning. Next: analyzing market trends and consumer behavior data.',
+        createdAt: '2025-01-10T16:45:00Z',
+        type: 'work-report',
+        metadata: {
+          progressPercentage: 40,
+          hoursWorked: 6,
+        },
+      },
+      {
+        id: 'c5',
+        taskId: '4',
+        authorId: '2',
+        authorName: 'Priya Sharma',
+        content: 'Great progress! Please also include analysis of their digital marketing strategies.',
+        createdAt: '2025-01-11T09:15:00Z',
+        type: 'comment',
+      },
+    ],
+  },
+  {
+    id: '5',
+    title: 'Customer Feedback Analysis',
+    description: 'Analyze customer feedback from recent product launches and prepare improvement recommendations',
+    assignedTo: 'employee',
+    assignedBy: 'Amit Patel',
+    priority: 'medium',
+    status: 'pending',
+    progress: 0,
+    startDate: '2025-01-13',
+    dueDate: '2025-01-20',
+    project: 'Customer Experience',
+    tags: ['feedback', 'analysis', 'customer-experience'],
+    createdAt: '2025-01-13',
+    updatedAt: '2025-01-13',
+    comments: [],
+  },
+  {
+    id: '6',
+    title: 'Website Content Update',
+    description: 'Update product descriptions and images on company website',
+    assignedTo: 'employee',
+    assignedBy: 'Amit Patel',
+    priority: 'low',
+    status: 'completed',
+    progress: 100,
+    startDate: '2025-01-05',
+    dueDate: '2025-01-10',
+    completedAt: '2025-01-09T16:30:00Z',
+    project: 'Website Management',
+    tags: ['website', 'content', 'marketing'],
+    createdAt: '2025-01-05',
+    updatedAt: '2025-01-09T16:30:00Z',
+    comments: [
+      {
+        id: 'c6',
+        taskId: '6',
+        authorId: '3',
+        authorName: 'employee',
+        content: 'Task completed successfully. Updated 15 product descriptions and uploaded 25 high-quality images. All content is now live on the website.',
+        createdAt: '2025-01-09T16:30:00Z',
+        type: 'work-report',
+        metadata: {
+          progressPercentage: 100,
+          hoursWorked: 8,
+        },
+      },
+      {
+        id: 'c7',
+        taskId: '6',
+        authorId: '2',
+        authorName: 'Amit Patel',
+        content: 'Excellent work! The website looks much better now.',
+        createdAt: '2025-01-10T08:00:00Z',
+        type: 'comment',
+      },
+    ],
+  },
+  {
+    id: '7',
+    title: 'Competitor Analysis Report',
+    description: 'Research and analyze top 5 competitors in beauty industry for strategic planning',
+    assignedTo: 'employee',
+    assignedBy: 'Priya Sharma',
+    priority: 'urgent',
+    status: 'pending',
+    progress: 0,
+    startDate: '2025-01-15',
+    dueDate: '2025-01-17',
+    project: 'Strategic Planning',
+    tags: ['research', 'analysis', 'strategy', 'competitors'],
+    createdAt: '2025-01-14',
+    updatedAt: '2025-01-14',
+    comments: [],
+  },
+  {
+    id: '8',
+    title: 'Email Marketing Campaign Setup',
+    description: 'Set up automated email marketing campaign for new skincare product line launch',
+    assignedTo: 'employee',
+    assignedBy: 'Amit Patel',
+    priority: 'high',
+    status: 'in-progress',
+    progress: 75,
+    startDate: '2025-01-08',
+    dueDate: '2025-01-16',
+    project: 'Product Launch',
+    tags: ['email-marketing', 'automation', 'skincare', 'launch'],
+    createdAt: '2025-01-08',
+    updatedAt: '2025-01-12',
+    comments: [
+      {
+        id: 'c8',
+        taskId: '8',
+        authorId: '3',
+        authorName: 'employee',
+        content: 'Work Report: Email templates designed and tested. Automation sequences configured for 3 customer segments. Integration with CRM completed. Remaining: final testing and launch approval.',
+        createdAt: '2025-01-12T11:20:00Z',
+        type: 'work-report',
+        metadata: {
+          progressPercentage: 75,
+          hoursWorked: 10,
+        },
+      },
+      {
+        id: 'c9',
+        taskId: '8',
+        authorId: '2',
+        authorName: 'Amit Patel',
+        content: 'Looks good! Please schedule a demo for tomorrow before final launch.',
+        createdAt: '2025-01-12T15:30:00Z',
+        type: 'comment',
+      },
+    ],
+  },
+];
 
-        <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-medium text-slate-600">Task Completion</p>
-              <p className="text-3xl font-bold text-purple-600">{((completedTasks / tasks.length) * 100).toFixed(1)}%</p>
-              <p className="text-sm text-purple-600 mt-1">
-                {completedTasks} of {tasks.length} tasks
-              </p>
-            </div>
-            <div className="bg-purple-50 p-3 rounded-lg">
-              <CheckSquare className="w-6 h-6 text-purple-600" />
-            </div>
-          </div>
-        </div>
+export const mockPerformance: Performance[] = [
+  {
+    id: '1',
+    employeeId: 'BID001',
+    employeeName: 'Priya Sharma',
+    period: 'Q4 2024',
+    overallRating: 4.5,
+    kpis: [
+      { name: 'Sales Target', target: 100, achieved: 115, rating: 5 },
+      { name: 'Customer Satisfaction', target: 90, achieved: 92, rating: 4 },
+      { name: 'Team Leadership', target: 85, achieved: 88, rating: 4 },
+    ],
+    managerFeedback: 'Excellent performance, exceeded sales targets consistently',
+    goals: ['Increase team productivity', 'Expand client base'],
+    achievements: ['Best Sales Manager Q4', 'Led successful product launch'],
+    areasOfImprovement: ['Time management', 'Delegation skills'],
+    reviewDate: '2024-12-31',
+    reviewedBy: 'Rajesh Kumar',
+  },
+];
 
-        <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-medium text-slate-600">Conversion Rate</p>
-              <p className="text-3xl font-bold text-orange-600">{conversionRate.toFixed(1)}%</p>
-              <p className="text-sm text-orange-600 mt-1">
-                Sales pipeline efficiency
-              </p>
-            </div>
-            <div className="bg-orange-50 p-3 rounded-lg">
-              <Target className="w-6 h-6 text-orange-600" />
-            </div>
-          </div>
-        </div>
-      </div>
+export const mockPayroll: Payroll[] = [
+  {
+    id: '1',
+    employeeId: 'BID001',
+    employeeName: 'Priya Sharma',
+    month: 'December',
+    year: 2024,
+    basicSalary: 70000,
+    allowances: 15000,
+    deductions: 8500,
+    overtime: 5000,
+    netSalary: 81500,
+    status: 'paid',
+    payDate: '2024-12-31',
+  },
+  {
+    id: '2',
+    employeeId: 'BID002',
+    employeeName: 'Amit Patel',
+    month: 'December',
+    year: 2024,
+    basicSalary: 54000,
+    allowances: 10000,
+    deductions: 6400,
+    overtime: 2000,
+    netSalary: 59600,
+    status: 'processed',
+  },
+  {
+    id: '3',
+    employeeId: 'BID004',
+    employeeName: 'Rahul Verma',
+    month: 'December',
+    year: 2024,
+    basicSalary: 45000,
+    allowances: 8000,
+    deductions: 5400,
+    overtime: 1500,
+    netSalary: 49100,
+    status: 'paid',
+    payDate: '2024-12-31',
+  },
+];
 
-      {/* Department Distribution */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
-          <div className="flex items-center justify-between mb-6">
-            <h3 className="text-lg font-semibold text-slate-900">Department Distribution</h3>
-            <Building2 className="w-5 h-5 text-slate-400" />
-          </div>
-          <div className="space-y-4">
-            {Object.entries(departmentStats).map(([dept, count], index) => {
-              const percentage = (count / employees.length) * 100;
-              const colors = ['bg-blue-500', 'bg-green-500', 'bg-orange-500', 'bg-purple-500', 'bg-pink-500', 'bg-teal-500'];
-              
-              return (
-                <div key={dept} className="flex items-center space-x-4">
-                  <div className={`w-4 h-4 rounded-full ${colors[index % colors.length]}`} />
-                  <div className="flex-1">
-                    <div className="flex items-center justify-between mb-1">
-                      <span className="text-sm font-medium text-slate-900">{dept}</span>
-                      <span className="text-sm text-slate-600">{count} employees</span>
-                    </div>
-                    <div className="bg-slate-200 rounded-full h-2">
-                      <div
-                        className={`h-2 rounded-full transition-all duration-300 ${colors[index % colors.length]}`}
-                        style={{ width: `${percentage}%` }}
-                      />
-                    </div>
-                  </div>
-                  <div className="w-12 text-right">
-                    <span className="text-sm font-medium text-slate-900">{percentage.toFixed(0)}%</span>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        </div>
+// Mock salary slips data (detailed breakdown)
+export const mockSalarySlips = [
+  {
+    id: '1',
+    employeeId: 'BID001',
+    employeeName: 'Priya Sharma',
+    month: 'December',
+    year: 2024,
+    basicSalary: 70000,
+    allowances: { hra: 10000, transport: 3000, medical: 2000, other: 0 },
+    deductions: { pf: 8400, esi: 0, tax: 5000, other: 0 },
+    overtime: 5000,
+    grossSalary: 90000,
+    netSalary: 81600,
+    generatedAt: '2024-12-31T10:00:00Z',
+  },
+  {
+    id: '2',
+    employeeId: 'BID004',
+    employeeName: 'Rahul Verma',
+    month: 'December',
+    year: 2024,
+    basicSalary: 45000,
+    allowances: { hra: 6000, transport: 1500, medical: 500, other: 0 },
+    deductions: { pf: 5400, esi: 0, tax: 2000, other: 0 },
+    overtime: 1500,
+    grossSalary: 53000,
+    netSalary: 47100,
+    generatedAt: '2024-12-31T10:00:00Z',
+  },
+  {
+    id: '3',
+    employeeId: 'BID004',
+    employeeName: 'Rahul Verma',
+    month: 'November',
+    year: 2024,
+    basicSalary: 45000,
+    allowances: { hra: 6000, transport: 1500, medical: 500, other: 0 },
+    deductions: { pf: 5400, esi: 0, tax: 2000, other: 0 },
+    overtime: 0,
+    grossSalary: 51500,
+    netSalary: 44100,
+    generatedAt: '2024-11-30T10:00:00Z',
+  },
+  {
+    id: '4',
+    employeeId: 'BID002',
+    employeeName: 'Amit Patel',
+    month: 'December',
+    year: 2024,
+    basicSalary: 54000,
+    allowances: { hra: 8000, transport: 2000, medical: 1500, other: 500 },
+    deductions: { pf: 6480, esi: 0, tax: 3500, other: 0 },
+    overtime: 2000,
+    grossSalary: 68000,
+    netSalary: 58020,
+    generatedAt: '2024-12-31T10:00:00Z',
+  },
+];
 
-        {/* Task Priority Breakdown */}
-        <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
-          <div className="flex items-center justify-between mb-6">
-            <h3 className="text-lg font-semibold text-slate-900">Task Priority Analysis</h3>
-            <AlertTriangle className="w-5 h-5 text-slate-400" />
-          </div>
-          <div className="space-y-4">
-            {Object.entries(taskStats).map(([priority, taskList]) => {
-              const completed = taskList.filter(t => t.status === 'completed').length;
-              const completionRate = taskList.length > 0 ? (completed / taskList.length) * 100 : 0;
-              const priorityColors = {
-                urgent: 'bg-red-500',
-                high: 'bg-orange-500',
-                medium: 'bg-yellow-500',
-                low: 'bg-green-500',
-              };
-              
-              return (
-                <div key={priority} className="flex items-center space-x-4">
-                  <div className={`w-4 h-4 rounded-full ${priorityColors[priority as keyof typeof priorityColors]}`} />
-                  <div className="flex-1">
-                    <div className="flex items-center justify-between mb-1">
-                      <span className="text-sm font-medium text-slate-900 capitalize">{priority}</span>
-                      <span className="text-sm text-slate-600">{completed}/{taskList.length} completed</span>
-                    </div>
-                    <div className="bg-slate-200 rounded-full h-2">
-                      <div
-                        className={`h-2 rounded-full transition-all duration-300 ${priorityColors[priority as keyof typeof priorityColors]}`}
-                        style={{ width: `${completionRate}%` }}
-                      />
-                    </div>
-                  </div>
-                  <div className="w-12 text-right">
-                    <span className="text-sm font-medium text-slate-900">{completionRate.toFixed(0)}%</span>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-      </div>
+// Mock documents data (comprehensive document library)
+export const mockDocuments = [
+  {
+    id: '1',
+    employeeId: 'BID001',
+    type: 'offer-letter',
+    title: 'Offer Letter - Sales Manager',
+    fileName: 'offer_letter_priya_sharma.pdf',
+    fileUrl: '/documents/offer_letter_priya_sharma.pdf',
+    uploadedAt: '2023-03-10T10:00:00Z',
+    uploadedBy: 'HR Department',
+    size: 245760,
+    isPublic: false,
+  },
+  {
+    id: '2',
+    employeeId: 'BID004',
+    type: 'offer-letter',
+    title: 'Offer Letter - Marketing Specialist',
+    fileName: 'offer_letter_rahul_verma.pdf',
+    fileUrl: '/documents/offer_letter_rahul_verma.pdf',
+    uploadedAt: '2023-08-25T10:00:00Z',
+    uploadedBy: 'HR Department',
+    size: 198432,
+    isPublic: false,
+  },
+  {
+    id: '5',
+    employeeId: 'BID004',
+    type: 'salary-slip',
+    title: 'Salary Slip - November 2024',
+    fileName: 'salary_slip_nov_2024_rahul.pdf',
+    fileUrl: '/documents/salary_slip_nov_2024_rahul.pdf',
+    uploadedAt: '2024-11-30T15:00:00Z',
+    uploadedBy: 'Payroll System',
+    size: 123890,
+    isPublic: false,
+  },
+  {
+    id: '6',
+    employeeId: 'BID004',
+    type: 'experience-letter',
+    title: 'Experience Letter - TechStart Solutions',
+    fileName: 'experience_letter_techstart_rahul.pdf',
+    fileUrl: '/documents/experience_letter_techstart_rahul.pdf',
+    uploadedAt: '2023-08-20T11:30:00Z',
+    uploadedBy: 'HR Department',
+    size: 187654,
+    isPublic: false,
+  },
+  {
+    id: '7',
+    employeeId: 'BID004',
+    type: 'other',
+    title: 'Training Certificate - Digital Marketing',
+    fileName: 'training_cert_digital_marketing_rahul.pdf',
+    fileUrl: '/documents/training_cert_digital_marketing_rahul.pdf',
+    uploadedAt: '2024-06-15T16:45:00Z',
+    uploadedBy: 'Training Department',
+    size: 234567,
+    isPublic: false,
+  },
+  {
+    id: '8',
+    employeeId: 'BID004',
+    type: 'other',
+    title: 'Performance Appraisal - Q3 2024',
+    fileName: 'performance_appraisal_q3_2024_rahul.pdf',
+    fileUrl: '/documents/performance_appraisal_q3_2024_rahul.pdf',
+    uploadedAt: '2024-10-01T12:00:00Z',
+    uploadedBy: 'HR Department',
+    size: 345678,
+    isPublic: false,
+  },
+  {
+    id: '9',
+    employeeId: 'BID001',
+    type: 'salary-slip',
+    title: 'Salary Slip - November 2024',
+    fileName: 'salary_slip_nov_2024_priya.pdf',
+    fileUrl: '/documents/salary_slip_nov_2024_priya.pdf',
+    uploadedAt: '2024-11-30T15:00:00Z',
+    uploadedBy: 'Payroll System',
+    size: 134567,
+    isPublic: false,
+  },
+  {
+    id: '10',
+    employeeId: 'BID002',
+    type: 'offer-letter',
+    title: 'Offer Letter - Marketing Executive',
+    fileName: 'offer_letter_amit_patel.pdf',
+    fileUrl: '/documents/offer_letter_amit_patel.pdf',
+    uploadedAt: '2023-06-25T14:00:00Z',
+    uploadedBy: 'HR Department',
+    size: 256789,
+    isPublic: false,
+  },
+  {
+    id: '11',
+    employeeId: 'BID004',
+    type: 'policy',
+    title: 'Employee Handbook 2024',
+    fileName: 'employee_handbook_2024.pdf',
+    fileUrl: '/documents/employee_handbook_2024.pdf',
+    uploadedAt: '2024-01-01T09:00:00Z',
+    uploadedBy: 'HR Department',
+    size: 2048576,
+    isPublic: true,
+  },
+  {
+    id: '12',
+    employeeId: 'BID004',
+    type: 'policy',
+    title: 'Code of Conduct 2024',
+    fileName: 'code_of_conduct_2024.pdf',
+    fileUrl: '/documents/code_of_conduct_2024.pdf',
+    uploadedAt: '2024-01-15T08:00:00Z',
+    uploadedBy: 'HR Department',
+    size: 567890,
+    isPublic: true,
+  },
+  {
+    id: '13',
+    employeeId: 'BID001',
+    type: 'policy',
+    title: 'Employee Benefits Guide 2024',
+    fileName: 'employee_benefits_guide_2024.pdf',
+    fileUrl: '/documents/employee_benefits_guide_2024.pdf',
+    uploadedAt: '2024-02-01T10:00:00Z',
+    uploadedBy: 'HR Department',
+    size: 1234567,
+    isPublic: true,
+  },
+  {
+    id: '14',
+    employeeId: 'BID003',
+    type: 'offer-letter',
+    title: 'Offer Letter - Product Developer',
+    fileName: 'offer_letter_sneha_reddy.pdf',
+    fileUrl: '/documents/offer_letter_sneha_reddy.pdf',
+    uploadedAt: '2023-05-05T10:00:00Z',
+    uploadedBy: 'HR Department',
+    size: 267890,
+    isPublic: false,
+  },
+  {
+    id: '15',
+    employeeId: 'BID004',
+    type: 'other',
+    title: 'Health Insurance Card',
+    fileName: 'health_insurance_rahul.pdf',
+    fileUrl: '/documents/health_insurance_rahul.pdf',
+    uploadedAt: '2023-09-15T14:20:00Z',
+    uploadedBy: 'HR Department',
+    size: 98765,
+    isPublic: false,
+  },
+  {
+    id: '3',
+    employeeId: 'BID004',
+    type: 'id-card',
+    title: 'Employee ID Card',
+    fileName: 'id_card_rahul_verma.pdf',
+    fileUrl: '/documents/id_card_rahul_verma.pdf',
+    uploadedAt: '2023-09-01T09:00:00Z',
+    uploadedBy: 'Admin Department',
+    size: 145678,
+    isPublic: false,
+  },
+  {
+    id: '4',
+    employeeId: 'BID004',
+    type: 'salary-slip',
+    title: 'Salary Slip - December 2024',
+    fileName: 'salary_slip_dec_2024_rahul.pdf',
+    fileUrl: '/documents/salary_slip_dec_2024_rahul.pdf',
+    uploadedAt: '2024-12-31T15:00:00Z',
+    uploadedBy: 'Payroll System',
+    size: 123456,
+    isPublic: false,
+  },
+  {
+    id: '5',
+    employeeId: 'BID001',
+    type: 'salary-slip',
+    title: 'Salary Slip - November 2024',
+    fileName: 'salary_slip_nov_2024_priya.pdf',
+    fileUrl: '/documents/salary_slip_nov_2024_priya.pdf',
+    uploadedAt: '2024-11-30T15:00:00Z',
+    uploadedBy: 'Payroll System',
+    size: 134567,
+    isPublic: false,
+  },
+  {
+    id: '6',
+    employeeId: 'BID004',
+    type: 'experience-letter',
+    title: 'Experience Letter - Previous Company',
+    fileName: 'experience_letter_rahul_previous.pdf',
+    fileUrl: '/documents/experience_letter_rahul_previous.pdf',
+    uploadedAt: '2023-08-20T11:30:00Z',
+    uploadedBy: 'HR Department',
+    size: 187654,
+    isPublic: false,
+  },
+  {
+    id: '7',
+    employeeId: 'BID004',
+    type: 'policy',
+    title: 'Code of Conduct 2024',
+    fileName: 'code_of_conduct_2024.pdf',
+    fileUrl: '/documents/code_of_conduct_2024.pdf',
+    uploadedAt: '2024-01-15T08:00:00Z',
+    uploadedBy: 'HR Department',
+    size: 567890,
+    isPublic: true,
+  },
+  {
+    id: '8',
+    employeeId: 'BID004',
+    type: 'other',
+    title: 'Training Certificate - Digital Marketing',
+    fileName: 'training_cert_digital_marketing_rahul.pdf',
+    fileUrl: '/documents/training_cert_digital_marketing_rahul.pdf',
+    uploadedAt: '2024-06-15T16:45:00Z',
+    uploadedBy: 'Training Department',
+    size: 234567,
+    isPublic: false,
+  },
+  {
+    id: '9',
+    employeeId: 'BID001',
+    type: 'policy',
+    title: 'Employee Benefits Guide 2024',
+    fileName: 'employee_benefits_guide_2024.pdf',
+    fileUrl: '/documents/employee_benefits_guide_2024.pdf',
+    uploadedAt: '2024-02-01T10:00:00Z',
+    uploadedBy: 'HR Department',
+    size: 1234567,
+    isPublic: true,
+  },
+  {
+    id: '10',
+    employeeId: 'BID004',
+    type: 'salary-slip',
+    title: 'Salary Slip - November 2024',
+    fileName: 'salary_slip_nov_2024_rahul.pdf',
+    fileUrl: '/documents/salary_slip_nov_2024_rahul.pdf',
+    uploadedAt: '2024-11-30T15:00:00Z',
+    uploadedBy: 'Payroll System',
+    size: 123890,
+    isPublic: false,
+  },
+  {
+    id: '11',
+    employeeId: 'BID002',
+    type: 'offer-letter',
+    title: 'Offer Letter - Marketing Executive',
+    fileName: 'offer_letter_amit_patel.pdf',
+    fileUrl: '/documents/offer_letter_amit_patel.pdf',
+    uploadedAt: '2023-06-25T14:00:00Z',
+    uploadedBy: 'HR Department',
+    size: 256789,
+    isPublic: false,
+  },
+  {
+    id: '12',
+    employeeId: 'BID004',
+    type: 'other',
+    title: 'Performance Appraisal - Q3 2024',
+    fileName: 'performance_appraisal_q3_2024_rahul.pdf',
+    fileUrl: '/documents/performance_appraisal_q3_2024_rahul.pdf',
+    uploadedAt: '2024-10-01T12:00:00Z',
+    uploadedBy: 'HR Department',
+    size: 345678,
+    isPublic: false,
+  },
+];
 
-      {/* Quick Stats Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div className="bg-white rounded-lg shadow-sm border border-slate-200 p-4">
-          <div className="flex items-center space-x-3">
-            <div className="bg-red-50 p-2 rounded-lg">
-              <AlertTriangle className="w-5 h-5 text-red-600" />
-            </div>
-            <div>
-              <p className="text-sm text-slate-600">Open Support Tickets</p>
-              <p className="text-xl font-bold text-slate-900">{openTickets}</p>
-            </div>
-          </div>
-        </div>
-
-        <div className="bg-white rounded-lg shadow-sm border border-slate-200 p-4">
-          <div className="flex items-center space-x-3">
-            <div className="bg-yellow-50 p-2 rounded-lg">
-              <Clock className="w-5 h-5 text-yellow-600" />
-            </div>
-            <div>
-              <p className="text-sm text-slate-600">Pending Leave Requests</p>
-              <p className="text-xl font-bold text-slate-900">{pendingLeaves}</p>
-            </div>
-          </div>
-        </div>
-
-        <div className="bg-white rounded-lg shadow-sm border border-slate-200 p-4">
-          <div className="flex items-center space-x-3">
-            <div className="bg-green-50 p-2 rounded-lg">
-              <DollarSign className="w-5 h-5 text-green-600" />
-            </div>
-            <div>
-              <p className="text-sm text-slate-600">Monthly Payroll</p>
-              <p className="text-xl font-bold text-slate-900">₹{(totalPayroll / 100000).toFixed(1)}L</p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-
-  const renderDetailedReports = () => (
-    <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-12 text-center">
-      <FileText className="w-16 h-16 text-slate-400 mx-auto mb-4" />
-      <h3 className="text-xl font-semibold text-slate-900 mb-2">Detailed {selectedReport} Reports</h3>
-      <p className="text-slate-600 mb-6">Advanced reporting features for {selectedReport} analysis</p>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 max-w-4xl mx-auto">
-        <button className="p-4 border border-slate-200 rounded-lg hover:border-blue-300 hover:bg-blue-50 transition-colors">
-          <Download className="w-6 h-6 text-slate-400 mx-auto mb-2" />
-          <p className="text-sm font-medium text-slate-900">Export to PDF</p>
-        </button>
-        <button className="p-4 border border-slate-200 rounded-lg hover:border-blue-300 hover:bg-blue-50 transition-colors">
-          <Calendar className="w-6 h-6 text-slate-400 mx-auto mb-2" />
-          <p className="text-sm font-medium text-slate-900">Schedule Report</p>
-        </button>
-        <button className="p-4 border border-slate-200 rounded-lg hover:border-blue-300 hover:bg-blue-50 transition-colors">
-          <BarChart3 className="w-6 h-6 text-slate-400 mx-auto mb-2" />
-          <p className="text-sm font-medium text-slate-900">Custom Charts</p>
-        </button>
-      </div>
-    </div>
-  );
-
-  return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div className="bg-gradient-to-r from-purple-500 to-indigo-500 rounded-2xl p-6 text-white">
-        <h1 className="text-2xl font-bold mb-2">Reports & Analytics</h1>
-        <p className="text-purple-100">Comprehensive business intelligence and reporting</p>
-      </div>
-
-      {/* Controls */}
-      <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-4">
-        <div className="flex flex-col lg:flex-row gap-4 items-center justify-between">
-          <div className="flex flex-wrap gap-2">
-            {reportTypes.map((report) => {
-              const Icon = report.icon;
-              const isActive = selectedReport === report.id;
-              
-              return (
-                <button
-                  key={report.id}
-                  onClick={() => setSelectedReport(report.id)}
-                  className={`flex items-center space-x-2 px-4 py-2 rounded-lg transition-all duration-200 ${
-                    isActive
-                      ? 'bg-purple-500 text-white shadow-md'
-                      : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
-                  }`}
-                >
-                  <Icon className="w-4 h-4" />
-                  <span className="text-sm font-medium">{report.name}</span>
-                </button>
-              );
-            })}
-          </div>
-          
-          <div className="flex items-center space-x-3">
-            <select
-              value={selectedPeriod}
-              onChange={(e) => setSelectedPeriod(e.target.value)}
-              className="px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-            >
-              <option value="daily">Daily</option>
-              <option value="weekly">Weekly</option>
-              <option value="monthly">Monthly</option>
-              <option value="quarterly">Quarterly</option>
-              <option value="yearly">Yearly</option>
-            </select>
-            
-            <button className="flex items-center space-x-2 px-4 py-2 border border-slate-300 rounded-lg hover:bg-slate-50 transition-colors">
-              <Filter className="w-4 h-4" />
-              <span>Filters</span>
-            </button>
-            
-            <button className="flex items-center space-x-2 px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors">
-              <Download className="w-4 h-4" />
-              <span>Export</span>
-            </button>
-          </div>
-        </div>
-      </div>
-
-      {/* Report Content */}
-      {selectedReport === 'overview' ? renderOverviewReport() : renderDetailedReports()}
-    </div>
-  );
-};
-
-export default ReportsModule;
+// Mock geofence locations
+export const mockGeofenceLocations = [
+  { id: '1', name: 'Mumbai Office', latitude: 19.0760, longitude: 72.8777, radius: 100, isActive: true },
+  { id: '2', name: 'Pune Office', latitude: 18.5204, longitude: 73.8567, radius: 100, isActive: true },
+  { id: '3', name: 'Bangalore Office', latitude: 12.9716, longitude: 77.5946, radius: 100, isActive: true },
+];
