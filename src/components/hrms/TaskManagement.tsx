@@ -105,6 +105,7 @@ const TaskManagement: React.FC<TaskManagementProps> = ({
   };
 
   const handleAddTask = () => {
+    console.log('handleAddTask called - setting showForm to true');
     setShowForm(true);
     setEditingTask(null);
   };
@@ -334,6 +335,7 @@ const TaskManagement: React.FC<TaskManagementProps> = ({
         </div>
       )}
 
+      {console.log('showForm state:', showForm, 'editingTask:', editingTask)}
       {/* Task Form Modal */}
       {showForm && (
         <TaskForm
