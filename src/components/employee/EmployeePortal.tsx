@@ -81,6 +81,36 @@ export const mockLeads: Lead[] = [
     notes: 'Potential for spa product line partnership',
     createdAt: '2024-12-10',
   },
+  {
+    id: '4',
+    name: 'Sunita Agarwal',
+    email: 'sunita@glamourstore.com',
+    phone: '+91 65432 10987',
+    company: 'Glamour Store Chain',
+    status: 'warm',
+    stage: 'proposal',
+    value: 350000,
+    source: 'Cold Call',
+    assignedTo: 'Priya Sharma',
+    lastContact: '2025-01-12',
+    nextFollowUp: '2025-01-16',
+    notes: 'Interested in premium makeup line for retail stores',
+    createdAt: '2024-12-28',
+  },
+  {
+    id: '5',
+    name: 'Kiran Mehta',
+    email: 'kiran@beautypalace.com',
+    phone: '+91 54321 09876',
+    company: 'Beauty Palace',
+    status: 'hot',
+    stage: 'closed-won',
+    value: 450000,
+    source: 'Referral',
+    assignedTo: 'Amit Patel',
+    lastContact: '2025-01-11',
+    nextFollowUp: '2025-01-18',
+  }
 ];
 
 export const mockSupportTickets: SupportTicket[] = [
