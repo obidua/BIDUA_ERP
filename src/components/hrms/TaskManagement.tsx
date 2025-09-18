@@ -333,6 +333,17 @@ const TaskManagement: React.FC<TaskManagementProps> = ({
           <p className="text-slate-600">No tasks match your current filters</p>
         </div>
       )}
+
+      {/* Task Form Modal */}
+      {showForm && (
+        <TaskForm
+          task={editingTask}
+          employees={employees}
+          customers={leads}
+          onSubmit={handleSubmitTask}
+          onCancel={handleCancelTask}
+        />
+      )}
     </div>
   );
 };
