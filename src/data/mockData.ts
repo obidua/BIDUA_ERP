@@ -325,6 +325,20 @@ export const mockTasks: Task[] = [
     project: 'Market Analysis',
     tags: ['research', 'analysis', 'strategy'],
   },
+  {
+    id: '5',
+    title: 'Customer Feedback Analysis',
+    description: 'Analyze customer feedback from recent product launches and prepare improvement recommendations',
+    assignedTo: 'Rahul Verma',
+    assignedBy: 'Amit Patel',
+    priority: 'medium',
+    status: 'pending',
+    progress: 0,
+    startDate: '2025-01-13',
+    dueDate: '2025-01-20',
+    project: 'Customer Experience',
+    tags: ['feedback', 'analysis', 'customer-experience'],
+  },
 ];
 
 export const mockPerformance: Performance[] = [
