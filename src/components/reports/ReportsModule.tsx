@@ -93,7 +93,7 @@ const ReportsModule: React.FC<ReportsModuleProps> = ({
   const sources = Object.entries(leadSources).map(([name, count]) => ({
     name,
     count,
-    percentage: ((count / totalLeads) * 100).toFixed(1)
+    percentage: leads.length > 0 ? ((count / leads.length) * 100).toFixed(1) : '0'
   }));
 
   return (
@@ -236,11 +236,11 @@ const ReportsModule: React.FC<ReportsModuleProps> = ({
         <h3 className="text-base md:text-lg font-semibold text-gray-900 mb-4">Quick Statistics</h3>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
           <div className="text-center">
-            <div className="text-xl md:text-2xl font-bold text-gray-900">{totalLeads}</div>
+            <div className="text-xl md:text-2xl font-bold text-gray-900">{leads.length}</div>
             <div className="text-xs md:text-sm text-gray-600">Total Leads</div>
           </div>
           <div className="text-center">
-            <div className="text-xl md:text-2xl font-bold text-gray-900">{totalTasks}</div>
+            <div className="text-xl md:text-2xl font-bold text-gray-900">{tasks.length}</div>
             <div className="text-xs md:text-sm text-gray-600">Active Tasks</div>
           </div>
           <div className="text-center">
