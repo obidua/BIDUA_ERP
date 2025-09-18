@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ModuleType, User, Lead, Employee, Task, SupportTicket, LeaveRequest, Performance, Payroll, Attendance } from './types';
+import { ModuleType, User, Lead, Employee, Task, SupportTicket, LeaveRequest, Performance, Payroll, Attendance, Notification } from './types';
 import { 
   mockUsers, 
   mockLeads, 
@@ -19,6 +19,7 @@ import CRMModule from './components/crm/CRMModule';
 import HRMSModule from './components/hrms/HRMSModule';
 import ReportsModule from './components/reports/ReportsModule';
 import SettingsModule from './components/settings/SettingsModule';
+import NotificationDisplay from './components/common/NotificationDisplay';
 
 function App() {
   const [user, setUser] = useState<User | null>(null);
@@ -33,6 +34,7 @@ function App() {
   const [performanceData, setPerformanceData] = useState<Performance[]>(mockPerformance);
   const [payrollData, setPayrollData] = useState<Payroll[]>(mockPayroll);
   const [attendanceData, setAttendanceData] = useState<Attendance[]>(mockAttendance);
+  const [notifications, setNotifications] = useState<Notification[]>([]);
 
   // Quick action states for dashboard
   const [showQuickLeadForm, setShowQuickLeadForm] = useState(false);
@@ -40,6 +42,22 @@ function App() {
   const [showQuickTaskForm, setShowQuickTaskForm] = useState(false);
   const [showQuickAttendanceForm, setShowQuickAttendanceForm] = useState(false);
 
+  // Notification functions
+  const addNotification = (message: string, type: 'success' | 'info' | 'warning' | 'error', userId?: string) => {
+    const newNotification: Notification = {
+      id: uuidv4(),
+      message,
+      type,
+      timestamp: new Date().toISOString(),
+      userId,
+      read: false,
+    };
+    setNotifications(prev => [...prev, newNotification]);
+  };
+
+  const removeNotification = (id: string) => {
+    setNotifications(prev => prev.filter(notification => notification.id !== id));
+  };
   // Lead management functions
   const addLead = (leadData: Omit<Lead, 'id'>) => {
     const newLead: Lead = {
@@ -47,16 +65,25 @@ function App() {
       id: uuidv4(),
     };
     setLeads(prev => [...prev, newLead]);
+    addNotification(`New lead "${newLead.name}" from ${newLead.company} has been added`, 'info');
   };
 
   const updateLead = (id: string, leadData: Partial<Lead>) => {
     setLeads(prev => prev.map(lead => 
       lead.id === id ? { ...lead, ...leadData } : lead
     ));
+    const updatedLead = leads.find(l => l.id === id);
+    if (updatedLead) {
+      addNotification(`Lead "${updatedLead.name}" has been updated`, 'info');
+    }
   };
 
   const deleteLead = (id: string) => {
+    const leadToDelete = leads.find(l => l.id === id);
     setLeads(prev => prev.filter(lead => lead.id !== id));
+    if (leadToDelete) {
+      addNotification(`Lead "${leadToDelete.name}" has been deleted`, 'warning');
+    }
   };
 
   // Employee management functions
@@ -66,16 +93,25 @@ function App() {
       id: uuidv4(),
     };
     setEmployees(prev => [...prev, newEmployee]);
+    addNotification(`New employee "${newEmployee.name}" has been added to ${newEmployee.department}`, 'success');
   };
 
   const updateEmployee = (id: string, employeeData: Partial<Employee>) => {
     setEmployees(prev => prev.map(employee => 
       employee.id === id ? { ...employee, ...employeeData } : employee
     ));
+    const updatedEmployee = employees.find(e => e.id === id);
+    if (updatedEmployee) {
+      addNotification(`Employee "${updatedEmployee.name}" profile has been updated`, 'info');
+    }
   };
 
   const deleteEmployee = (id: string) => {
+    const employeeToDelete = employees.find(e => e.id === id);
     setEmployees(prev => prev.filter(employee => employee.id !== id));
+    if (employeeToDelete) {
+      addNotification(`Employee "${employeeToDelete.name}" has been removed`, 'warning');
+    }
   };
 
   // Task management functions
@@ -85,6 +121,7 @@ function App() {
       id: uuidv4(),
     };
     setTasks(prev => [...prev, newTask]);
+    addNotification(`New task "${newTask.title}" assigned to ${newTask.assignedTo}`, 'info');
   };
 
   const updateTask = (id: string, taskData: Partial<Task>) => {
@@ -94,7 +131,11 @@ function App() {
   };
 
   const deleteTask = (id: string) => {
+    const taskToDelete = tasks.find(t => t.id === id);
     setTasks(prev => prev.filter(task => task.id !== id));
+    if (taskToDelete) {
+      addNotification(`Task "${taskToDelete.title}" has been deleted`, 'warning');
+    }
   };
 
   // Support ticket management functions
@@ -104,16 +145,25 @@ function App() {
       id: uuidv4(),
     };
     setSupportTickets(prev => [...prev, newTicket]);
+    addNotification(`New support ticket "${newTicket.title}" created for ${newTicket.customerName}`, 'info');
   };
 
   const updateSupportTicket = (id: string, ticketData: Partial<SupportTicket>) => {
     setSupportTickets(prev => prev.map(ticket => 
       ticket.id === id ? { ...ticket, ...ticketData } : ticket
     ));
+    const updatedTicket = supportTickets.find(t => t.id === id);
+    if (updatedTicket && ticketData.status) {
+      addNotification(`Support ticket "${updatedTicket.title}" status changed to ${ticketData.status}`, 'info');
+    }
   };
 
   const deleteSupportTicket = (id: string) => {
+    const ticketToDelete = supportTickets.find(t => t.id === id);
     setSupportTickets(prev => prev.filter(ticket => ticket.id !== id));
+    if (ticketToDelete) {
+      addNotification(`Support ticket "${ticketToDelete.title}" has been deleted`, 'warning');
+    }
   };
 
   // Leave request management functions
@@ -123,16 +173,27 @@ function App() {
       id: uuidv4(),
     };
     setLeaveRequests(prev => [...prev, newLeaveRequest]);
+    addNotification(`Leave request submitted by ${newLeaveRequest.employeeName} for ${newLeaveRequest.days} day(s)`, 'info');
   };
 
   const updateLeaveRequest = (id: string, leaveData: Partial<LeaveRequest>) => {
     setLeaveRequests(prev => prev.map(leave => 
       leave.id === id ? { ...leave, ...leaveData } : leave
     ));
+    const updatedLeave = leaveRequests.find(l => l.id === id);
+    if (updatedLeave && leaveData.status) {
+      const statusMessage = leaveData.status === 'approved' ? 'approved' : 'rejected';
+      addNotification(`Leave request for ${updatedLeave.employeeName} has been ${statusMessage}`, 
+        leaveData.status === 'approved' ? 'success' : 'warning');
+    }
   };
 
   const deleteLeaveRequest = (id: string) => {
+    const leaveToDelete = leaveRequests.find(l => l.id === id);
     setLeaveRequests(prev => prev.filter(leave => leave.id !== id));
+    if (leaveToDelete) {
+      addNotification(`Leave request for ${leaveToDelete.employeeName} has been cancelled`, 'warning');
+    }
   };
 
   // Performance management functions
@@ -180,6 +241,7 @@ function App() {
       id: uuidv4(),
     };
     setAttendanceData(prev => [...prev, newAttendance]);
+    addNotification(`Attendance marked for ${newAttendance.employeeName} - ${newAttendance.status}`, 'success');
   };
 
   const updateAttendance = (id: string, attendanceData: Partial<Attendance>) => {
@@ -227,6 +289,7 @@ function App() {
             addEmployee={addEmployee}
             addTask={addTask}
             addAttendance={addAttendance}
+            addNotification={addNotification}
           />
         );
       case 'crm':
@@ -242,6 +305,7 @@ function App() {
             addSupportTicket={addSupportTicket}
             updateSupportTicket={updateSupportTicket}
             deleteSupportTicket={deleteSupportTicket}
+            addNotification={addNotification}
           />
         );
       case 'hrms':
@@ -273,6 +337,7 @@ function App() {
             updateAttendance={updateAttendance}
             deleteAttendance={deleteAttendance}
            leads={leads}
+            addNotification={addNotification}
           />
         );
       case 'reports':
@@ -304,6 +369,19 @@ function App() {
             supportTickets={supportTickets}
             leaveRequests={leaveRequests}
             attendanceData={attendanceData}
+            showQuickLeadForm={showQuickLeadForm}
+            setShowQuickLeadForm={setShowQuickLeadForm}
+            showQuickEmployeeForm={showQuickEmployeeForm}
+            setShowQuickEmployeeForm={setShowQuickEmployeeForm}
+            showQuickTaskForm={showQuickTaskForm}
+            setShowQuickTaskForm={setShowQuickTaskForm}
+            showQuickAttendanceForm={showQuickAttendanceForm}
+            setShowQuickAttendanceForm={setShowQuickAttendanceForm}
+            addLead={addLead}
+            addEmployee={addEmployee}
+            addTask={addTask}
+            addAttendance={addAttendance}
+            addNotification={addNotification}
           />
         );
     }
@@ -324,6 +402,10 @@ function App() {
       <main className="flex-1 p-8 overflow-y-auto">
         {renderCurrentModule()}
       </main>
+      <NotificationDisplay 
+        notifications={notifications} 
+        onDismiss={removeNotification} 
+      />
     </div>
   );
 }

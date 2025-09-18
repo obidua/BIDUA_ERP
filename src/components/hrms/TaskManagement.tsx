@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { Task, User, Lead, Employee } from '../../types';
-import { mockTasks } from '../../data/mockData';
 import TaskForm from './TaskForm';
 import {
   CheckSquare,
@@ -12,6 +11,9 @@ import {
   Calendar,
   Target,
   BarChart3,
+  Play,
+  CheckCircle2,
+  Timer,
 } from 'lucide-react';
 
 interface TaskManagementProps {
@@ -22,6 +24,7 @@ interface TaskManagementProps {
  addTask: (task: Omit<Task, 'id'>) => void;
  updateTask: (id: string, task: Partial<Task>) => void;
  deleteTask: (id: string) => void;
+  addNotification?: (message: string, type: 'success' | 'info' | 'warning' | 'error') => void;
 }
 
 const TaskManagement: React.FC<TaskManagementProps> = ({ 
@@ -31,7 +34,8 @@ const TaskManagement: React.FC<TaskManagementProps> = ({
   leads, 
   addTask, 
   updateTask, 
-  deleteTask 
+  deleteTask,
+  addNotification
 }) => {
   const [showForm, setShowForm] = useState(false);
   const [editingTask, setEditingTask] = useState<Task | null>(null);
@@ -50,6 +54,48 @@ const TaskManagement: React.FC<TaskManagementProps> = ({
     return matchesStatus && matchesPriority;
   });
 
+  // Calculate time remaining for a task
+  const getTimeRemaining = (dueDate: string) => {
+    const now = new Date();
+    const due = new Date(dueDate);
+    const diffTime = due.getTime() - now.getTime();
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    
+    if (diffDays < 0) {
+      return { text: `${Math.abs(diffDays)} days overdue`, color: 'text-red-600', isOverdue: true };
+    } else if (diffDays === 0) {
+      return { text: 'Due today', color: 'text-orange-600', isOverdue: false };
+    } else if (diffDays === 1) {
+      return { text: 'Due tomorrow', color: 'text-yellow-600', isOverdue: false };
+    } else {
+      return { text: `${diffDays} days left`, color: 'text-green-600', isOverdue: false };
+    }
+  };
+
+  // Accept a task (change status from pending to in-progress)
+  const handleAcceptTask = (taskId: string, taskTitle: string) => {
+    updateTask(taskId, { 
+      status: 'in-progress',
+      startDate: new Date().toISOString().split('T')[0]
+    });
+    addNotification?.(`Task "${taskTitle}" accepted and started`, 'success');
+  };
+
+  // Mark task as complete
+  const handleCompleteTask = (taskId: string, taskTitle: string) => {
+    updateTask(taskId, {
+      status: 'completed',
+      completedAt: new Date().toISOString(),
+      progress: 100
+    });
+    addNotification?.(`Task "${taskTitle}" completed successfully`, 'success');
+  };
+
+  // Update task progress
+  const handleProgressUpdate = (taskId: string, progress: number, taskTitle: string) => {
+    updateTask(taskId, { progress });
+    addNotification?.(`Progress updated to ${progress}% for "${taskTitle}"`, 'info');
+  };
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'pending':
@@ -118,8 +164,10 @@ const TaskManagement: React.FC<TaskManagementProps> = ({
   const handleSubmitTask = (taskData: Omit<Task, 'id'>) => {
     if (editingTask) {
       updateTask(editingTask.id, taskData);
+      addNotification?.(`Task "${taskData.title}" updated successfully`, 'success');
     } else {
       addTask(taskData);
+      addNotification?.(`New task "${taskData.title}" created and assigned to ${taskData.assignedTo}`, 'info');
     }
     setShowForm(false);
     setEditingTask(null);
@@ -148,6 +196,32 @@ const TaskManagement: React.FC<TaskManagementProps> = ({
         </div>
       </div>
 
+      {/* Employee Task Overview */}
+      {user.role === 'employee' && (
+        <div className="bg-gradient-to-r from-teal-500 to-cyan-500 rounded-xl p-6 text-white">
+          <h3 className="text-lg font-semibold mb-4">Your Task Overview</h3>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div className="text-center">
+              <p className="text-2xl font-bold">{tasks.filter(t => t.assignedTo === user.username && t.status === 'pending').length}</p>
+              <p className="text-teal-100 text-sm">Pending Tasks</p>
+            </div>
+            <div className="text-center">
+              <p className="text-2xl font-bold">{tasks.filter(t => t.assignedTo === user.username && t.status === 'in-progress').length}</p>
+              <p className="text-teal-100 text-sm">In Progress</p>
+            </div>
+            <div className="text-center">
+              <p className="text-2xl font-bold">{tasks.filter(t => t.assignedTo === user.username && t.status === 'completed').length}</p>
+              <p className="text-teal-100 text-sm">Completed</p>
+            </div>
+            <div className="text-center">
+              <p className="text-2xl font-bold">
+                {tasks.filter(t => t.assignedTo === user.username && new Date(t.dueDate) < new Date() && t.status !== 'completed').length}
+              </p>
+              <p className="text-teal-100 text-sm">Overdue</p>
+            </div>
+          </div>
+        </div>
+      )}
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         <div className="bg-white rounded-lg shadow-sm border border-slate-200 p-4">
@@ -256,24 +330,42 @@ const TaskManagement: React.FC<TaskManagementProps> = ({
                     <Calendar className="w-4 h-4" />
                     <span>Due: {new Date(task.dueDate).toLocaleDateString()}</span>
                   </div>
+                  <div className="flex items-center space-x-1">
+                    <Timer className="w-4 h-4" />
+                    <span className={getTimeRemaining(task.dueDate).color}>
+                      {getTimeRemaining(task.dueDate).text}
+                    </span>
+                  </div>
                 </div>
                 
                 {/* Progress Bar */}
                 <div className="mb-3">
                   <div className="flex items-center justify-between mb-1">
                     <span className="text-sm text-slate-600">Progress</span>
-                    <span className="text-sm font-medium text-slate-900">{task.progress}%</span>
+                    <div className="flex items-center space-x-2">
+                      <span className="text-sm font-medium text-slate-900">{task.progress || 0}%</span>
+                      {user.role === 'employee' && task.assignedTo === user.username && task.status === 'in-progress' && (
+                        <input
+                          type="range"
+                          min="0"
+                          max="100"
+                          value={task.progress || 0}
+                          onChange={(e) => handleProgressUpdate(task.id, Number(e.target.value), task.title)}
+                          className="w-16 h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer"
+                        />
+                      )}
+                    </div>
                   </div>
                   <div className="bg-slate-200 rounded-full h-2">
                     <div
                       className="bg-teal-500 h-2 rounded-full transition-all duration-300"
-                      style={{ width: `${task.progress}%` }}
+                      style={{ width: `${task.progress || 0}%` }}
                     />
                   </div>
                 </div>
                 
                 {/* Tags */}
-                {task.tags.length > 0 && (
+                {task.tags && task.tags.length > 0 && (
                   <div className="flex flex-wrap gap-1 mb-3">
                     {task.tags.map((tag, index) => (
                       <span
@@ -289,17 +381,35 @@ const TaskManagement: React.FC<TaskManagementProps> = ({
             </div>
             
             <div className="flex items-center justify-between pt-4 border-t border-slate-100">
-              <select
-                value={task.status}
-                onChange={(e) => updateTaskStatus(task.id, e.target.value as Task['status'])}
-                className={`px-3 py-1 text-xs rounded-full border-0 focus:ring-2 focus:ring-teal-500 ${getStatusColor(task.status)}`}
-                disabled={user.role === 'employee' && task.assignedTo !== user.username}
-              >
-                <option value="pending">Pending</option>
-                <option value="in-progress">In Progress</option>
-                <option value="completed">Completed</option>
-                <option value="cancelled">Cancelled</option>
-              </select>
+              <div className="flex items-center space-x-2">
+                <span className={`px-3 py-1 text-xs rounded-full border ${getStatusColor(task.status)}`}>
+                  {task.status.replace('-', ' ').toUpperCase()}
+                </span>
+                
+                {/* Employee Action Buttons */}
+                {user.role === 'employee' && task.assignedTo === user.username && (
+                  <div className="flex space-x-2">
+                    {task.status === 'pending' && (
+                      <button
+                        onClick={() => handleAcceptTask(task.id, task.title)}
+                        className="flex items-center space-x-1 px-3 py-1 text-xs bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-100 transition-colors"
+                      >
+                        <Play className="w-3 h-3" />
+                        <span>Accept</span>
+                      </button>
+                    )}
+                    {task.status === 'in-progress' && (
+                      <button
+                        onClick={() => handleCompleteTask(task.id, task.title)}
+                        className="flex items-center space-x-1 px-3 py-1 text-xs bg-green-50 text-green-600 rounded-lg hover:bg-green-100 transition-colors"
+                      >
+                        <CheckCircle2 className="w-3 h-3" />
+                        <span>Complete</span>
+                      </button>
+                    )}
+                  </div>
+                )}
+              </div>
               
               <div className="flex space-x-2">
                 <button className="px-3 py-1 text-sm bg-slate-50 text-slate-600 rounded-lg hover:bg-slate-100 transition-colors">

@@ -17,6 +17,7 @@ interface CRMModuleProps {
   addSupportTicket: (ticket: Omit<SupportTicket, 'id'>) => void;
   updateSupportTicket: (id: string, ticket: Partial<SupportTicket>) => void;
   deleteSupportTicket: (id: string) => void;
+  addNotification?: (message: string, type: 'success' | 'info' | 'warning' | 'error') => void;
 }
 
 const CRMModule: React.FC<CRMModuleProps> = ({ 
@@ -29,7 +30,8 @@ const CRMModule: React.FC<CRMModuleProps> = ({
   supportTickets,
   addSupportTicket,
   updateSupportTicket,
-  deleteSupportTicket
+  deleteSupportTicket,
+  addNotification
 }) => {
   const [currentView, setCurrentView] = useState<CRMView>('leads');
 

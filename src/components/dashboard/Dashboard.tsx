@@ -38,6 +38,7 @@ interface DashboardProps {
   addEmployee: (employee: Omit<Employee, 'id'>) => void;
   addTask: (task: Omit<Task, 'id'>) => void;
   addAttendance: (attendance: Omit<Attendance, 'id'>) => void;
+  addNotification?: (message: string, type: 'success' | 'info' | 'warning' | 'error') => void;
 }
 
 const Dashboard: React.FC<DashboardProps> = ({ 
@@ -59,7 +60,8 @@ const Dashboard: React.FC<DashboardProps> = ({
   addLead,
   addEmployee,
   addTask,
-  addAttendance
+  addAttendance,
+  addNotification
 }) => {
   // Calculate metrics
   const totalLeads = leads.length;

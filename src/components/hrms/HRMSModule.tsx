@@ -36,6 +36,7 @@ interface HRMSModuleProps {
   updateAttendance: (id: string, attendance: Partial<Attendance>) => void;
   deleteAttendance: (id: string) => void;
   leads: Lead[];
+  addNotification?: (message: string, type: 'success' | 'info' | 'warning' | 'error') => void;
 }
 
 const HRMSModule: React.FC<HRMSModuleProps> = ({ 
@@ -64,7 +65,8 @@ const HRMSModule: React.FC<HRMSModuleProps> = ({
   addAttendance,
   updateAttendance,
  deleteAttendance,
- leads
+ leads,
+ addNotification
 }) => {
   const [currentView, setCurrentView] = useState<HRMSView>('employees');
 
@@ -131,28 +133,19 @@ const HRMSModule: React.FC<HRMSModuleProps> = ({
             deleteTask={deleteTask}
             employees={employees}
            leads={leads}
+            addNotification={addNotification}
           />
         );
       case 'performance':
         return (
           <PerformanceManagement 
             user={user}
-            performanceData={performanceData}
-            addPerformance={addPerformance}
-            updatePerformance={updatePerformance}
-            deletePerformance={deletePerformance}
-            employees={employees}
           />
         );
       case 'payroll':
         return (
           <PayrollManagement 
             user={user}
-            payrollData={payrollData}
-            addPayroll={addPayroll}
-            updatePayroll={updatePayroll}
-            deletePayroll={deletePayroll}
-            employees={employees}
           />
         );
       default:

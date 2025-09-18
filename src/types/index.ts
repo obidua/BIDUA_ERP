@@ -142,3 +142,13 @@ export interface Payroll {
 export type ModuleType = 'dashboard' | 'crm' | 'hrms' | 'reports' | 'settings';
 export type CRMView = 'leads' | 'pipeline' | 'support' | 'analytics';
 export type HRMSView = 'employees' | 'attendance' | 'leaves' | 'tasks' | 'performance' | 'payroll';
+
+// Notification Types
+export interface Notification {
+  id: string;
+  message: string;
+  type: 'success' | 'info' | 'warning' | 'error';
+  timestamp: string;
+  userId?: string;
+  read: boolean;
+}
