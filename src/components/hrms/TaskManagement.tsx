@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Task, User, Lead, Employee } from '../../types';
 import { mockTasks } from '../../data/mockData';
+import TaskForm from './TaskForm';
 import {
   CheckSquare,
   Plus,
