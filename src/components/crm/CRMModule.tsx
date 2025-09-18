@@ -56,7 +56,16 @@ const CRMModule: React.FC<CRMModuleProps> = ({
           />
         );
       case 'pipeline':
-        return <SalesPipeline user={user} leads={leads} employees={employees} />;
+        return (
+          <SalesPipeline 
+            user={user} 
+            leads={leads} 
+            employees={employees}
+            tasks={tasks}
+            updateTask={updateTask}
+            addNotification={addNotification}
+          />
+        );
       case 'support':
         return (
           <CustomerSupport 

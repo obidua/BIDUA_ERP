@@ -335,6 +335,8 @@ function App() {
             addSupportTicket={addSupportTicket}
             updateSupportTicket={updateSupportTicket}
             deleteSupportTicket={deleteSupportTicket}
+            tasks={tasks}
+            updateTask={updateTask}
             addNotification={addNotification}
           />
         );
