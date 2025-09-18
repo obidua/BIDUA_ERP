@@ -9,7 +9,9 @@ import {
   mockLeaveRequests, 
   mockPerformance, 
   mockPayroll,
-  mockAttendance 
+  mockAttendance,
+  mockSalarySlips,
+  mockDocuments
 } from './data/mockData';
 import { v4 as uuidv4 } from 'uuid';
 import LoginForm from './components/auth/LoginForm';
@@ -281,8 +283,8 @@ function App() {
             tasks={tasks}
             leaveRequests={leaveRequests}
             attendanceData={attendanceData}
-            salarySlips={[]} // Will be populated with actual data
-            documents={[]} // Will be populated with actual data
+            salarySlips={mockSalarySlips}
+            documents={mockDocuments}
             updateTask={updateTask}
             addLeaveRequest={addLeaveRequest}
             addAttendance={addAttendance}

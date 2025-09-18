@@ -109,7 +109,7 @@ const EmployeePortal: React.FC<EmployeePortalProps> = ({
           <EmployeeSalary
             user={user}
             employee={employee}
-            salarySlips={salarySlips}
+            salarySlips={salarySlips.filter(slip => slip.employeeId === employee.employeeId)}
             addNotification={addNotification}
           />
         );
@@ -118,7 +118,7 @@ const EmployeePortal: React.FC<EmployeePortalProps> = ({
           <EmployeeDocuments
             user={user}
             employee={employee}
-            documents={documents}
+            documents={documents.filter(doc => doc.employeeId === employee.employeeId || doc.isPublic)}
             addNotification={addNotification}
           />
         );

@@ -19,57 +19,6 @@ interface EmployeeDocumentsProps {
   addNotification?: (message: string, type: 'success' | 'info' | 'warning' | 'error') => void;
 }
 
-// Mock documents data
-const mockDocuments: Document[] = [
-  {
-    id: '1',
-    employeeId: 'BID001',
-    type: 'offer-letter',
-    title: 'Offer Letter - Sales Manager',
-    fileName: 'offer_letter_priya_sharma.pdf',
-    fileUrl: '/documents/offer_letter_priya_sharma.pdf',
-    uploadedAt: '2023-03-10T10:00:00Z',
-    uploadedBy: 'HR Department',
-    size: 245760,
-    isPublic: false,
-  },
-  {
-    id: '2',
-    employeeId: 'BID001',
-    type: 'id-card',
-    title: 'Employee ID Card',
-    fileName: 'id_card_priya_sharma.pdf',
-    fileUrl: '/documents/id_card_priya_sharma.pdf',
-    uploadedAt: '2023-03-15T14:30:00Z',
-    uploadedBy: 'Admin Department',
-    size: 156432,
-    isPublic: false,
-  },
-  {
-    id: '3',
-    employeeId: 'BID001',
-    type: 'policy',
-    title: 'Employee Handbook 2024',
-    fileName: 'employee_handbook_2024.pdf',
-    fileUrl: '/documents/employee_handbook_2024.pdf',
-    uploadedAt: '2024-01-01T09:00:00Z',
-    uploadedBy: 'HR Department',
-    size: 2048576,
-    isPublic: true,
-  },
-  {
-    id: '4',
-    employeeId: 'BID001',
-    type: 'experience-letter',
-    title: 'Experience Letter - Previous Company',
-    fileName: 'experience_letter_previous.pdf',
-    fileUrl: '/documents/experience_letter_previous.pdf',
-    uploadedAt: '2023-03-05T16:45:00Z',
-    uploadedBy: 'HR Department',
-    size: 189432,
-    isPublic: false,
-  },
-];
 
 const EmployeeDocuments: React.FC<EmployeeDocumentsProps> = ({
   user,
@@ -79,7 +28,7 @@ const EmployeeDocuments: React.FC<EmployeeDocumentsProps> = ({
 }) => {
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
 
-  const myDocuments = mockDocuments.filter(doc => doc.employeeId === employee.employeeId);
+  const myDocuments = documents;
 
   const filteredDocuments = selectedCategory === 'all' 
     ? myDocuments 

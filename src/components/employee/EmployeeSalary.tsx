@@ -18,37 +18,6 @@ interface EmployeeSalaryProps {
   addNotification?: (message: string, type: 'success' | 'info' | 'warning' | 'error') => void;
 }
 
-// Mock salary data
-const mockSalarySlips: SalarySlip[] = [
-  {
-    id: '1',
-    employeeId: 'BID001',
-    employeeName: 'Priya Sharma',
-    month: 'December',
-    year: 2024,
-    basicSalary: 70000,
-    allowances: { hra: 10000, transport: 3000, medical: 2000, other: 0 },
-    deductions: { pf: 8400, esi: 0, tax: 5000, other: 0 },
-    overtime: 5000,
-    grossSalary: 90000,
-    netSalary: 81600,
-    generatedAt: '2024-12-31T10:00:00Z',
-  },
-  {
-    id: '2',
-    employeeId: 'BID001',
-    employeeName: 'Priya Sharma',
-    month: 'November',
-    year: 2024,
-    basicSalary: 70000,
-    allowances: { hra: 10000, transport: 3000, medical: 2000, other: 0 },
-    deductions: { pf: 8400, esi: 0, tax: 5000, other: 0 },
-    overtime: 3000,
-    grossSalary: 88000,
-    netSalary: 79600,
-    generatedAt: '2024-11-30T10:00:00Z',
-  },
-];
 
 const EmployeeSalary: React.FC<EmployeeSalaryProps> = ({
   user,
@@ -59,7 +28,7 @@ const EmployeeSalary: React.FC<EmployeeSalaryProps> = ({
   const [selectedSlip, setSelectedSlip] = useState<SalarySlip | null>(null);
   const [showSlipModal, setShowSlipModal] = useState(false);
 
-  const mySalarySlips = mockSalarySlips.filter(slip => slip.employeeId === employee.employeeId);
+  const mySalarySlips = salarySlips;
   const latestSlip = mySalarySlips[0];
 
   const handleDownloadSlip = (slip: SalarySlip) => {
