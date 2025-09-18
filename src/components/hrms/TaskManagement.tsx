@@ -105,7 +105,6 @@ const TaskManagement: React.FC<TaskManagementProps> = ({
   };
 
   const handleAddTask = () => {
-    console.log('handleAddTask called - setting showForm to true');
     setShowForm(true);
     setEditingTask(null);
   };
@@ -333,18 +332,6 @@ const TaskManagement: React.FC<TaskManagementProps> = ({
           <h3 className="text-lg font-medium text-slate-900 mb-2">No tasks found</h3>
           <p className="text-slate-600">No tasks match your current filters</p>
         </div>
-      )}
-
-      {console.log('showForm state:', showForm, 'editingTask:', editingTask)}
-      {/* Task Form Modal */}
-      {showForm && (
-        <TaskForm
-          task={editingTask}
-          employees={employees}
-          customers={leads}
-          onSubmit={handleSubmitTask}
-          onCancel={handleCancelTask}
-        />
       )}
     </div>
   );
