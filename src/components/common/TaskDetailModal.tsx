@@ -1,460 +1,926 @@
-import React, { useState } from 'react';
-import { Task, User, Employee, TaskComment } from '../../types';
-import {
-  X,
-  Calendar,
-  User as UserIcon,
-  AlertTriangle,
-  Clock,
-  Target,
-  Building2,
-  Tag,
-  BarChart3,
-  CheckCircle2,
-  Play,
-  Pause,
-  Edit,
-} from 'lucide-react';
-import TaskCommentsSection from './TaskCommentsSection';
+import { User, Lead, SupportTicket, Employee, Attendance, LeaveRequest, Task, Performance, Payroll } from '../types';
 
-interface TaskDetailModalProps {
-  task: Task;
-  currentUser: User;
-  employees: Employee[];
-  onClose: () => void;
-  onUpdateTask: (id: string, updates: Partial<Task>) => void;
-  onAddComment: (taskId: string, comment: Omit<TaskComment, 'id' | 'taskId'>) => void;
-  addNotification?: (message: string, type: 'success' | 'info' | 'warning' | 'error') => void;
-}
+// Static Users for Authentication
+export const mockUsers: User[] = [
+  {
+    id: '1',
+    username: 'admin',
+    email: 'admin@bidua.com',
+    role: 'admin',
+    department: 'IT',
+    isActive: true,
+  },
+  {
+    id: '2',
+    username: 'manager',
+    email: 'manager@bidua.com',
+    role: 'manager',
+    department: 'Sales',
+    isActive: true,
+  },
+  {
+    id: '3',
+    username: 'employee',
+    email: 'employee@bidua.com',
+    role: 'employee',
+    department: 'Marketing',
+    isActive: true,
+  },
+];
 
-const TaskDetailModal: React.FC<TaskDetailModalProps> = ({
-  task,
-  currentUser,
-  employees,
-  onClose,
-  onUpdateTask,
-  onAddComment,
-  addNotification,
-}) => {
-  const [isEditing, setIsEditing] = useState(false);
-  const [editData, setEditData] = useState({
-    title: task.title,
-    description: task.description,
-    priority: task.priority,
-    dueDate: task.dueDate,
-  });
+// Static password for all users (in real app, this would be hashed)
+export const staticPassword = 'bidua123';
 
-  const getTimeRemaining = (dueDate: string) => {
-    const now = new Date();
-    const due = new Date(dueDate);
-    const diffTime = due.getTime() - now.getTime();
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-    
-    if (diffDays < 0) {
-      return { text: `${Math.abs(diffDays)} days overdue`, color: 'text-red-600', isOverdue: true };
-    } else if (diffDays === 0) {
-      return { text: 'Due today', color: 'text-orange-600', isOverdue: false };
-    } else if (diffDays === 1) {
-      return { text: 'Due tomorrow', color: 'text-yellow-600', isOverdue: false };
-    } else {
-      return { text: `${diffDays} days left`, color: 'text-green-600', isOverdue: false };
-    }
-  };
+// CRM Mock Data
+export const mockLeads: Lead[] = [
+  {
+    id: '1',
+    name: 'Rajesh Kumar',
+    email: 'rajesh@techcorp.com',
+    phone: '+91 98765 43210',
+    company: 'TechCorp Solutions',
+    status: 'hot',
+    stage: 'negotiation',
+    value: 500000,
+    source: 'Website',
+    assignedTo: 'Priya Sharma',
+    lastContact: '2025-01-10',
+    nextFollowUp: '2025-01-15',
+    notes: 'Interested in enterprise beauty products package',
+    createdAt: '2024-12-15',
+  },
+  {
+    id: '2',
+    name: 'Anita Desai',
+    email: 'anita@beautyworld.com',
+    phone: '+91 87654 32109',
+    company: 'Beauty World Retail',
+    status: 'warm',
+    stage: 'proposal',
+    value: 250000,
+    source: 'Referral',
+    assignedTo: 'Amit Patel',
+    lastContact: '2025-01-08',
+    nextFollowUp: '2025-01-12',
+    notes: 'Looking for bulk skincare products',
+    createdAt: '2024-12-20',
+  },
+  {
+    id: '3',
+    name: 'Vikram Singh',
+    email: 'vikram@luxuryspas.com',
+    phone: '+91 76543 21098',
+    company: 'Luxury Spas Chain',
+    status: 'cold',
+    stage: 'lead',
+    value: 750000,
+    source: 'Trade Show',
+    assignedTo: 'Sneha Reddy',
+    lastContact: '2025-01-05',
+    nextFollowUp: '2025-01-20',
+    notes: 'Potential for spa product line partnership',
+    createdAt: '2024-12-10',
+  },
+];
 
-  const getPriorityColor = (priority: string) => {
-    switch (priority) {
-      case 'urgent':
-        return 'bg-red-500 text-white';
-      case 'high':
-        return 'bg-orange-500 text-white';
-      case 'medium':
-        return 'bg-yellow-500 text-white';
-      case 'low':
-        return 'bg-green-500 text-white';
-      default:
-        return 'bg-slate-500 text-white';
-    }
-  };
+export const mockSupportTickets: SupportTicket[] = [
+  {
+    id: '1',
+    title: 'Product Quality Issue - Face Cream',
+    description: 'Customer reported skin irritation after using our premium face cream',
+    customerId: '1',
+    customerName: 'Meera Joshi',
+    priority: 'high',
+    status: 'in-progress',
+    assignedTo: 'Customer Care Team',
+    createdAt: '2025-01-10',
+    category: 'Quality',
+  },
+  {
+    id: '2',
+    title: 'Delayed Delivery - Order #BC2024001',
+    description: 'Order placed 5 days ago, still not delivered',
+    customerId: '2',
+    customerName: 'Rohit Gupta',
+    priority: 'medium',
+    status: 'open',
+    assignedTo: 'Logistics Team',
+    createdAt: '2025-01-09',
+    category: 'Delivery',
+  },
+];
 
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case 'pending':
-        return 'bg-yellow-100 text-yellow-800 border-yellow-200';
-      case 'in-progress':
-        return 'bg-blue-100 text-blue-800 border-blue-200';
-      case 'completed':
-        return 'bg-green-100 text-green-800 border-green-200';
-      case 'cancelled':
-        return 'bg-red-100 text-red-800 border-red-200';
-      default:
-        return 'bg-slate-100 text-slate-800 border-slate-200';
-    }
-  };
+// HRMS Mock Data
+export const mockEmployees: Employee[] = [
+  {
+    id: '1',
+    employeeId: 'BID001',
+    name: 'Priya Sharma',
+    email: 'priya.sharma@bidua.com',
+    phone: '+91 98765 43210',
+    department: 'Sales',
+    designation: 'Sales Manager',
+    manager: 'Rajesh Kumar',
+    joiningDate: '2023-03-15',
+    salary: 850000,
+    status: 'active',
+    address: 'Mumbai, Maharashtra',
+    emergencyContact: '+91 98765 43211',
+    documents: ['Aadhar', 'PAN', 'Degree Certificate'],
+  },
+  {
+    id: '2',
+    employeeId: 'BID002',
+    name: 'Amit Patel',
+    email: 'amit.patel@bidua.com',
+    phone: '+91 87654 32109',
+    department: 'Marketing',
+    designation: 'Marketing Executive',
+    manager: 'Priya Sharma',
+    joiningDate: '2023-07-01',
+    salary: 650000,
+    status: 'active',
+    address: 'Pune, Maharashtra',
+    emergencyContact: '+91 87654 32110',
+    documents: ['Aadhar', 'PAN', 'Experience Letter'],
+  },
+  {
+    id: '3',
+    employeeId: 'BID003',
+    name: 'Sneha Reddy',
+    email: 'sneha.reddy@bidua.com',
+    phone: '+91 76543 21098',
+    department: 'R&D',
+    designation: 'Product Developer',
+    manager: 'Dr. Kavitha Nair',
+    joiningDate: '2023-05-10',
+    salary: 750000,
+    status: 'active',
+    address: 'Bangalore, Karnataka',
+    emergencyContact: '+91 76543 21099',
+    documents: ['Aadhar', 'PAN', 'PhD Certificate'],
+  },
+  {
+    id: '4',
+    employeeId: 'BID004',
+    name: 'Rahul Verma',
+    email: 'employee@bidua.com',
+    phone: '+91 65432 10987',
+    department: 'Marketing',
+    designation: 'Marketing Specialist',
+    manager: 'Amit Patel',
+    joiningDate: '2023-09-01',
+    salary: 550000,
+    status: 'active',
+    address: 'Delhi, India',
+    emergencyContact: '+91 65432 10988',
+    documents: ['Aadhar', 'PAN', 'Graduation Certificate'],
+    bankAccount: {
+      accountNumber: '1234567890123456',
+      bankName: 'HDFC Bank',
+      ifscCode: 'HDFC0001234',
+      accountHolderName: 'Rahul Verma',
+    },
+    personalDetails: {
+      dateOfBirth: '1995-06-15',
+      gender: 'male',
+      maritalStatus: 'single',
+      nationality: 'Indian',
+      bloodGroup: 'B+',
+    },
+  },
+];
 
-  const handleAcceptTask = () => {
-    onUpdateTask(task.id, { 
-      status: 'in-progress',
-      startDate: new Date().toISOString().split('T')[0]
-    });
-    
-    // Add system comment
-    onAddComment(task.id, {
-      authorId: currentUser.id,
-      authorName: currentUser.username,
-      content: 'Task accepted and started working',
-      createdAt: new Date().toISOString(),
-      type: 'status-change',
-      metadata: {
-        oldValue: 'pending',
-        newValue: 'in-progress',
+export const mockAttendance: Attendance[] = [
+  {
+    id: '1',
+    employeeId: 'BID001',
+    employeeName: 'Priya Sharma',
+    date: '2025-01-10',
+    clockIn: '09:15',
+    clockOut: '18:30',
+    totalHours: 9.25,
+    status: 'present',
+    location: 'Mumbai Office',
+  },
+  {
+    id: '2',
+    employeeId: 'BID002',
+    employeeName: 'Amit Patel',
+    date: '2025-01-10',
+    clockIn: '09:45',
+    clockOut: '18:15',
+    totalHours: 8.5,
+    status: 'late',
+    location: 'Pune Office',
+  },
+  {
+    id: '3',
+    employeeId: 'BID004',
+    employeeName: 'Rahul Verma',
+    date: '2025-01-10',
+    clockIn: '09:00',
+    clockOut: '18:00',
+    totalHours: 9.0,
+    status: 'present',
+    location: 'Delhi Office',
+  },
+];
+
+export const mockLeaveRequests: LeaveRequest[] = [
+  {
+    id: '1',
+    employeeId: 'BID001',
+    employeeName: 'Priya Sharma',
+    leaveType: 'annual',
+    startDate: '2025-01-20',
+    endDate: '2025-01-25',
+    days: 5,
+    reason: 'Family vacation',
+    status: 'pending',
+    appliedAt: '2025-01-10',
+  },
+  {
+    id: '2',
+    employeeId: 'BID003',
+    employeeName: 'Sneha Reddy',
+    leaveType: 'sick',
+    startDate: '2025-01-12',
+    endDate: '2025-01-12',
+    days: 1,
+    reason: 'Fever and cold',
+    status: 'approved',
+    appliedAt: '2025-01-11',
+    approvedBy: 'Dr. Kavitha Nair',
+    approvedAt: '2025-01-11',
+  },
+  {
+    id: '3',
+    employeeId: 'BID004',
+    employeeName: 'Rahul Verma',
+    leaveType: 'casual',
+    startDate: '2025-01-18',
+    endDate: '2025-01-19',
+    days: 2,
+    reason: 'Personal work',
+    status: 'pending',
+    appliedAt: '2025-01-10',
+  },
+];
+
+export const mockTasks: Task[] = [
+  {
+    id: '1',
+    title: 'Q1 Sales Strategy Planning',
+    description: 'Develop comprehensive sales strategy for Q1 2025',
+    assignedTo: 'Priya Sharma',
+    assignedBy: 'Rajesh Kumar',
+    priority: 'high',
+    status: 'in-progress',
+    progress: 65,
+    startDate: '2025-01-01',
+    dueDate: '2025-01-15',
+    project: 'Sales Planning',
+    tags: ['strategy', 'sales', 'planning'],
+    createdAt: '2025-01-01',
+    updatedAt: '2025-01-10',
+    comments: [
+      {
+        id: 'c1',
+        taskId: '1',
+        authorId: '1',
+        authorName: 'Priya Sharma',
+        content: 'Started working on market analysis section',
+        createdAt: '2025-01-02T09:00:00Z',
+        type: 'comment',
       },
-    });
-    
-    addNotification?.(`Task "${task.title}" accepted and started`, 'success');
-  };
-
-  const handleCompleteTask = () => {
-    onUpdateTask(task.id, {
-      status: 'completed',
-      completedAt: new Date().toISOString(),
-      progress: 100
-    });
-    
-    // Add system comment
-    onAddComment(task.id, {
-      authorId: currentUser.id,
-      authorName: currentUser.username,
-      content: 'Task completed successfully',
-      createdAt: new Date().toISOString(),
-      type: 'status-change',
-      metadata: {
-        oldValue: task.status,
-        newValue: 'completed',
-        progressPercentage: 100,
+      {
+        id: 'c2',
+        taskId: '1',
+        authorId: '1',
+        authorName: 'Priya Sharma',
+        content: 'Progress update: Completed competitor analysis and market research. Moving to strategy formulation phase.',
+        createdAt: '2025-01-08T14:30:00Z',
+        type: 'progress-update',
+        metadata: {
+          progressPercentage: 65,
+          hoursWorked: 12,
+        },
       },
-    });
-    
-    addNotification?.(`Task "${task.title}" completed successfully`, 'success');
-  };
-
-  const handleProgressUpdate = (newProgress: number) => {
-    const oldProgress = task.progress;
-    onUpdateTask(task.id, { progress: newProgress });
-    
-    // Add progress update comment
-    onAddComment(task.id, {
-      authorId: currentUser.id,
-      authorName: currentUser.username,
-      content: `Progress updated from ${oldProgress}% to ${newProgress}%`,
-      createdAt: new Date().toISOString(),
-      type: 'progress-update',
-      metadata: {
-        progressPercentage: newProgress,
-        oldValue: `${oldProgress}%`,
-        newValue: `${newProgress}%`,
+    ],
+  },
+  {
+    id: '2',
+    title: 'New Product Launch Campaign',
+    description: 'Create marketing campaign for new skincare line',
+    assignedTo: 'Amit Patel',
+    assignedBy: 'Priya Sharma',
+    priority: 'urgent',
+    status: 'pending',
+    progress: 25,
+    startDate: '2025-01-05',
+    dueDate: '2025-01-20',
+    project: 'Product Launch',
+    tags: ['marketing', 'campaign', 'skincare'],
+    createdAt: '2025-01-05',
+    updatedAt: '2025-01-05',
+    comments: [],
+  },
+  {
+    id: '3',
+    title: 'Social Media Content Creation',
+    description: 'Create engaging social media content for new product launch',
+    assignedTo: 'employee',
+    assignedBy: 'Amit Patel',
+    priority: 'medium',
+    status: 'pending',
+    progress: 0,
+    startDate: '2025-01-12',
+    dueDate: '2025-01-18',
+    project: 'Product Launch',
+    tags: ['social-media', 'content', 'marketing'],
+    createdAt: '2025-01-12',
+    updatedAt: '2025-01-12',
+    comments: [],
+  },
+  {
+    id: '4',
+    title: 'Market Research Analysis',
+    description: 'Analyze competitor pricing and market trends for Q1 strategy',
+    assignedTo: 'employee',
+    assignedBy: 'Priya Sharma',
+    priority: 'high',
+    status: 'in-progress',
+    progress: 40,
+    startDate: '2025-01-08',
+    dueDate: '2025-01-15',
+    project: 'Market Analysis',
+    tags: ['research', 'analysis', 'strategy'],
+    createdAt: '2025-01-08',
+    updatedAt: '2025-01-12',
+    comments: [
+      {
+        id: 'c3',
+        taskId: '4',
+        authorId: '3',
+        authorName: 'employee',
+        content: 'Task accepted. Starting with competitor research.',
+        createdAt: '2025-01-08T10:00:00Z',
+        type: 'status-change',
+        metadata: {
+          oldValue: 'pending',
+          newValue: 'in-progress',
+        },
       },
-    });
-    
-    addNotification?.(`Progress updated to ${newProgress}%`, 'info');
-  };
+      {
+        id: 'c4',
+        taskId: '4',
+        authorId: '3',
+        authorName: 'employee',
+        content: 'Work Report: Completed research on 3 major competitors (Lakme, Olay, Nivea). Gathered pricing data and analyzed their Q4 2024 campaigns. Found key insights about premium segment positioning. Next: analyzing market trends and consumer behavior data.',
+        createdAt: '2025-01-10T16:45:00Z',
+        type: 'work-report',
+        metadata: {
+          progressPercentage: 40,
+          hoursWorked: 6,
+        },
+      },
+      {
+        id: 'c5',
+        taskId: '4',
+        authorId: '2',
+        authorName: 'Priya Sharma',
+        content: 'Great progress! Please also include analysis of their digital marketing strategies.',
+        createdAt: '2025-01-11T09:15:00Z',
+        type: 'comment',
+      },
+    ],
+  },
+  {
+    id: '5',
+    title: 'Customer Feedback Analysis',
+    description: 'Analyze customer feedback from recent product launches and prepare improvement recommendations',
+    assignedTo: 'employee',
+    assignedBy: 'Amit Patel',
+    priority: 'medium',
+    status: 'pending',
+    progress: 0,
+    startDate: '2025-01-13',
+    dueDate: '2025-01-20',
+    project: 'Customer Experience',
+    tags: ['feedback', 'analysis', 'customer-experience'],
+    createdAt: '2025-01-13',
+    updatedAt: '2025-01-13',
+    comments: [],
+  },
+  {
+    id: '6',
+    title: 'Website Content Update',
+    description: 'Update product descriptions and images on company website',
+    assignedTo: 'employee',
+    assignedBy: 'Amit Patel',
+    priority: 'low',
+    status: 'completed',
+    progress: 100,
+    startDate: '2025-01-05',
+    dueDate: '2025-01-10',
+    completedAt: '2025-01-09T16:30:00Z',
+    project: 'Website Management',
+    tags: ['website', 'content', 'marketing'],
+    createdAt: '2025-01-05',
+    updatedAt: '2025-01-09T16:30:00Z',
+    comments: [
+      {
+        id: 'c6',
+        taskId: '6',
+        authorId: '3',
+        authorName: 'employee',
+        content: 'Task completed successfully. Updated 15 product descriptions and uploaded 25 high-quality images. All content is now live on the website.',
+        createdAt: '2025-01-09T16:30:00Z',
+        type: 'work-report',
+        metadata: {
+          progressPercentage: 100,
+          hoursWorked: 8,
+        },
+      },
+      {
+        id: 'c7',
+        taskId: '6',
+        authorId: '2',
+        authorName: 'Amit Patel',
+        content: 'Excellent work! The website looks much better now.',
+        createdAt: '2025-01-10T08:00:00Z',
+        type: 'comment',
+      },
+    ],
+  },
+  {
+    id: '7',
+    title: 'Competitor Analysis Report',
+    description: 'Research and analyze top 5 competitors in beauty industry for strategic planning',
+    assignedTo: 'employee',
+    assignedBy: 'Priya Sharma',
+    priority: 'urgent',
+    status: 'pending',
+    progress: 0,
+    startDate: '2025-01-15',
+    dueDate: '2025-01-17',
+    project: 'Strategic Planning',
+    tags: ['research', 'analysis', 'strategy', 'competitors'],
+    createdAt: '2025-01-14',
+    updatedAt: '2025-01-14',
+    comments: [],
+  },
+  {
+    id: '8',
+    title: 'Email Marketing Campaign Setup',
+    description: 'Set up automated email marketing campaign for new skincare product line launch',
+    assignedTo: 'employee',
+    assignedBy: 'Amit Patel',
+    priority: 'high',
+    status: 'in-progress',
+    progress: 75,
+    startDate: '2025-01-08',
+    dueDate: '2025-01-16',
+    project: 'Product Launch',
+    tags: ['email-marketing', 'automation', 'skincare', 'launch'],
+    createdAt: '2025-01-08',
+    updatedAt: '2025-01-12',
+    comments: [
+      {
+        id: 'c8',
+        taskId: '8',
+        authorId: '3',
+        authorName: 'employee',
+        content: 'Work Report: Email templates designed and tested. Automation sequences configured for 3 customer segments. Integration with CRM completed. Remaining: final testing and launch approval.',
+        createdAt: '2025-01-12T11:20:00Z',
+        type: 'work-report',
+        metadata: {
+          progressPercentage: 75,
+          hoursWorked: 10,
+        },
+      },
+      {
+        id: 'c9',
+        taskId: '8',
+        authorId: '2',
+        authorName: 'Amit Patel',
+        content: 'Looks good! Please schedule a demo for tomorrow before final launch.',
+        createdAt: '2025-01-12T15:30:00Z',
+        type: 'comment',
+      },
+    ],
+  },
+];
 
-  const handleSaveEdit = () => {
-    onUpdateTask(task.id, editData);
-    setIsEditing(false);
-    addNotification?.('Task details updated successfully', 'success');
-  };
+export const mockPerformance: Performance[] = [
+  {
+    id: '1',
+    employeeId: 'BID001',
+    employeeName: 'Priya Sharma',
+    period: 'Q4 2024',
+    overallRating: 4.5,
+    kpis: [
+      { name: 'Sales Target', target: 100, achieved: 115, rating: 5 },
+      { name: 'Customer Satisfaction', target: 90, achieved: 92, rating: 4 },
+      { name: 'Team Leadership', target: 85, achieved: 88, rating: 4 },
+    ],
+    managerFeedback: 'Excellent performance, exceeded sales targets consistently',
+    goals: ['Increase team productivity', 'Expand client base'],
+    achievements: ['Best Sales Manager Q4', 'Led successful product launch'],
+    areasOfImprovement: ['Time management', 'Delegation skills'],
+    reviewDate: '2024-12-31',
+    reviewedBy: 'Rajesh Kumar',
+  },
+];
 
-  const timeRemaining = getTimeRemaining(task.dueDate);
-  const isAssignedToCurrentUser = task.assignedTo === currentUser.username;
+export const mockPayroll: Payroll[] = [
+  {
+    id: '1',
+    employeeId: 'BID001',
+    employeeName: 'Priya Sharma',
+    month: 'December',
+    year: 2024,
+    basicSalary: 70000,
+    allowances: 15000,
+    deductions: 8500,
+    overtime: 5000,
+    netSalary: 81500,
+    status: 'paid',
+    payDate: '2024-12-31',
+  },
+  {
+    id: '2',
+    employeeId: 'BID002',
+    employeeName: 'Amit Patel',
+    month: 'December',
+    year: 2024,
+    basicSalary: 54000,
+    allowances: 10000,
+    deductions: 6400,
+    overtime: 2000,
+    netSalary: 59600,
+    status: 'processed',
+  },
+  {
+    id: '3',
+    employeeId: 'BID004',
+    employeeName: 'Rahul Verma',
+    month: 'December',
+    year: 2024,
+    basicSalary: 45000,
+    allowances: 8000,
+    deductions: 5400,
+    overtime: 1500,
+    netSalary: 49100,
+    status: 'paid',
+    payDate: '2024-12-31',
+  },
+];
 
-  return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-white rounded-xl shadow-xl max-w-4xl w-full max-h-[90vh] overflow-y-auto m-4">
-        {/* Header */}
-        <div className="flex items-center justify-between p-6 border-b border-slate-200">
-          <div className="flex items-center space-x-3">
-            <h3 className="text-xl font-semibold text-slate-900">Task Details</h3>
-            <span className={`px-3 py-1 text-xs rounded-full border ${getStatusColor(task.status)}`}>
-              {task.status.replace('-', ' ').toUpperCase()}
-            </span>
-          </div>
-          <button
-            onClick={onClose}
-            className="p-1 text-slate-400 hover:text-slate-600 transition-colors"
-          >
-            <X className="w-6 h-6" />
-          </button>
-        </div>
+// Mock salary slips data (detailed breakdown)
+export const mockSalarySlips = [
+  {
+    id: '1',
+    employeeId: 'BID001',
+    employeeName: 'Priya Sharma',
+    month: 'December',
+    year: 2024,
+    basicSalary: 70000,
+    allowances: { hra: 10000, transport: 3000, medical: 2000, other: 0 },
+    deductions: { pf: 8400, esi: 0, tax: 5000, other: 0 },
+    overtime: 5000,
+    grossSalary: 90000,
+    netSalary: 81600,
+    generatedAt: '2024-12-31T10:00:00Z',
+  },
+  {
+    id: '2',
+    employeeId: 'BID004',
+    employeeName: 'Rahul Verma',
+    month: 'December',
+    year: 2024,
+    basicSalary: 45000,
+    allowances: { hra: 6000, transport: 1500, medical: 500, other: 0 },
+    deductions: { pf: 5400, esi: 0, tax: 2000, other: 0 },
+    overtime: 1500,
+    grossSalary: 53000,
+    netSalary: 47100,
+    generatedAt: '2024-12-31T10:00:00Z',
+  },
+  {
+    id: '3',
+    employeeId: 'BID004',
+    employeeName: 'Rahul Verma',
+    month: 'November',
+    year: 2024,
+    basicSalary: 45000,
+    allowances: { hra: 6000, transport: 1500, medical: 500, other: 0 },
+    deductions: { pf: 5400, esi: 0, tax: 2000, other: 0 },
+    overtime: 0,
+    grossSalary: 51500,
+    netSalary: 44100,
+    generatedAt: '2024-11-30T10:00:00Z',
+  },
+  {
+    id: '4',
+    employeeId: 'BID002',
+    employeeName: 'Amit Patel',
+    month: 'December',
+    year: 2024,
+    basicSalary: 54000,
+    allowances: { hra: 8000, transport: 2000, medical: 1500, other: 500 },
+    deductions: { pf: 6480, esi: 0, tax: 3500, other: 0 },
+    overtime: 2000,
+    grossSalary: 68000,
+    netSalary: 58020,
+    generatedAt: '2024-12-31T10:00:00Z',
+  },
+];
 
-        <div className="p-6 space-y-6">
-          {/* Task Header */}
-          <div className="flex items-start justify-between">
-            <div className="flex-1">
-              {isEditing ? (
-                <input
-                  type="text"
-                  value={editData.title}
-                  onChange={(e) => setEditData(prev => ({ ...prev, title: e.target.value }))}
-                  className="text-2xl font-bold text-slate-900 w-full border border-slate-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-teal-500 focus:border-transparent"
-                />
-              ) : (
-                <h2 className="text-2xl font-bold text-slate-900">{task.title}</h2>
-              )}
-              
-              {isEditing ? (
-                <textarea
-                  value={editData.description}
-                  onChange={(e) => setEditData(prev => ({ ...prev, description: e.target.value }))}
-                  rows={3}
-                  className="w-full mt-2 border border-slate-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-teal-500 focus:border-transparent resize-none"
-                />
-              ) : (
-                <p className="text-slate-600 mt-2">{task.description}</p>
-              )}
-            </div>
-            
-            <div className="flex items-center space-x-2 ml-4">
-              <span className={`px-3 py-1 text-xs rounded-full ${getPriorityColor(task.priority)}`}>
-                <div className="flex items-center space-x-1">
-                  <AlertTriangle className="w-3 h-3" />
-                  <span>{task.priority.toUpperCase()}</span>
-                </div>
-              </span>
-              
-              {(currentUser.role !== 'employee' || isAssignedToCurrentUser) && (
-                <button
-                  onClick={() => isEditing ? handleSaveEdit() : setIsEditing(true)}
-                  className="p-2 text-slate-400 hover:text-teal-600 transition-colors"
-                >
-                  <Edit className="w-4 h-4" />
-                </button>
-              )}
-            </div>
-          </div>
+// Mock documents data (comprehensive document library)
+export const mockDocuments = [
+  {
+    id: '1',
+    employeeId: 'BID001',
+    type: 'offer-letter',
+    title: 'Offer Letter - Sales Manager',
+    fileName: 'offer_letter_priya_sharma.pdf',
+    fileUrl: '/documents/offer_letter_priya_sharma.pdf',
+    uploadedAt: '2023-03-10T10:00:00Z',
+    uploadedBy: 'HR Department',
+    size: 245760,
+    isPublic: false,
+  },
+  {
+    id: '2',
+    employeeId: 'BID004',
+    type: 'offer-letter',
+    title: 'Offer Letter - Marketing Specialist',
+    fileName: 'offer_letter_rahul_verma.pdf',
+    fileUrl: '/documents/offer_letter_rahul_verma.pdf',
+    uploadedAt: '2023-08-25T10:00:00Z',
+    uploadedBy: 'HR Department',
+    size: 198432,
+    isPublic: false,
+  },
+  {
+    id: '5',
+    employeeId: 'BID004',
+    type: 'salary-slip',
+    title: 'Salary Slip - November 2024',
+    fileName: 'salary_slip_nov_2024_rahul.pdf',
+    fileUrl: '/documents/salary_slip_nov_2024_rahul.pdf',
+    uploadedAt: '2024-11-30T15:00:00Z',
+    uploadedBy: 'Payroll System',
+    size: 123890,
+    isPublic: false,
+  },
+  {
+    id: '6',
+    employeeId: 'BID004',
+    type: 'experience-letter',
+    title: 'Experience Letter - TechStart Solutions',
+    fileName: 'experience_letter_techstart_rahul.pdf',
+    fileUrl: '/documents/experience_letter_techstart_rahul.pdf',
+    uploadedAt: '2023-08-20T11:30:00Z',
+    uploadedBy: 'HR Department',
+    size: 187654,
+    isPublic: false,
+  },
+  {
+    id: '7',
+    employeeId: 'BID004',
+    type: 'other',
+    title: 'Training Certificate - Digital Marketing',
+    fileName: 'training_cert_digital_marketing_rahul.pdf',
+    fileUrl: '/documents/training_cert_digital_marketing_rahul.pdf',
+    uploadedAt: '2024-06-15T16:45:00Z',
+    uploadedBy: 'Training Department',
+    size: 234567,
+    isPublic: false,
+  },
+  {
+    id: '8',
+    employeeId: 'BID004',
+    type: 'other',
+    title: 'Performance Appraisal - Q3 2024',
+    fileName: 'performance_appraisal_q3_2024_rahul.pdf',
+    fileUrl: '/documents/performance_appraisal_q3_2024_rahul.pdf',
+    uploadedAt: '2024-10-01T12:00:00Z',
+    uploadedBy: 'HR Department',
+    size: 345678,
+    isPublic: false,
+  },
+  {
+    id: '9',
+    employeeId: 'BID001',
+    type: 'salary-slip',
+    title: 'Salary Slip - November 2024',
+    fileName: 'salary_slip_nov_2024_priya.pdf',
+    fileUrl: '/documents/salary_slip_nov_2024_priya.pdf',
+    uploadedAt: '2024-11-30T15:00:00Z',
+    uploadedBy: 'Payroll System',
+    size: 134567,
+    isPublic: false,
+  },
+  {
+    id: '10',
+    employeeId: 'BID002',
+    type: 'offer-letter',
+    title: 'Offer Letter - Marketing Executive',
+    fileName: 'offer_letter_amit_patel.pdf',
+    fileUrl: '/documents/offer_letter_amit_patel.pdf',
+    uploadedAt: '2023-06-25T14:00:00Z',
+    uploadedBy: 'HR Department',
+    size: 256789,
+    isPublic: false,
+  },
+  {
+    id: '11',
+    employeeId: 'BID004',
+    type: 'policy',
+    title: 'Employee Handbook 2024',
+    fileName: 'employee_handbook_2024.pdf',
+    fileUrl: '/documents/employee_handbook_2024.pdf',
+    uploadedAt: '2024-01-01T09:00:00Z',
+    uploadedBy: 'HR Department',
+    size: 2048576,
+    isPublic: true,
+  },
+  {
+    id: '12',
+    employeeId: 'BID004',
+    type: 'policy',
+    title: 'Code of Conduct 2024',
+    fileName: 'code_of_conduct_2024.pdf',
+    fileUrl: '/documents/code_of_conduct_2024.pdf',
+    uploadedAt: '2024-01-15T08:00:00Z',
+    uploadedBy: 'HR Department',
+    size: 567890,
+    isPublic: true,
+  },
+  {
+    id: '13',
+    employeeId: 'BID001',
+    type: 'policy',
+    title: 'Employee Benefits Guide 2024',
+    fileName: 'employee_benefits_guide_2024.pdf',
+    fileUrl: '/documents/employee_benefits_guide_2024.pdf',
+    uploadedAt: '2024-02-01T10:00:00Z',
+    uploadedBy: 'HR Department',
+    size: 1234567,
+    isPublic: true,
+  },
+  {
+    id: '14',
+    employeeId: 'BID003',
+    type: 'offer-letter',
+    title: 'Offer Letter - Product Developer',
+    fileName: 'offer_letter_sneha_reddy.pdf',
+    fileUrl: '/documents/offer_letter_sneha_reddy.pdf',
+    uploadedAt: '2023-05-05T10:00:00Z',
+    uploadedBy: 'HR Department',
+    size: 267890,
+    isPublic: false,
+  },
+  {
+    id: '15',
+    employeeId: 'BID004',
+    type: 'other',
+    title: 'Health Insurance Card',
+    fileName: 'health_insurance_rahul.pdf',
+    fileUrl: '/documents/health_insurance_rahul.pdf',
+    uploadedAt: '2023-09-15T14:20:00Z',
+    uploadedBy: 'HR Department',
+    size: 98765,
+    isPublic: false,
+  },
+  {
+    id: '3',
+    employeeId: 'BID004',
+    type: 'id-card',
+    title: 'Employee ID Card',
+    fileName: 'id_card_rahul_verma.pdf',
+    fileUrl: '/documents/id_card_rahul_verma.pdf',
+    uploadedAt: '2023-09-01T09:00:00Z',
+    uploadedBy: 'Admin Department',
+    size: 145678,
+    isPublic: false,
+  },
+  {
+    id: '4',
+    employeeId: 'BID004',
+    type: 'salary-slip',
+    title: 'Salary Slip - December 2024',
+    fileName: 'salary_slip_dec_2024_rahul.pdf',
+    fileUrl: '/documents/salary_slip_dec_2024_rahul.pdf',
+    uploadedAt: '2024-12-31T15:00:00Z',
+    uploadedBy: 'Payroll System',
+    size: 123456,
+    isPublic: false,
+  },
+  {
+    id: '5',
+    employeeId: 'BID001',
+    type: 'salary-slip',
+    title: 'Salary Slip - November 2024',
+    fileName: 'salary_slip_nov_2024_priya.pdf',
+    fileUrl: '/documents/salary_slip_nov_2024_priya.pdf',
+    uploadedAt: '2024-11-30T15:00:00Z',
+    uploadedBy: 'Payroll System',
+    size: 134567,
+    isPublic: false,
+  },
+  {
+    id: '6',
+    employeeId: 'BID004',
+    type: 'experience-letter',
+    title: 'Experience Letter - Previous Company',
+    fileName: 'experience_letter_rahul_previous.pdf',
+    fileUrl: '/documents/experience_letter_rahul_previous.pdf',
+    uploadedAt: '2023-08-20T11:30:00Z',
+    uploadedBy: 'HR Department',
+    size: 187654,
+    isPublic: false,
+  },
+  {
+    id: '7',
+    employeeId: 'BID004',
+    type: 'policy',
+    title: 'Code of Conduct 2024',
+    fileName: 'code_of_conduct_2024.pdf',
+    fileUrl: '/documents/code_of_conduct_2024.pdf',
+    uploadedAt: '2024-01-15T08:00:00Z',
+    uploadedBy: 'HR Department',
+    size: 567890,
+    isPublic: true,
+  },
+  {
+    id: '8',
+    employeeId: 'BID004',
+    type: 'other',
+    title: 'Training Certificate - Digital Marketing',
+    fileName: 'training_cert_digital_marketing_rahul.pdf',
+    fileUrl: '/documents/training_cert_digital_marketing_rahul.pdf',
+    uploadedAt: '2024-06-15T16:45:00Z',
+    uploadedBy: 'Training Department',
+    size: 234567,
+    isPublic: false,
+  },
+  {
+    id: '9',
+    employeeId: 'BID001',
+    type: 'policy',
+    title: 'Employee Benefits Guide 2024',
+    fileName: 'employee_benefits_guide_2024.pdf',
+    fileUrl: '/documents/employee_benefits_guide_2024.pdf',
+    uploadedAt: '2024-02-01T10:00:00Z',
+    uploadedBy: 'HR Department',
+    size: 1234567,
+    isPublic: true,
+  },
+  {
+    id: '10',
+    employeeId: 'BID004',
+    type: 'salary-slip',
+    title: 'Salary Slip - November 2024',
+    fileName: 'salary_slip_nov_2024_rahul.pdf',
+    fileUrl: '/documents/salary_slip_nov_2024_rahul.pdf',
+    uploadedAt: '2024-11-30T15:00:00Z',
+    uploadedBy: 'Payroll System',
+    size: 123890,
+    isPublic: false,
+  },
+  {
+    id: '11',
+    employeeId: 'BID002',
+    type: 'offer-letter',
+    title: 'Offer Letter - Marketing Executive',
+    fileName: 'offer_letter_amit_patel.pdf',
+    fileUrl: '/documents/offer_letter_amit_patel.pdf',
+    uploadedAt: '2023-06-25T14:00:00Z',
+    uploadedBy: 'HR Department',
+    size: 256789,
+    isPublic: false,
+  },
+  {
+    id: '12',
+    employeeId: 'BID004',
+    type: 'other',
+    title: 'Performance Appraisal - Q3 2024',
+    fileName: 'performance_appraisal_q3_2024_rahul.pdf',
+    fileUrl: '/documents/performance_appraisal_q3_2024_rahul.pdf',
+    uploadedAt: '2024-10-01T12:00:00Z',
+    uploadedBy: 'HR Department',
+    size: 345678,
+    isPublic: false,
+  },
+];
 
-          {/* Task Metadata */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            <div className="flex items-center space-x-2">
-              <UserIcon className="w-4 h-4 text-slate-400" />
-              <div>
-                <p className="text-xs text-slate-500">Assigned To</p>
-                <p className="font-medium text-slate-900">{task.assignedTo}</p>
-              </div>
-            </div>
-            
-            <div className="flex items-center space-x-2">
-              <UserIcon className="w-4 h-4 text-slate-400" />
-              <div>
-                <p className="text-xs text-slate-500">Assigned By</p>
-                <p className="font-medium text-slate-900">{task.assignedBy}</p>
-              </div>
-            </div>
-            
-            <div className="flex items-center space-x-2">
-              <Calendar className="w-4 h-4 text-slate-400" />
-              <div>
-                <p className="text-xs text-slate-500">Due Date</p>
-                {isEditing ? (
-                  <input
-                    type="date"
-                    value={editData.dueDate}
-                    onChange={(e) => setEditData(prev => ({ ...prev, dueDate: e.target.value }))}
-                    className="text-sm border border-slate-300 rounded px-2 py-1 focus:ring-2 focus:ring-teal-500 focus:border-transparent"
-                  />
-                ) : (
-                  <p className={`font-medium ${timeRemaining.color}`}>
-                    {new Date(task.dueDate).toLocaleDateString()}
-                  </p>
-                )}
-              </div>
-            </div>
-            
-            <div className="flex items-center space-x-2">
-              <Clock className="w-4 h-4 text-slate-400" />
-              <div>
-                <p className="text-xs text-slate-500">Time Remaining</p>
-                <p className={`font-medium ${timeRemaining.color}`}>
-                  {timeRemaining.text}
-                </p>
-              </div>
-            </div>
-          </div>
-
-          {/* Progress Section */}
-          <div className="bg-slate-50 rounded-lg p-4">
-            <div className="flex items-center justify-between mb-3">
-              <h4 className="font-semibold text-slate-900">Progress</h4>
-              <span className="text-2xl font-bold text-teal-600">{task.progress}%</span>
-            </div>
-            
-            <div className="mb-3">
-              <div className="bg-slate-200 rounded-full h-3">
-                <div
-                  className="bg-teal-500 h-3 rounded-full transition-all duration-300"
-                  style={{ width: `${task.progress}%` }}
-                />
-              </div>
-            </div>
-            
-            {isAssignedToCurrentUser && task.status === 'in-progress' && (
-              <div className="flex items-center space-x-3">
-                <span className="text-sm text-slate-600">Update progress:</span>
-                <input
-                  type="range"
-                  min="0"
-                  max="100"
-                  value={task.progress}
-                  onChange={(e) => handleProgressUpdate(Number(e.target.value))}
-                  className="flex-1 h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer"
-                />
-              </div>
-            )}
-          </div>
-
-          {/* Project and Tags */}
-          {(task.project || task.tags.length > 0) && (
-            <div className="flex items-center space-x-6">
-              {task.project && (
-                <div className="flex items-center space-x-2">
-                  <Building2 className="w-4 h-4 text-slate-400" />
-                  <span className="text-sm text-slate-600">Project:</span>
-                  <span className="font-medium text-slate-900">{task.project}</span>
-                </div>
-              )}
-              
-              {task.tags.length > 0 && (
-                <div className="flex items-center space-x-2">
-                  <Tag className="w-4 h-4 text-slate-400" />
-                  <div className="flex flex-wrap gap-1">
-                    {task.tags.map((tag, index) => (
-                      <span
-                        key={index}
-                        className="px-2 py-1 text-xs bg-slate-100 text-slate-600 rounded-full"
-                      >
-                        {tag}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              )}
-            </div>
-          )}
-
-          {/* Action Buttons for Employee */}
-          {isAssignedToCurrentUser && (
-            <div className="flex items-center space-x-3 p-4 bg-teal-50 rounded-lg">
-              <Target className="w-5 h-5 text-teal-600" />
-              <span className="text-sm font-medium text-teal-800">Quick Actions:</span>
-              
-              <div className="flex space-x-2">
-                {task.status === 'pending' && (
-                  <button
-                    onClick={handleAcceptTask}
-                    className="flex items-center space-x-1 px-3 py-1 text-sm bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-                  >
-                    <Play className="w-4 h-4" />
-                    <span>Accept Task</span>
-                  </button>
-                )}
-                
-                {task.status === 'in-progress' && (
-                  <>
-                    <button
-                      onClick={handleCompleteTask}
-                      className="flex items-center space-x-1 px-3 py-1 text-sm bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
-                    >
-                      <CheckCircle2 className="w-4 h-4" />
-                      <span>Complete Task</span>
-                    </button>
-                    <button
-                      onClick={() => onUpdateTask(task.id, { status: 'pending' })}
-                      className="flex items-center space-x-1 px-3 py-1 text-sm bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition-colors"
-                    >
-                      <Pause className="w-4 h-4" />
-                      <span>Pause</span>
-                    </button>
-                  </>
-                )}
-              </div>
-            </div>
-          )}
-
-          {/* Task Timeline */}
-          <div className="bg-white border border-slate-200 rounded-lg p-4">
-            <h4 className="font-semibold text-slate-900 mb-3 flex items-center">
-              <BarChart3 className="w-5 h-5 mr-2" />
-              Task Timeline
-            </h4>
-            <div className="space-y-2 text-sm">
-              <div className="flex items-center justify-between">
-                <span className="text-slate-600">Created:</span>
-                <span className="text-slate-900">{new Date(task.createdAt).toLocaleString()}</span>
-              </div>
-              {task.startDate && (
-                <div className="flex items-center justify-between">
-                  <span className="text-slate-600">Started:</span>
-                  <span className="text-slate-900">{new Date(task.startDate).toLocaleString()}</span>
-                </div>
-              )}
-              <div className="flex items-center justify-between">
-                <span className="text-slate-600">Due:</span>
-                <span className={timeRemaining.color}>{new Date(task.dueDate).toLocaleString()}</span>
-              </div>
-              {task.completedAt && (
-                <div className="flex items-center justify-between">
-                  <span className="text-slate-600">Completed:</span>
-                  <span className="text-green-600">{new Date(task.completedAt).toLocaleString()}</span>
-                </div>
-              )}
-              <div className="flex items-center justify-between">
-                <span className="text-slate-600">Last Updated:</span>
-                <span className="text-slate-900">{new Date(task.updatedAt).toLocaleString()}</span>
-              </div>
-            </div>
-          </div>
-
-          {/* Comments Section */}
-          <TaskCommentsSection
-            taskId={task.id}
-            comments={task.comments}
-            currentUser={currentUser}
-            onAddComment={onAddComment}
-          />
-
-          {/* Footer Actions */}
-          <div className="flex items-center justify-between pt-4 border-t border-slate-200">
-            <div className="text-xs text-slate-500">
-              Task ID: {task.id}
-            </div>
-            <div className="flex space-x-3">
-              {isEditing && (
-                <>
-                  <button
-                    onClick={() => setIsEditing(false)}
-                    className="px-4 py-2 text-slate-600 border border-slate-300 rounded-lg hover:bg-slate-50 transition-colors"
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    onClick={handleSaveEdit}
-                    className="px-4 py-2 bg-teal-600 text-white rounded-lg hover:bg-teal-700 transition-colors"
-                  >
-                    Save Changes
-                  </button>
-                </>
-              )}
-              <button
-                onClick={onClose}
-                className="px-4 py-2 bg-slate-600 text-white rounded-lg hover:bg-slate-700 transition-colors"
-              >
-                Close
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-};
-
-export default TaskDetailModal;
+// Mock geofence locations
+export const mockGeofenceLocations = [
+  { id: '1', name: 'Mumbai Office', latitude: 19.0760, longitude: 72.8777, radius: 100, isActive: true },
+  { id: '2', name: 'Pune Office', latitude: 18.5204, longitude: 73.8567, radius: 100, isActive: true },
+  { id: '3', name: 'Bangalore Office', latitude: 12.9716, longitude: 77.5946, radius: 100, isActive: true },
+];
