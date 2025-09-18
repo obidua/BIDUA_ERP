@@ -48,11 +48,11 @@ const EmployeePortal: React.FC<EmployeePortalProps> = ({
 
   const views = [
     { id: 'dashboard', name: 'Dashboard', icon: LayoutDashboard, component: EmployeeDashboard },
+    { id: 'tasks', name: 'Tasks', icon: CheckSquare, component: EmployeeTaskView },
     { id: 'attendance', name: 'Attendance', icon: Clock, component: EmployeeAttendance },
     { id: 'leaves', name: 'Leaves', icon: Calendar, component: EmployeeLeaves },
     { id: 'salary', name: 'Salary', icon: DollarSign, component: EmployeeSalary },
     { id: 'documents', name: 'Documents', icon: FileText, component: EmployeeDocuments },
-    { id: 'tasks', name: 'Tasks', icon: CheckSquare, component: EmployeeTaskView },
   ];
 
   const renderActiveView = () => {
@@ -71,6 +71,14 @@ const EmployeePortal: React.FC<EmployeePortalProps> = ({
             leaveRequests={leaveRequests}
             payroll={payroll}
             tasks={tasks}
+          />
+        );
+      case 'tasks':
+        return (
+          <Component
+            currentUser={currentUser}
+            tasks={tasks}
+            onUpdateTask={onUpdateTask}
           />
         );
       case 'attendance':
@@ -100,14 +108,6 @@ const EmployeePortal: React.FC<EmployeePortalProps> = ({
           <Component
             currentUser={currentUser}
             documents={documents}
-          />
-        );
-      case 'tasks':
-        return (
-          <Component
-            currentUser={currentUser}
-            tasks={tasks}
-            onUpdateTask={onUpdateTask}
           />
         );
       default:
