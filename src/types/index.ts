@@ -58,6 +58,19 @@ export interface Employee {
   address: string;
   emergencyContact: string;
   documents: string[];
+  bankAccount?: {
+    accountNumber: string;
+    bankName: string;
+    ifscCode: string;
+    accountHolderName: string;
+  };
+  personalDetails?: {
+    dateOfBirth: string;
+    gender: 'male' | 'female' | 'other';
+    maritalStatus: 'single' | 'married' | 'divorced' | 'widowed';
+    nationality: string;
+    bloodGroup: string;
+  };
 }
 
 export interface Attendance {
@@ -70,6 +83,11 @@ export interface Attendance {
   totalHours: number;
   status: 'present' | 'absent' | 'late' | 'half-day';
   location: string;
+  coordinates?: {
+    latitude: number;
+    longitude: number;
+  };
+  isWithinGeofence?: boolean;
 }
 
 export interface LeaveRequest {
@@ -139,9 +157,57 @@ export interface Payroll {
   payDate?: string;
 }
 
+export interface SalarySlip {
+  id: string;
+  employeeId: string;
+  employeeName: string;
+  month: string;
+  year: number;
+  basicSalary: number;
+  allowances: {
+    hra: number;
+    transport: number;
+    medical: number;
+    other: number;
+  };
+  deductions: {
+    pf: number;
+    esi: number;
+    tax: number;
+    other: number;
+  };
+  overtime: number;
+  grossSalary: number;
+  netSalary: number;
+  generatedAt: string;
+}
+
+export interface Document {
+  id: string;
+  employeeId: string;
+  type: 'offer-letter' | 'salary-slip' | 'experience-letter' | 'id-card' | 'policy' | 'other';
+  title: string;
+  fileName: string;
+  fileUrl: string;
+  uploadedAt: string;
+  uploadedBy: string;
+  size: number;
+  isPublic: boolean;
+}
+
+export interface GeofenceLocation {
+  id: string;
+  name: string;
+  latitude: number;
+  longitude: number;
+  radius: number; // in meters
+  isActive: boolean;
+}
+
 export type ModuleType = 'dashboard' | 'crm' | 'hrms' | 'reports' | 'settings';
 export type CRMView = 'leads' | 'pipeline' | 'support' | 'analytics';
 export type HRMSView = 'employees' | 'attendance' | 'leaves' | 'tasks' | 'performance' | 'payroll';
+export type EmployeePortalView = 'dashboard' | 'tasks' | 'attendance' | 'leaves' | 'salary' | 'documents' | 'profile';
 
 // Notification Types
 export interface Notification {

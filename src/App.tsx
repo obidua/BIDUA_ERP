@@ -20,6 +20,7 @@ import HRMSModule from './components/hrms/HRMSModule';
 import ReportsModule from './components/reports/ReportsModule';
 import SettingsModule from './components/settings/SettingsModule';
 import NotificationDisplay from './components/common/NotificationDisplay';
+import EmployeePortal from './components/employee/EmployeePortal';
 
 function App() {
   const [user, setUser] = useState<User | null>(null);
@@ -263,8 +264,34 @@ function App() {
     setCurrentModule('dashboard');
   };
 
+  // Check if user is employee and should see employee portal
+  const shouldShowEmployeePortal = user?.role === 'employee';
+
   const renderCurrentModule = () => {
     if (!user) return null;
+
+    // Show employee portal for employees
+    if (shouldShowEmployeePortal) {
+      const currentEmployee = employees.find(emp => emp.email === user.email);
+      if (currentEmployee) {
+        return (
+          <EmployeePortal
+            user={user}
+            employee={currentEmployee}
+            tasks={tasks}
+            leaveRequests={leaveRequests}
+            attendanceData={attendanceData}
+            salarySlips={[]} // Will be populated with actual data
+            documents={[]} // Will be populated with actual data
+            updateTask={updateTask}
+            addLeaveRequest={addLeaveRequest}
+            addAttendance={addAttendance}
+            updateEmployee={updateEmployee}
+            addNotification={addNotification}
+          />
+        );
+      }
+    }
 
     switch (currentModule) {
       case 'dashboard':
@@ -389,6 +416,19 @@ function App() {
 
   if (!user) {
     return <LoginForm onLogin={handleLogin} />;
+  }
+
+  // Employee portal has its own layout
+  if (shouldShowEmployeePortal) {
+    return (
+      <div className="min-h-screen bg-slate-50">
+        {renderCurrentModule()}
+        <NotificationDisplay 
+          notifications={notifications} 
+          onDismiss={removeNotification} 
+        />
+      </div>
+    );
   }
 
   return (
