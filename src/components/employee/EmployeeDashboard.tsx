@@ -29,14 +29,17 @@ const EmployeeDashboard: React.FC<EmployeeDashboardProps> = ({
   addNotification,
 }) => {
   const myTasks = tasks.filter(t => t.assignedTo === employee.name);
+  const myUserTasks = tasks.filter(t => t.assignedTo === user.username);
+  const allMyTasks = [...myTasks, ...myUserTasks];
+  
   const myLeaves = leaveRequests.filter(l => l.employeeId === employee.employeeId);
   const myAttendance = attendanceData.filter(a => a.employeeId === employee.employeeId);
 
   const taskStats = {
-    pending: myTasks.filter(t => t.status === 'pending').length,
-    inProgress: myTasks.filter(t => t.status === 'in-progress').length,
-    completed: myTasks.filter(t => t.status === 'completed').length,
-    overdue: myTasks.filter(t => new Date(t.dueDate) < new Date() && t.status !== 'completed').length,
+    pending: allMyTasks.filter(t => t.status === 'pending').length,
+    inProgress: allMyTasks.filter(t => t.status === 'in-progress').length,
+    completed: allMyTasks.filter(t => t.status === 'completed').length,
+    overdue: allMyTasks.filter(t => new Date(t.dueDate) < new Date() && t.status !== 'completed').length,
   };
 
   const leaveStats = {
@@ -52,7 +55,7 @@ const EmployeeDashboard: React.FC<EmployeeDashboardProps> = ({
     return 'Good Evening';
   };
 
-  const upcomingTasks = myTasks
+  const upcomingTasks = allMyTasks
     .filter(t => t.status !== 'completed' && t.status !== 'cancelled')
     .sort((a, b) => new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime())
     .slice(0, 5);

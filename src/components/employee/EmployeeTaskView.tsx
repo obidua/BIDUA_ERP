@@ -75,6 +75,16 @@ const EmployeeTaskView: React.FC<EmployeeTaskViewProps> = ({
     addNotification?.(`Progress updated to ${progress}% for "${taskTitle}"`, 'info');
   };
 
+  const handleAddComment = (taskId: string, taskTitle: string) => {
+    // In a real app, this would open a comment modal
+    addNotification?.(`Comment added to task "${taskTitle}"`, 'info');
+  };
+
+  const handleViewReport = (taskId: string, taskTitle: string) => {
+    // In a real app, this would show detailed task report
+    addNotification?.(`Viewing detailed report for "${taskTitle}"`, 'info');
+  };
+
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'pending':
@@ -258,6 +268,20 @@ const EmployeeTaskView: React.FC<EmployeeTaskViewProps> = ({
                     ))}
                   </div>
                 )}
+                <button
+                  onClick={() => handleAddComment(task.id, task.title)}
+                  className="flex items-center space-x-1 px-3 py-1 text-xs bg-slate-50 text-slate-600 rounded-lg hover:bg-slate-100 transition-colors"
+                >
+                  <span>💬</span>
+                  <span>Comment</span>
+                </button>
+                <button
+                  onClick={() => handleViewReport(task.id, task.title)}
+                  className="flex items-center space-x-1 px-3 py-1 text-xs bg-purple-50 text-purple-600 rounded-lg hover:bg-purple-100 transition-colors"
+                >
+                  <span>📊</span>
+                  <span>Report</span>
+                </button>
               </div>
             </div>
             
@@ -299,8 +323,15 @@ const EmployeeTaskView: React.FC<EmployeeTaskViewProps> = ({
               <div className="mt-3 pt-3 border-t border-slate-100">
                 <p className="text-xs text-slate-500">
                   Completed: {new Date(task.completedAt).toLocaleDateString()}
-                </p>
+            <div className="flex items-center justify-between">
+              <div className="text-xs text-slate-500">
+                Task #{task.id}
               </div>
+              {task.project && (
+                <div className="text-xs text-slate-500">
+                  Project: {task.project}
+                </div>
+              )}
             )}
           </div>
         ))}
@@ -311,6 +342,17 @@ const EmployeeTaskView: React.FC<EmployeeTaskViewProps> = ({
           <CheckSquare className="w-12 h-12 text-slate-400 mx-auto mb-4" />
           <h3 className="text-lg font-medium text-slate-900 mb-2">No tasks found</h3>
           <p className="text-slate-600">No tasks match your current filters</p>
+          
+          {/* Task Timeline for completed tasks */}
+          {task.status === 'completed' && (
+            <div className="mt-3 pt-3 border-t border-slate-100">
+              <div className="flex items-center justify-between text-xs text-slate-500">
+                <span>Started: {task.startDate ? new Date(task.startDate).toLocaleDateString() : 'N/A'}</span>
+                <span>Duration: {task.startDate && task.completedAt ? 
+                  Math.ceil((new Date(task.completedAt).getTime() - new Date(task.startDate).getTime()) / (1000 * 60 * 60 * 24)) + ' days' : 'N/A'}</span>
+              </div>
+            </div>
+          )}
         </div>
       )}
     </div>

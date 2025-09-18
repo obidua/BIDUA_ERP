@@ -118,8 +118,21 @@ export interface Task {
   startDate: string;
   dueDate: string;
   completedAt?: string;
+  createdAt: string;
+  updatedAt: string;
   project?: string;
   tags: string[];
+  comments?: TaskComment[];
+}
+
+export interface TaskComment {
+  id: string;
+  taskId: string;
+  authorId: string;
+  authorName: string;
+  content: string;
+  createdAt: string;
+  type: 'comment' | 'status-change' | 'progress-update';
 }
 
 export interface Performance {
