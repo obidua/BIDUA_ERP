@@ -1,120 +1,163 @@
 import React, { useState } from 'react';
-import { User, Lock, Eye, EyeOff } from 'lucide-react';
+import { User } from '../../types';
+import { Building2, Lock, User as UserIcon, Eye, EyeOff } from 'lucide-react';
 
 interface LoginFormProps {
-  onLogin: (username: string, password: string) => boolean;
+  onLogin: (user: User) => void;
 }
 
 const LoginForm: React.FC<LoginFormProps> = ({ onLogin }) => {
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
+  const [credentials, setCredentials] = useState({
+    username: '',
+    password: '',
+  });
   const [showPassword, setShowPassword] = useState(false);
+  const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
-    
+    setError('');
+
     // Simulate API call delay
     await new Promise(resolve => setTimeout(resolve, 1000));
-    
-    const success = onLogin(username, password);
-    setIsLoading(false);
-    
-    if (!success) {
-      setPassword('');
+
+    // Static authentication logic
+    const validCredentials = [
+      { username: 'admin', password: 'bidua123', role: 'admin' as const },
+      { username: 'manager', password: 'bidua123', role: 'manager' as const },
+      { username: 'employee', password: 'bidua123', role: 'employee' as const },
+    ];
+
+    const validUser = validCredentials.find(
+      cred => cred.username === credentials.username && cred.password === credentials.password
+    );
+
+    if (validUser) {
+      const user: User = {
+        id: validUser.username,
+        username: validUser.username,
+        email: `${validUser.username}@bidua.com`,
+        role: validUser.role,
+        department: validUser.role === 'admin' ? 'IT' : validUser.role === 'manager' ? 'Sales' : 'Marketing',
+        isActive: true,
+      };
+      onLogin(user);
+    } else {
+      setError('Invalid username or password');
     }
+
+    setIsLoading(false);
+  };
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setCredentials(prev => ({
+      ...prev,
+      [e.target.name]: e.target.value,
+    }));
+    setError('');
   };
 
   return (
-    <div className="w-full max-w-md mx-auto">
-      <div className="bg-white rounded-2xl shadow-xl border border-gray-100 p-8">
-        {/* Logo and Header */}
+    <div className="min-h-screen bg-gradient-to-br from-orange-50 via-amber-50 to-yellow-50 flex items-center justify-center p-4">
+      <div className="max-w-md w-full">
+        {/* Logo and Branding */}
         <div className="text-center mb-8">
-          <div className="w-16 h-16 bg-gradient-to-br from-orange-500 to-amber-500 rounded-2xl flex items-center justify-center mx-auto mb-4">
-            <span className="text-2xl font-bold text-white">B</span>
+          <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-orange-500 to-amber-500 rounded-2xl mb-4 shadow-lg">
+            <Building2 className="w-8 h-8 text-white" />
           </div>
-          <h1 className="text-2xl font-bold text-gray-900 mb-2">Welcome to BIDUA ERP</h1>
-          <p className="text-gray-600">Sign in to access your dashboard</p>
+          <h1 className="text-3xl font-bold text-slate-900 mb-2">BIDUA ERP</h1>
+          <p className="text-slate-600">Enterprise Resource Planning System</p>
+          <p className="text-sm text-slate-500 mt-1">BIDUA Industries Pvt. Ltd.</p>
         </div>
 
         {/* Login Form */}
-        <form onSubmit={handleSubmit} className="space-y-6">
-          <div>
-            <label htmlFor="username" className="block text-sm font-medium text-gray-700 mb-2">
-              Username
-            </label>
-            <div className="relative">
-              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <User className="h-5 w-5 text-gray-400" />
+        <div className="bg-white rounded-2xl shadow-xl border border-orange-100 p-8">
+          <form onSubmit={handleSubmit} className="space-y-6">
+            <div>
+              <label className="block text-sm font-medium text-slate-700 mb-2">
+                Username
+              </label>
+              <div className="relative">
+                <UserIcon className="w-5 h-5 absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400" />
+                <input
+                  type="text"
+                  name="username"
+                  value={credentials.username}
+                  onChange={handleChange}
+                  required
+                  className="w-full pl-10 pr-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-colors"
+                  placeholder="Enter your username"
+                />
               </div>
-              <input
-                id="username"
-                type="text"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-                className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-colors"
-                placeholder="Enter your username"
-                required
-              />
             </div>
-          </div>
 
-          <div>
-            <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">
-              Password
-            </label>
-            <div className="relative">
-              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <Lock className="h-5 w-5 text-gray-400" />
+            <div>
+              <label className="block text-sm font-medium text-slate-700 mb-2">
+                Password
+              </label>
+              <div className="relative">
+                <Lock className="w-5 h-5 absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400" />
+                <input
+                  type={showPassword ? 'text' : 'password'}
+                  name="password"
+                  value={credentials.password}
+                  onChange={handleChange}
+                  required
+                  className="w-full pl-10 pr-12 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-colors"
+                  placeholder="Enter your password"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors"
+                >
+                  {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                </button>
               </div>
-              <input
-                id="password"
-                type={showPassword ? 'text' : 'password'}
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="block w-full pl-10 pr-10 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-colors"
-                placeholder="Enter your password"
-                required
-              />
-              <button
-                type="button"
-                onClick={() => setShowPassword(!showPassword)}
-                className="absolute inset-y-0 right-0 pr-3 flex items-center"
-              >
-                {showPassword ? (
-                  <EyeOff className="h-5 w-5 text-gray-400 hover:text-gray-600" />
-                ) : (
-                  <Eye className="h-5 w-5 text-gray-400 hover:text-gray-600" />
-                )}
-              </button>
             </div>
-          </div>
 
-          <button
-            type="submit"
-            disabled={isLoading}
-            className="w-full bg-gradient-to-r from-orange-500 to-amber-500 text-white py-3 px-4 rounded-lg font-medium hover:from-orange-600 hover:to-amber-600 focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            {isLoading ? (
-              <div className="flex items-center justify-center">
-                <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
-                Signing in...
+            {error && (
+              <div className="bg-red-50 border border-red-200 rounded-lg p-3">
+                <p className="text-sm text-red-600">{error}</p>
               </div>
-            ) : (
-              'Sign In'
             )}
-          </button>
-        </form>
 
-        {/* Demo Credentials */}
-        <div className="mt-8 p-4 bg-gray-50 rounded-lg">
-          <h3 className="text-sm font-medium text-gray-900 mb-2">Demo Credentials:</h3>
-          <div className="text-xs text-gray-600 space-y-1">
-            <p><strong>Admin:</strong> admin / bidua123</p>
-            <p><strong>Manager:</strong> manager / bidua123</p>
-            <p><strong>Employee:</strong> employee / bidua123</p>
+            <button
+              type="submit"
+              disabled={isLoading}
+              className="w-full bg-gradient-to-r from-orange-500 to-amber-500 text-white py-3 rounded-lg font-medium hover:from-orange-600 hover:to-amber-600 focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {isLoading ? 'Signing In...' : 'Sign In'}
+            </button>
+          </form>
+
+          {/* Demo Credentials */}
+          <div className="mt-6 pt-6 border-t border-slate-200">
+            <p className="text-sm text-slate-600 mb-3">Demo Credentials:</p>
+            <div className="space-y-2 text-xs">
+              <div className="flex justify-between items-center bg-slate-50 rounded p-2">
+                <span className="font-medium">Admin:</span>
+                <span className="text-slate-600">admin / bidua123</span>
+              </div>
+              <div className="flex justify-between items-center bg-slate-50 rounded p-2">
+                <span className="font-medium">Manager:</span>
+                <span className="text-slate-600">manager / bidua123</span>
+              </div>
+              <div className="flex justify-between items-center bg-slate-50 rounded p-2">
+                <span className="font-medium">Employee:</span>
+                <span className="text-slate-600">employee / bidua123</span>
+              </div>
+            </div>
           </div>
+        </div>
+
+        {/* Footer */}
+        <div className="text-center mt-8">
+          <p className="text-sm text-slate-500">
+            © 2025 BIDUA Industries Pvt. Ltd. All rights reserved.
+          </p>
         </div>
       </div>
     </div>

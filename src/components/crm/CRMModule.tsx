@@ -1,110 +1,130 @@
 import React, { useState } from 'react';
-import { Lead, SupportTicket, Employee } from '../../types';
+import { CRMView, User, Lead, SupportTicket } from '../../types';
+import { Users, Kanban, Headphones, BarChart3 } from 'lucide-react';
 import LeadsManagement from './LeadsManagement';
 import SalesPipeline from './SalesPipeline';
 import CustomerSupport from './CustomerSupport';
 import CRMAnalytics from './CRMAnalytics';
 
 interface CRMModuleProps {
+  user: User;
   leads: Lead[];
-  supportTickets: SupportTicket[];
   employees: Employee[];
-  onAddLead: (lead: Omit<Lead, 'id' | 'createdAt'>) => void;
-  onUpdateLead: (id: string, lead: Partial<Lead>) => void;
-  onDeleteLead: (id: string) => void;
-  onAddSupportTicket: (ticket: Omit<SupportTicket, 'id' | 'createdAt'>) => void;
-  onUpdateSupportTicket: (id: string, ticket: Partial<SupportTicket>) => void;
-  onDeleteSupportTicket: (id: string) => void;
-  addNotification?: (message: string, type: 'success' | 'error' | 'info') => void;
+  addLead: (lead: Omit<Lead, 'id'>) => void;
+  updateLead: (id: string, lead: Partial<Lead>) => void;
+  deleteLead: (id: string) => void;
+  supportTickets: SupportTicket[];
+  addSupportTicket: (ticket: Omit<SupportTicket, 'id'>) => void;
+  updateSupportTicket: (id: string, ticket: Partial<SupportTicket>) => void;
+  deleteSupportTicket: (id: string) => void;
+  addNotification?: (message: string, type: 'success' | 'info' | 'warning' | 'error') => void;
 }
 
-const CRMModule: React.FC<CRMModuleProps> = ({
-  leads,
-  supportTickets,
+const CRMModule: React.FC<CRMModuleProps> = ({ 
+  user, 
+  leads, 
   employees,
-  onAddLead,
-  onUpdateLead,
-  onDeleteLead,
-  onAddSupportTicket,
-  onUpdateSupportTicket,
-  onDeleteSupportTicket,
-  addNotification,
+  addLead, 
+  updateLead, 
+  deleteLead,
+  supportTickets,
+  addSupportTicket,
+  updateSupportTicket,
+  deleteSupportTicket,
+  addNotification
 }) => {
-  const [activeView, setActiveView] = useState<'leads' | 'pipeline' | 'support' | 'analytics'>('leads');
+  const [currentView, setCurrentView] = useState<CRMView>('leads');
 
-  const renderActiveView = () => {
-    switch (activeView) {
+  const views = [
+    { id: 'leads' as CRMView, label: 'Leads & Contacts', icon: Users, description: 'Manage leads and customer contacts' },
+    { id: 'pipeline' as CRMView, label: 'Sales Pipeline', icon: Kanban, description: 'Track sales opportunities' },
+    { id: 'support' as CRMView, label: 'Customer Support', icon: Headphones, description: 'Handle support tickets' },
+    { id: 'analytics' as CRMView, label: 'Analytics', icon: BarChart3, description: 'Sales reports and insights' },
+  ];
+
+  const renderCurrentView = () => {
+    switch (currentView) {
       case 'leads':
         return (
-          <LeadsManagement
+          <LeadsManagement 
+            user={user} 
             leads={leads}
             employees={employees}
-            onAddLead={onAddLead}
-            onUpdateLead={onUpdateLead}
-            onDeleteLead={onDeleteLead}
-            addNotification={addNotification}
+            addLead={addLead}
+            updateLead={updateLead}
+            deleteLead={deleteLead}
           />
         );
       case 'pipeline':
-        return (
-          <SalesPipeline
-            leads={leads}
-            employees={employees}
-            onUpdateLead={onUpdateLead}
-            addNotification={addNotification}
-          />
-        );
+        return <SalesPipeline user={user} leads={leads} employees={employees} />;
       case 'support':
         return (
-          <CustomerSupport
+          <CustomerSupport 
+            user={user} 
             supportTickets={supportTickets}
-            onAddTicket={onAddSupportTicket}
-            onUpdateTicket={onUpdateSupportTicket}
-            onDeleteTicket={onDeleteSupportTicket}
-            addNotification={addNotification}
+            employees={employees}
+            addSupportTicket={addSupportTicket}
+            updateSupportTicket={updateSupportTicket}
+            deleteSupportTicket={deleteSupportTicket}
           />
         );
       case 'analytics':
+        return <CRMAnalytics user={user} leads={leads} employees={employees} />;
+      default:
         return (
-          <CRMAnalytics
+          <LeadsManagement 
+            user={user} 
             leads={leads}
-            supportTickets={supportTickets}
+            employees={employees}
+            addLead={addLead}
+            updateLead={updateLead}
+            deleteLead={deleteLead}
           />
         );
-      default:
-        return null;
     }
   };
 
   return (
     <div className="space-y-6">
-      {/* Navigation Tabs */}
-      <div className="border-b border-gray-200">
-        <nav className="-mb-px flex space-x-8">
-          {[
-            { key: 'leads', label: 'Leads Management' },
-            { key: 'pipeline', label: 'Sales Pipeline' },
-            { key: 'support', label: 'Customer Support' },
-            { key: 'analytics', label: 'Analytics' },
-          ].map((tab) => (
-            <button
-              key={tab.key}
-              onClick={() => setActiveView(tab.key as any)}
-              className={`py-2 px-1 border-b-2 font-medium text-sm ${
-                activeView === tab.key
-                  ? 'border-indigo-500 text-indigo-600'
-                  : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-              }`}
-            >
-              {tab.label}
-            </button>
-          ))}
-        </nav>
+      {/* Header */}
+      <div className="bg-gradient-to-r from-blue-500 to-cyan-500 rounded-2xl p-6 text-white">
+        <h1 className="text-2xl font-bold mb-2">Customer Relationship Management</h1>
+        <p className="text-blue-100">Manage leads, track sales, and support customers</p>
       </div>
 
-      {/* Active View Content */}
+      {/* Navigation Tabs */}
+      <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-2">
+        <div className="flex space-x-1 overflow-x-auto">
+          {views.map((view) => {
+            const Icon = view.icon;
+            const isActive = currentView === view.id;
+            
+            return (
+              <button
+                key={view.id}
+                onClick={() => setCurrentView(view.id)}
+                className={`flex items-center space-x-2 px-4 py-3 rounded-lg transition-all duration-200 whitespace-nowrap ${
+                  isActive
+                    ? 'bg-blue-500 text-white shadow-md'
+                    : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
+                }`}
+              >
+                <Icon className="w-4 h-4" />
+                <div className="text-left">
+                  <p className="font-medium text-sm">{view.label}</p>
+                  <p className={`text-xs ${isActive ? 'text-blue-100' : 'text-slate-500'}`}>
+                    {view.description}
+                  </p>
+                </div>
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Content */}
       <div className="min-h-[600px]">
-        {renderActiveView()}
+        {renderCurrentView()}
       </div>
     </div>
   );

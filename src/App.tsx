@@ -1,335 +1,456 @@
-import React, { useState, useEffect } from 'react';
-import { User, Task, Lead, SupportTicket, Employee, Attendance, LeaveRequest, Performance, Payroll } from './types';
-import { mockUsers, staticPassword, mockTasks, mockLeads, mockSupportTickets, mockEmployees, mockAttendance, mockLeaveRequests, mockPerformance, mockPayroll } from './data/mockData';
+import React, { useState } from 'react';
+import { ModuleType, User, Lead, Employee, Task, SupportTicket, LeaveRequest, Performance, Payroll, Attendance, Notification } from './types';
+import { 
+  mockUsers, 
+  mockLeads, 
+  mockEmployees, 
+  mockTasks, 
+  mockSupportTickets, 
+  mockLeaveRequests, 
+  mockPerformance, 
+  mockPayroll,
+  mockAttendance,
+  mockSalarySlips,
+  mockDocuments
+} from './data/mockData';
+import { v4 as uuidv4 } from 'uuid';
 import LoginForm from './components/auth/LoginForm';
 import Sidebar from './components/layout/Sidebar';
 import Dashboard from './components/dashboard/Dashboard';
 import CRMModule from './components/crm/CRMModule';
 import HRMSModule from './components/hrms/HRMSModule';
-import EmployeePortal from './components/employee/EmployeePortal';
 import ReportsModule from './components/reports/ReportsModule';
 import SettingsModule from './components/settings/SettingsModule';
 import NotificationDisplay from './components/common/NotificationDisplay';
-import { Menu, X } from 'lucide-react';
+import EmployeePortal from './components/employee/EmployeePortal';
 
-interface Notification {
-  id: string;
-  type: 'success' | 'error' | 'info' | 'warning';
-  message: string;
-  timestamp: Date;
-}
-
-export default function App() {
+function App() {
   const [user, setUser] = useState<User | null>(null);
-  const [currentModule, setCurrentModule] = useState('dashboard');
-  const [tasks, setTasks] = useState<Task[]>(mockTasks);
-  const [leads, setLeads] = useState<Lead[]>(mockLeads);
-  const [supportTickets, setSupportTickets] = useState<SupportTicket[]>(mockSupportTickets);
-  const [employees, setEmployees] = useState<Employee[]>(mockEmployees);
-  const [attendance, setAttendance] = useState<Attendance[]>(mockAttendance);
-  const [leaveRequests, setLeaveRequests] = useState<LeaveRequest[]>(mockLeaveRequests);
-  const [performance, setPerformance] = useState<Performance[]>(mockPerformance);
-  const [payroll, setPayroll] = useState<Payroll[]>(mockPayroll);
-  const [notifications, setNotifications] = useState<Notification[]>([]);
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [currentModule, setCurrentModule] = useState<ModuleType>('dashboard');
 
-  const addNotification = (type: Notification['type'], message: string) => {
-    const notification: Notification = {
-      id: Date.now().toString(),
-      type,
+  // Centralized data state
+  const [leads, setLeads] = useState<Lead[]>(mockLeads);
+  const [employees, setEmployees] = useState<Employee[]>(mockEmployees);
+  const [tasks, setTasks] = useState<Task[]>(mockTasks);
+  const [supportTickets, setSupportTickets] = useState<SupportTicket[]>(mockSupportTickets);
+  const [leaveRequests, setLeaveRequests] = useState<LeaveRequest[]>(mockLeaveRequests);
+  const [performanceData, setPerformanceData] = useState<Performance[]>(mockPerformance);
+  const [payrollData, setPayrollData] = useState<Payroll[]>(mockPayroll);
+  const [attendanceData, setAttendanceData] = useState<Attendance[]>(mockAttendance);
+  const [notifications, setNotifications] = useState<Notification[]>([]);
+
+  // Quick action states for dashboard
+  const [showQuickLeadForm, setShowQuickLeadForm] = useState(false);
+  const [showQuickEmployeeForm, setShowQuickEmployeeForm] = useState(false);
+  const [showQuickTaskForm, setShowQuickTaskForm] = useState(false);
+  const [showQuickAttendanceForm, setShowQuickAttendanceForm] = useState(false);
+
+  // Notification functions
+  const addNotification = (message: string, type: 'success' | 'info' | 'warning' | 'error', userId?: string) => {
+    const newNotification: Notification = {
+      id: uuidv4(),
       message,
-      timestamp: new Date(),
+      type,
+      timestamp: new Date().toISOString(),
+      userId,
+      read: false,
     };
-    setNotifications(prev => [notification, ...prev]);
-    
-    // Auto remove after 5 seconds
-    setTimeout(() => {
-      setNotifications(prev => prev.filter(n => n.id !== notification.id));
-    }, 5000);
+    setNotifications(prev => [...prev, newNotification]);
   };
 
   const removeNotification = (id: string) => {
-    setNotifications(prev => prev.filter(n => n.id !== id));
+    setNotifications(prev => prev.filter(notification => notification.id !== id));
+  };
+  // Lead management functions
+  const addLead = (leadData: Omit<Lead, 'id'>) => {
+    const newLead: Lead = {
+      ...leadData,
+      id: uuidv4(),
+    };
+    setLeads(prev => [...prev, newLead]);
+    addNotification(`New lead "${newLead.name}" from ${newLead.company} has been added`, 'info');
   };
 
-  const handleLogin = (username: string, password: string) => {
-    const foundUser = mockUsers.find(u => u.username === username);
-    if (foundUser && password === staticPassword) {
-      setUser(foundUser);
-      addNotification('success', `Welcome back, ${foundUser.username}!`);
-      return true;
+  const updateLead = (id: string, leadData: Partial<Lead>) => {
+    setLeads(prev => prev.map(lead => 
+      lead.id === id ? { ...lead, ...leadData } : lead
+    ));
+    const updatedLead = leads.find(l => l.id === id);
+    if (updatedLead) {
+      addNotification(`Lead "${updatedLead.name}" has been updated`, 'info');
     }
-    addNotification('error', 'Invalid credentials');
-    return false;
+  };
+
+  const deleteLead = (id: string) => {
+    const leadToDelete = leads.find(l => l.id === id);
+    setLeads(prev => prev.filter(lead => lead.id !== id));
+    if (leadToDelete) {
+      addNotification(`Lead "${leadToDelete.name}" has been deleted`, 'warning');
+    }
+  };
+
+  // Employee management functions
+  const addEmployee = (employeeData: Omit<Employee, 'id'>) => {
+    const newEmployee: Employee = {
+      ...employeeData,
+      id: uuidv4(),
+    };
+    setEmployees(prev => [...prev, newEmployee]);
+    addNotification(`New employee "${newEmployee.name}" has been added to ${newEmployee.department}`, 'success');
+  };
+
+  const updateEmployee = (id: string, employeeData: Partial<Employee>) => {
+    setEmployees(prev => prev.map(employee => 
+      employee.id === id ? { ...employee, ...employeeData } : employee
+    ));
+    const updatedEmployee = employees.find(e => e.id === id);
+    if (updatedEmployee) {
+      addNotification(`Employee "${updatedEmployee.name}" profile has been updated`, 'info');
+    }
+  };
+
+  const deleteEmployee = (id: string) => {
+    const employeeToDelete = employees.find(e => e.id === id);
+    setEmployees(prev => prev.filter(employee => employee.id !== id));
+    if (employeeToDelete) {
+      addNotification(`Employee "${employeeToDelete.name}" has been removed`, 'warning');
+    }
+  };
+
+  // Task management functions
+  const addTask = (taskData: Omit<Task, 'id'>) => {
+    const newTask: Task = {
+      ...taskData,
+      id: uuidv4(),
+    };
+    setTasks(prev => [...prev, newTask]);
+    addNotification(`New task "${newTask.title}" assigned to ${newTask.assignedTo}`, 'info');
+  };
+
+  const updateTask = (id: string, taskData: Partial<Task>) => {
+    setTasks(prev => prev.map(task => 
+      task.id === id ? { ...task, ...taskData } : task
+    ));
+  };
+
+  const deleteTask = (id: string) => {
+    const taskToDelete = tasks.find(t => t.id === id);
+    setTasks(prev => prev.filter(task => task.id !== id));
+    if (taskToDelete) {
+      addNotification(`Task "${taskToDelete.title}" has been deleted`, 'warning');
+    }
+  };
+
+  // Support ticket management functions
+  const addSupportTicket = (ticketData: Omit<SupportTicket, 'id'>) => {
+    const newTicket: SupportTicket = {
+      ...ticketData,
+      id: uuidv4(),
+    };
+    setSupportTickets(prev => [...prev, newTicket]);
+    addNotification(`New support ticket "${newTicket.title}" created for ${newTicket.customerName}`, 'info');
+  };
+
+  const updateSupportTicket = (id: string, ticketData: Partial<SupportTicket>) => {
+    setSupportTickets(prev => prev.map(ticket => 
+      ticket.id === id ? { ...ticket, ...ticketData } : ticket
+    ));
+    const updatedTicket = supportTickets.find(t => t.id === id);
+    if (updatedTicket && ticketData.status) {
+      addNotification(`Support ticket "${updatedTicket.title}" status changed to ${ticketData.status}`, 'info');
+    }
+  };
+
+  const deleteSupportTicket = (id: string) => {
+    const ticketToDelete = supportTickets.find(t => t.id === id);
+    setSupportTickets(prev => prev.filter(ticket => ticket.id !== id));
+    if (ticketToDelete) {
+      addNotification(`Support ticket "${ticketToDelete.title}" has been deleted`, 'warning');
+    }
+  };
+
+  // Leave request management functions
+  const addLeaveRequest = (leaveData: Omit<LeaveRequest, 'id'>) => {
+    const newLeaveRequest: LeaveRequest = {
+      ...leaveData,
+      id: uuidv4(),
+    };
+    setLeaveRequests(prev => [...prev, newLeaveRequest]);
+    addNotification(`Leave request submitted by ${newLeaveRequest.employeeName} for ${newLeaveRequest.days} day(s)`, 'info');
+  };
+
+  const updateLeaveRequest = (id: string, leaveData: Partial<LeaveRequest>) => {
+    setLeaveRequests(prev => prev.map(leave => 
+      leave.id === id ? { ...leave, ...leaveData } : leave
+    ));
+    const updatedLeave = leaveRequests.find(l => l.id === id);
+    if (updatedLeave && leaveData.status) {
+      const statusMessage = leaveData.status === 'approved' ? 'approved' : 'rejected';
+      addNotification(`Leave request for ${updatedLeave.employeeName} has been ${statusMessage}`, 
+        leaveData.status === 'approved' ? 'success' : 'warning');
+    }
+  };
+
+  const deleteLeaveRequest = (id: string) => {
+    const leaveToDelete = leaveRequests.find(l => l.id === id);
+    setLeaveRequests(prev => prev.filter(leave => leave.id !== id));
+    if (leaveToDelete) {
+      addNotification(`Leave request for ${leaveToDelete.employeeName} has been cancelled`, 'warning');
+    }
+  };
+
+  // Performance management functions
+  const addPerformance = (performanceData: Omit<Performance, 'id'>) => {
+    const newPerformance: Performance = {
+      ...performanceData,
+      id: uuidv4(),
+    };
+    setPerformanceData(prev => [...prev, newPerformance]);
+  };
+
+  const updatePerformance = (id: string, performanceData: Partial<Performance>) => {
+    setPerformanceData(prev => prev.map(performance => 
+      performance.id === id ? { ...performance, ...performanceData } : performance
+    ));
+  };
+
+  const deletePerformance = (id: string) => {
+    setPerformanceData(prev => prev.filter(performance => performance.id !== id));
+  };
+
+  // Payroll management functions
+  const addPayroll = (payrollData: Omit<Payroll, 'id'>) => {
+    const newPayroll: Payroll = {
+      ...payrollData,
+      id: uuidv4(),
+    };
+    setPayrollData(prev => [...prev, newPayroll]);
+  };
+
+  const updatePayroll = (id: string, payrollData: Partial<Payroll>) => {
+    setPayrollData(prev => prev.map(payroll => 
+      payroll.id === id ? { ...payroll, ...payrollData } : payroll
+    ));
+  };
+
+  const deletePayroll = (id: string) => {
+    setPayrollData(prev => prev.filter(payroll => payroll.id !== id));
+  };
+
+  // Attendance management functions
+  const addAttendance = (attendanceData: Omit<Attendance, 'id'>) => {
+    const newAttendance: Attendance = {
+      ...attendanceData,
+      id: uuidv4(),
+    };
+    setAttendanceData(prev => [...prev, newAttendance]);
+    addNotification(`Attendance marked for ${newAttendance.employeeName} - ${newAttendance.status}`, 'success');
+  };
+
+  const updateAttendance = (id: string, attendanceData: Partial<Attendance>) => {
+    setAttendanceData(prev => prev.map(attendance => 
+      attendance.id === id ? { ...attendance, ...attendanceData } : attendance
+    ));
+  };
+
+  const deleteAttendance = (id: string) => {
+    setAttendanceData(prev => prev.filter(attendance => attendance.id !== id));
+  };
+
+  const handleLogin = (userData: User) => {
+    setUser(userData);
   };
 
   const handleLogout = () => {
     setUser(null);
     setCurrentModule('dashboard');
-    setIsMobileMenuOpen(false);
-    addNotification('info', 'Logged out successfully');
   };
 
-  const updateTask = (taskId: string, updates: Partial<Task>) => {
-    setTasks(prev => prev.map(task => 
-      task.id === taskId ? { ...task, ...updates, updatedAt: new Date().toISOString() } : task
-    ));
-  };
-
-  const addTask = (task: Omit<Task, 'id' | 'createdAt' | 'updatedAt'>) => {
-    const newTask: Task = {
-      ...task,
-      id: Date.now().toString(),
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-      comments: [],
-    };
-    setTasks(prev => [newTask, ...prev]);
-    addNotification('success', 'Task created successfully');
-  };
-
-  const updateLead = (leadId: string, updates: Partial<Lead>) => {
-    setLeads(prev => prev.map(lead => 
-      lead.id === leadId ? { ...lead, ...updates } : lead
-    ));
-  };
-
-  const addLead = (lead: Omit<Lead, 'id' | 'createdAt'>) => {
-    const newLead: Lead = {
-      ...lead,
-      id: Date.now().toString(),
-      createdAt: new Date().toISOString().split('T')[0],
-    };
-    setLeads(prev => [newLead, ...prev]);
-    addNotification('success', 'Lead added successfully');
-  };
-
-  const updateSupportTicket = (ticketId: string, updates: Partial<SupportTicket>) => {
-    setSupportTickets(prev => prev.map(ticket => 
-      ticket.id === ticketId ? { ...ticket, ...updates } : ticket
-    ));
-  };
-
-  const addSupportTicket = (ticket: Omit<SupportTicket, 'id' | 'createdAt'>) => {
-    const newTicket: SupportTicket = {
-      ...ticket,
-      id: Date.now().toString(),
-      createdAt: new Date().toISOString().split('T')[0],
-    };
-    setSupportTickets(prev => [newTicket, ...prev]);
-    addNotification('success', 'Support ticket created successfully');
-  };
-
-  const updateEmployee = (employeeId: string, updates: Partial<Employee>) => {
-    setEmployees(prev => prev.map(employee => 
-      employee.id === employeeId ? { ...employee, ...updates } : employee
-    ));
-  };
-
-  const addEmployee = (employee: Omit<Employee, 'id'>) => {
-    const newEmployee: Employee = {
-      ...employee,
-      id: Date.now().toString(),
-    };
-    setEmployees(prev => [newEmployee, ...prev]);
-    addNotification('success', 'Employee added successfully');
-  };
-
-  const updateAttendance = (attendanceId: string, updates: Partial<Attendance>) => {
-    setAttendance(prev => prev.map(record => 
-      record.id === attendanceId ? { ...record, ...updates } : record
-    ));
-  };
-
-  const addAttendance = (record: Omit<Attendance, 'id'>) => {
-    const newRecord: Attendance = {
-      ...record,
-      id: Date.now().toString(),
-    };
-    setAttendance(prev => [newRecord, ...prev]);
-    addNotification('success', 'Attendance recorded successfully');
-  };
-
-  const updateLeaveRequest = (requestId: string, updates: Partial<LeaveRequest>) => {
-    setLeaveRequests(prev => prev.map(request => 
-      request.id === requestId ? { ...request, ...updates } : request
-    ));
-  };
-
-  const addLeaveRequest = (request: Omit<LeaveRequest, 'id' | 'appliedAt'>) => {
-    const newRequest: LeaveRequest = {
-      ...request,
-      id: Date.now().toString(),
-      appliedAt: new Date().toISOString().split('T')[0],
-    };
-    setLeaveRequests(prev => [newRequest, ...prev]);
-    addNotification('success', 'Leave request submitted successfully');
-  };
-
-  const toggleMobileMenu = () => {
-    setIsMobileMenuOpen(!isMobileMenuOpen);
-  };
-
-  const closeMobileMenu = () => {
-    setIsMobileMenuOpen(false);
-  };
-
-  if (!user) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">
-        <LoginForm onLogin={handleLogin} />
-        <NotificationDisplay 
-          notifications={notifications} 
-          onRemove={removeNotification} 
-        />
-      </div>
-    );
-  }
+  // Check if user is employee and should see employee portal
+  const shouldShowEmployeePortal = user?.role === 'employee';
 
   const renderCurrentModule = () => {
+    if (!user) return null;
+
+    // Show employee portal for employees
+    if (shouldShowEmployeePortal) {
+      const currentEmployee = employees.find(emp => emp.email === user.email);
+      if (currentEmployee) {
+        return (
+          <EmployeePortal
+            user={user}
+            employee={currentEmployee}
+            tasks={tasks}
+            employees={employees}
+            leaveRequests={leaveRequests}
+            attendanceData={attendanceData}
+            salarySlips={mockSalarySlips}
+            documents={mockDocuments}
+            updateTask={updateTask}
+            addLeaveRequest={addLeaveRequest}
+            addAttendance={addAttendance}
+            updateEmployee={updateEmployee}
+            addNotification={addNotification}
+          />
+        );
+      }
+    }
+
     switch (currentModule) {
       case 'dashboard':
         return (
           <Dashboard 
             user={user}
-            tasks={tasks}
             leads={leads}
-            supportTickets={supportTickets}
             employees={employees}
-            attendance={attendance}
+            tasks={tasks}
+            supportTickets={supportTickets}
             leaveRequests={leaveRequests}
+            attendanceData={attendanceData}
+            showQuickLeadForm={showQuickLeadForm}
+            setShowQuickLeadForm={setShowQuickLeadForm}
+            showQuickEmployeeForm={showQuickEmployeeForm}
+            setShowQuickEmployeeForm={setShowQuickEmployeeForm}
+            showQuickTaskForm={showQuickTaskForm}
+            setShowQuickTaskForm={setShowQuickTaskForm}
+            showQuickAttendanceForm={showQuickAttendanceForm}
+            setShowQuickAttendanceForm={setShowQuickAttendanceForm}
+            addLead={addLead}
+            addEmployee={addEmployee}
+            addTask={addTask}
+            addAttendance={addAttendance}
+            addNotification={addNotification}
           />
         );
       case 'crm':
         return (
-          <CRMModule
+          <CRMModule 
             user={user}
             leads={leads}
-            supportTickets={supportTickets}
-            tasks={tasks}
             employees={employees}
-            onUpdateLead={updateLead}
-            onAddLead={addLead}
-            onUpdateSupportTicket={updateSupportTicket}
-            onAddSupportTicket={addSupportTicket}
-            updateTask={updateTask}
+            addLead={addLead}
+            updateLead={updateLead}
+            deleteLead={deleteLead}
+            supportTickets={supportTickets}
+            addSupportTicket={addSupportTicket}
+            updateSupportTicket={updateSupportTicket}
+            deleteSupportTicket={deleteSupportTicket}
             addNotification={addNotification}
           />
         );
       case 'hrms':
         return (
-          <HRMSModule
+          <HRMSModule 
             user={user}
             employees={employees}
+            addEmployee={addEmployee}
+            updateEmployee={updateEmployee}
+            deleteEmployee={deleteEmployee}
             tasks={tasks}
-            attendance={attendance}
+            addTask={addTask}
+            updateTask={updateTask}
+            deleteTask={deleteTask}
             leaveRequests={leaveRequests}
-            performance={performance}
-            payroll={payroll}
-            onUpdateEmployee={updateEmployee}
-            onAddEmployee={addEmployee}
-            onUpdateTask={updateTask}
-            onAddTask={addTask}
-            onUpdateAttendance={updateAttendance}
-            onAddAttendance={addAttendance}
-            onUpdateLeaveRequest={updateLeaveRequest}
-            onAddLeaveRequest={addLeaveRequest}
-            addNotification={addNotification}
-          />
-        );
-      case 'employee':
-        return (
-          <EmployeePortal
-            user={user}
-            tasks={tasks}
-            employees={employees}
-            attendance={attendance}
-            leaveRequests={leaveRequests}
-            payroll={payroll}
-            onUpdateTask={updateTask}
-            onAddLeaveRequest={addLeaveRequest}
-            onAddAttendance={addAttendance}
+            addLeaveRequest={addLeaveRequest}
+            updateLeaveRequest={updateLeaveRequest}
+            deleteLeaveRequest={deleteLeaveRequest}
+            performanceData={performanceData}
+            addPerformance={addPerformance}
+            updatePerformance={updatePerformance}
+            deletePerformance={deletePerformance}
+            payrollData={payrollData}
+            addPayroll={addPayroll}
+            updatePayroll={updatePayroll}
+            deletePayroll={deletePayroll}
+            attendanceData={attendanceData}
+            addAttendance={addAttendance}
+            updateAttendance={updateAttendance}
+            deleteAttendance={deleteAttendance}
+           leads={leads}
             addNotification={addNotification}
           />
         );
       case 'reports':
         return (
-          <ReportsModule
+          <ReportsModule 
             user={user}
-            tasks={tasks}
             leads={leads}
             employees={employees}
-            attendance={attendance}
+            tasks={tasks}
+            supportTickets={supportTickets}
             leaveRequests={leaveRequests}
-            performance={performance}
-            payroll={payroll}
+            payrollData={payrollData}
+            attendanceData={attendanceData}
           />
         );
       case 'settings':
-        return <SettingsModule user={user} />;
+        return (
+          <SettingsModule 
+            user={user}
+          />
+        );
       default:
-        return <Dashboard 
-          user={user}
-          tasks={tasks}
-          leads={leads}
-          supportTickets={supportTickets}
-          employees={employees}
-          attendance={attendance}
-          leaveRequests={leaveRequests}
-        />;
+        return (
+          <Dashboard 
+            user={user}
+            leads={leads}
+            employees={employees}
+            tasks={tasks}
+            supportTickets={supportTickets}
+            leaveRequests={leaveRequests}
+            attendanceData={attendanceData}
+            showQuickLeadForm={showQuickLeadForm}
+            setShowQuickLeadForm={setShowQuickLeadForm}
+            showQuickEmployeeForm={showQuickEmployeeForm}
+            setShowQuickEmployeeForm={setShowQuickEmployeeForm}
+            showQuickTaskForm={showQuickTaskForm}
+            setShowQuickTaskForm={setShowQuickTaskForm}
+            showQuickAttendanceForm={showQuickAttendanceForm}
+            setShowQuickAttendanceForm={setShowQuickAttendanceForm}
+            addLead={addLead}
+            addEmployee={addEmployee}
+            addTask={addTask}
+            addAttendance={addAttendance}
+            addNotification={addNotification}
+          />
+        );
     }
   };
 
+  if (!user) {
+    return <LoginForm onLogin={handleLogin} />;
+  }
+
+  // Employee portal has its own layout
+  if (shouldShowEmployeePortal) {
+    return (
+      <div className="min-h-screen bg-slate-50">
+        {renderCurrentModule()}
+        <NotificationDisplay 
+          notifications={notifications} 
+          onDismiss={removeNotification} 
+        />
+      </div>
+    );
+  }
+
   return (
-    <div className="min-h-screen bg-gray-50 flex">
-      {/* Mobile Menu Button */}
-      <button
-        onClick={toggleMobileMenu}
-        className="lg:hidden fixed top-4 left-4 z-50 p-2 bg-white rounded-lg shadow-md border border-gray-200"
-      >
-        {isMobileMenuOpen ? (
-          <X className="w-6 h-6 text-gray-600" />
-        ) : (
-          <Menu className="w-6 h-6 text-gray-600" />
-        )}
-      </button>
-
-      {/* Mobile Menu Overlay */}
-      {isMobileMenuOpen && (
-        <div 
-          className="lg:hidden fixed inset-0 bg-black bg-opacity-50 z-30"
-          onClick={closeMobileMenu}
-        />
-      )}
-
-      {/* Sidebar */}
-      <div className={`
-        fixed lg:static inset-y-0 left-0 z-40 w-64 transform transition-transform duration-300 ease-in-out
-        ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
-      `}>
-        <Sidebar
-          user={user}
-          currentModule={currentModule}
-          onModuleChange={(module) => {
-            setCurrentModule(module);
-            closeMobileMenu();
-          }}
-          onLogout={handleLogout}
-        />
-      </div>
-
-      {/* Main Content */}
-      <div className="flex-1 lg:ml-0 pt-16 lg:pt-0">
-        <main className="p-4 lg:p-6">
-          {renderCurrentModule()}
-        </main>
-      </div>
-
-      {/* Notifications */}
+    <div className="min-h-screen bg-slate-50 flex">
+      <Sidebar
+        currentModule={currentModule}
+        onModuleChange={setCurrentModule}
+        user={user}
+        onLogout={handleLogout}
+      />
+      <main className="flex-1 p-8 overflow-y-auto">
+        {renderCurrentModule()}
+      </main>
       <NotificationDisplay 
         notifications={notifications} 
-        onRemove={removeNotification} 
+        onDismiss={removeNotification} 
       />
     </div>
   );
 }
+
+export default App;

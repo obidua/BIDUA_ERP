@@ -2,57 +2,17 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Custom scrollbar styles */
-::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
-}
-
-::-webkit-scrollbar-track {
-  background: #f1f1f1;
-  border-radius: 3px;
-}
-
-::-webkit-scrollbar-thumb {
-  background: #c1c1c1;
-  border-radius: 3px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: #a8a8a8;
-}
-
-/* Smooth transitions for mobile menu */
-.sidebar-transition {
-  transition: transform 0.3s ease-in-out;
-}
-
-/* Mobile-friendly touch targets */
-@media (max-width: 768px) {
-  button, .clickable {
-    min-height: 44px;
-    min-width: 44px;
+@keyframes slide-in {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
   }
-  
-  input, select, textarea {
-    font-size: 16px; /* Prevents zoom on iOS */
+  to {
+    transform: translateX(0);
+    opacity: 1;
   }
 }
 
-/* Responsive text sizing */
-@media (max-width: 640px) {
-  .text-responsive {
-    font-size: 0.875rem;
-  }
-}
-
-/* Animation for mobile overlay */
-.overlay-fade {
-  transition: opacity 0.3s ease-in-out;
-}
-
-/* Custom focus styles for accessibility */
-.focus-visible:focus-visible {
-  outline: 2px solid #3b82f6;
-  outline-offset: 2px;
+.animate-slide-in {
+  animation: slide-in 0.3s ease-out;
 }

@@ -1,250 +1,199 @@
-import React, { useState } from 'react';
-import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
-import { Plus, TrendingUp, DollarSign, Calendar, User, Phone, Mail, Building } from 'lucide-react';
-import LeadForm from './LeadForm';
-import { Lead, User as UserType, Task } from '../../types';
+import React from 'react';
+import { User, Lead } from '../../types';
+import { DollarSign, TrendingUp, Users, Target } from 'lucide-react';
 
 interface SalesPipelineProps {
+  user: User;
   leads: Lead[];
-  onUpdateLead: (lead: Lead) => void;
-  user: UserType;
-  tasks: Task[];
-  updateTask: (task: Task) => void;
-  addNotification: (message: string, type: 'success' | 'error' | 'info') => void;
 }
 
-const SalesPipeline: React.FC<SalesPipelineProps> = ({
-  leads,
-  onUpdateLead,
-  user,
-  tasks,
-  updateTask,
-  addNotification,
-}) => {
-  const [showLeadForm, setShowLeadForm] = useState(false);
-  const [selectedLead, setSelectedLead] = useState<Lead | null>(null);
-
+const SalesPipeline: React.FC<SalesPipelineProps> = ({ user, leads }) => {
   const stages = [
-    { id: 'lead', name: 'New Leads', color: 'bg-blue-500' },
-    { id: 'qualified', name: 'Qualified', color: 'bg-yellow-500' },
-    { id: 'proposal', name: 'Proposal', color: 'bg-orange-500' },
-    { id: 'negotiation', name: 'Negotiation', color: 'bg-purple-500' },
-    { id: 'closed-won', name: 'Closed Won', color: 'bg-green-500' },
-    { id: 'closed-lost', name: 'Closed Lost', color: 'bg-red-500' },
+    { id: 'lead', name: 'Lead', color: 'bg-slate-100 border-slate-300' },
+    { id: 'proposal', name: 'Proposal', color: 'bg-blue-100 border-blue-300' },
+    { id: 'negotiation', name: 'Negotiation', color: 'bg-orange-100 border-orange-300' },
+    { id: 'closed-won', name: 'Closed Won', color: 'bg-green-100 border-green-300' },
+    { id: 'closed-lost', name: 'Closed Lost', color: 'bg-red-100 border-red-300' },
   ];
 
   const getLeadsByStage = (stage: string) => {
     return leads.filter(lead => lead.stage === stage);
   };
 
-  const getTotalValue = (stage: string) => {
+  const getStageValue = (stage: string) => {
     return getLeadsByStage(stage).reduce((sum, lead) => sum + lead.value, 0);
-  };
-
-  const handleDragEnd = (result: any) => {
-    if (!result.destination) return;
-
-    const leadId = result.draggableId;
-    const newStage = result.destination.droppableId;
-    
-    const lead = leads.find(l => l.id === leadId);
-    if (lead && lead.stage !== newStage) {
-      const updatedLead = { ...lead, stage: newStage };
-      onUpdateLead(updatedLead);
-      addNotification(`Lead moved to ${stages.find(s => s.id === newStage)?.name}`, 'success');
-    }
-  };
-
-  const handleEditLead = (lead: Lead) => {
-    setSelectedLead(lead);
-    setShowLeadForm(true);
-  };
-
-  const handleAddLead = () => {
-    setSelectedLead(null);
-    setShowLeadForm(true);
-  };
-
-  const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('en-IN', {
-      style: 'currency',
-      currency: 'INR',
-      minimumFractionDigits: 0,
-    }).format(amount);
-  };
-
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case 'hot': return 'bg-red-100 text-red-800';
-      case 'warm': return 'bg-yellow-100 text-yellow-800';
-      case 'cold': return 'bg-blue-100 text-blue-800';
-      default: return 'bg-gray-100 text-gray-800';
-    }
   };
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+      {/* Header */}
+      <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-2xl font-bold text-gray-900">Sales Pipeline</h2>
-          <p className="text-gray-600">Track leads through your sales process</p>
+          <h2 className="text-2xl font-bold text-slate-900">Sales Pipeline</h2>
+          <p className="text-slate-600">Track your sales opportunities through the pipeline</p>
         </div>
-        <button
-          onClick={handleAddLead}
-          className="flex items-center space-x-2 bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition-colors"
-        >
-          <Plus className="w-4 h-4" />
-          <span>Add Lead</span>
-        </button>
+        <div className="flex items-center space-x-4">
+          <div className="text-right">
+            <p className="text-sm text-slate-600">Total Pipeline Value</p>
+            <p className="text-2xl font-bold text-green-600">
+              ₹{(leads.reduce((sum, lead) => sum + lead.value, 0) / 100000).toFixed(1)}L
+            </p>
+          </div>
+        </div>
       </div>
 
       {/* Pipeline Stats */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-        <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
-          <div className="flex items-center space-x-3">
-            <div className="p-2 bg-blue-100 rounded-lg">
-              <TrendingUp className="w-6 h-6 text-blue-600" />
-            </div>
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <div className="bg-white rounded-lg shadow-sm border border-slate-200 p-4">
+          <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-600">Total Leads</p>
-              <p className="text-2xl font-bold text-gray-900">{leads.length}</p>
+              <p className="text-sm text-slate-600">Total Opportunities</p>
+              <p className="text-2xl font-bold text-slate-900">{leads.length}</p>
+            </div>
+            <div className="bg-blue-50 p-2 rounded-lg">
+              <Target className="w-5 h-5 text-blue-600" />
             </div>
           </div>
         </div>
-        <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
-          <div className="flex items-center space-x-3">
-            <div className="p-2 bg-green-100 rounded-lg">
-              <DollarSign className="w-6 h-6 text-green-600" />
-            </div>
+        <div className="bg-white rounded-lg shadow-sm border border-slate-200 p-4">
+          <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-600">Pipeline Value</p>
-              <p className="text-2xl font-bold text-gray-900">
-                {formatCurrency(leads.reduce((sum, lead) => sum + lead.value, 0))}
+              <p className="text-sm text-slate-600">Active Deals</p>
+              <p className="text-2xl font-bold text-orange-600">
+                {leads.filter(l => ['proposal', 'negotiation'].includes(l.stage)).length}
               </p>
+            </div>
+            <div className="bg-orange-50 p-2 rounded-lg">
+              <Users className="w-5 h-5 text-orange-600" />
             </div>
           </div>
         </div>
-        <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
-          <div className="flex items-center space-x-3">
-            <div className="p-2 bg-purple-100 rounded-lg">
-              <Calendar className="w-6 h-6 text-purple-600" />
-            </div>
+        <div className="bg-white rounded-lg shadow-sm border border-slate-200 p-4">
+          <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-600">Avg. Deal Size</p>
-              <p className="text-2xl font-bold text-gray-900">
-                {formatCurrency(leads.length > 0 ? leads.reduce((sum, lead) => sum + lead.value, 0) / leads.length : 0)}
+              <p className="text-sm text-slate-600">Won This Month</p>
+              <p className="text-2xl font-bold text-green-600">
+                {leads.filter(l => l.stage === 'closed-won').length}
               </p>
+            </div>
+            <div className="bg-green-50 p-2 rounded-lg">
+              <TrendingUp className="w-5 h-5 text-green-600" />
+            </div>
+          </div>
+        </div>
+        <div className="bg-white rounded-lg shadow-sm border border-slate-200 p-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm text-slate-600">Win Rate</p>
+              <p className="text-2xl font-bold text-purple-600">67%</p>
+            </div>
+            <div className="bg-purple-50 p-2 rounded-lg">
+              <Target className="w-5 h-5 text-purple-600" />
             </div>
           </div>
         </div>
       </div>
 
-      {/* Pipeline Board */}
-      <DragDropContext onDragEnd={handleDragEnd}>
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-          <div className="grid grid-cols-1 lg:grid-cols-6 gap-4 overflow-x-auto">
-            {stages.map((stage) => (
-              <div key={stage.id} className="min-w-[280px] lg:min-w-0">
-                <div className="flex items-center justify-between mb-4">
-                  <div className="flex items-center space-x-2">
-                    <div className={`w-3 h-3 rounded-full ${stage.color}`}></div>
-                    <h3 className="font-semibold text-gray-900">{stage.name}</h3>
-                    <span className="bg-gray-100 text-gray-600 text-xs px-2 py-1 rounded-full">
-                      {getLeadsByStage(stage.id).length}
+      {/* Kanban Pipeline */}
+      <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+        <div className="grid grid-cols-1 lg:grid-cols-5 gap-6 overflow-x-auto">
+          {stages.map((stage) => {
+            const stageLeads = getLeadsByStage(stage.id);
+            const stageValue = getStageValue(stage.id);
+            
+            return (
+              <div key={stage.id} className="min-w-[280px]">
+                <div className={`rounded-lg border-2 border-dashed p-4 ${stage.color}`}>
+                  <div className="flex items-center justify-between mb-4">
+                    <h3 className="font-semibold text-slate-900">{stage.name}</h3>
+                    <span className="bg-white px-2 py-1 rounded-full text-sm font-medium">
+                      {stageLeads.length}
                     </span>
                   </div>
-                </div>
-                <div className="text-sm text-gray-600 mb-4">
-                  {formatCurrency(getTotalValue(stage.id))}
-                </div>
-                
-                <Droppable droppableId={stage.id}>
-                  {(provided, snapshot) => (
-                    <div
-                      ref={provided.innerRef}
-                      {...provided.droppableProps}
-                      className={`space-y-3 min-h-[200px] p-2 rounded-lg transition-colors ${
-                        snapshot.isDraggingOver ? 'bg-gray-50' : ''
-                      }`}
-                    >
-                      {getLeadsByStage(stage.id).map((lead, index) => (
-                        <Draggable key={lead.id} draggableId={lead.id} index={index}>
-                          {(provided, snapshot) => (
-                            <div
-                              ref={provided.innerRef}
-                              {...provided.draggableProps}
-                              {...provided.dragHandleProps}
-                              className={`bg-white border border-gray-200 rounded-lg p-4 cursor-pointer hover:shadow-md transition-shadow ${
-                                snapshot.isDragging ? 'shadow-lg' : ''
-                              }`}
-                              onClick={() => handleEditLead(lead)}
-                            >
-                              <div className="space-y-3">
-                                <div className="flex items-start justify-between">
-                                  <h4 className="font-medium text-gray-900 text-sm">{lead.name}</h4>
-                                  <span className={`text-xs px-2 py-1 rounded-full ${getStatusColor(lead.status)}`}>
-                                    {lead.status}
-                                  </span>
-                                </div>
-                                
-                                <div className="space-y-2 text-xs text-gray-600">
-                                  <div className="flex items-center space-x-2">
-                                    <Building className="w-3 h-3" />
-                                    <span className="truncate">{lead.company}</span>
-                                  </div>
-                                  <div className="flex items-center space-x-2">
-                                    <Mail className="w-3 h-3" />
-                                    <span className="truncate">{lead.email}</span>
-                                  </div>
-                                  <div className="flex items-center space-x-2">
-                                    <Phone className="w-3 h-3" />
-                                    <span>{lead.phone}</span>
-                                  </div>
-                                  <div className="flex items-center space-x-2">
-                                    <User className="w-3 h-3" />
-                                    <span>{lead.assignedTo}</span>
-                                  </div>
-                                </div>
-                                
-                                <div className="flex items-center justify-between pt-2 border-t border-gray-100">
-                                  <span className="text-sm font-semibold text-green-600">
-                                    {formatCurrency(lead.value)}
-                                  </span>
-                                  <span className="text-xs text-gray-500">
-                                    {new Date(lead.nextFollowUp).toLocaleDateString()}
-                                  </span>
-                                </div>
-                              </div>
-                            </div>
-                          )}
-                        </Draggable>
-                      ))}
-                      {provided.placeholder}
+                  <div className="mb-4">
+                    <p className="text-sm text-slate-600">Total Value</p>
+                    <p className="font-bold text-slate-900">₹{(stageValue / 100000).toFixed(1)}L</p>
+                  </div>
+                  
+                  <div className="space-y-3 max-h-96 overflow-y-auto">
+                    {stageLeads.map((lead) => (
+                      <div
+                        key={lead.id}
+                        className="bg-white rounded-lg p-4 shadow-sm border border-slate-200 hover:shadow-md transition-shadow cursor-pointer"
+                      >
+                        <div className="flex items-center justify-between mb-2">
+                          <h4 className="font-medium text-slate-900 text-sm">{lead.name}</h4>
+                          <span className={`px-2 py-1 text-xs rounded-full ${
+                            lead.status === 'hot' ? 'bg-red-100 text-red-800' :
+                            lead.status === 'warm' ? 'bg-orange-100 text-orange-800' :
+                            'bg-blue-100 text-blue-800'
+                          }`}>
+                            {lead.status}
+                          </span>
+                        </div>
+                        <p className="text-sm text-slate-600 mb-2">{lead.company}</p>
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center space-x-1">
+                            <DollarSign className="w-3 h-3 text-slate-400" />
+                            <span className="text-sm font-medium text-slate-900">
+                              ₹{lead.value.toLocaleString()}
+                            </span>
+                          </div>
+                          <span className="text-xs text-slate-500">{lead.assignedTo}</span>
+                        </div>
+                        <div className="mt-2 pt-2 border-t border-slate-100">
+                          <p className="text-xs text-slate-500">
+                            Next: {new Date(lead.nextFollowUp).toLocaleDateString()}
+                          </p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                  
+                  {stageLeads.length === 0 && (
+                    <div className="text-center py-8">
+                      <p className="text-slate-500 text-sm">No opportunities in this stage</p>
                     </div>
                   )}
-                </Droppable>
+                </div>
               </div>
-            ))}
-          </div>
-        </div>
-      </DragDropContext>
-
-      {/* Lead Form Modal */}
-      {showLeadForm && (
-        <LeadForm
-          lead={selectedLead}
-          onSave={(lead) => {
-            onUpdateLead(lead);
-            setShowLeadForm(false);
-            addNotification(
-              selectedLead ? 'Lead updated successfully' : 'Lead created successfully',
-              'success'
             );
-          }}
-          onCancel={() => setShowLeadForm(false)}
-          employees={[]} // This will be passed from parent component
-        />
-      )}
+          })}
+        </div>
+      </div>
+
+      {/* Pipeline Conversion Funnel */}
+      <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+        <h3 className="text-lg font-semibold text-slate-900 mb-4">Conversion Funnel</h3>
+        <div className="space-y-4">
+          {stages.slice(0, -1).map((stage, index) => {
+            const stageLeads = getLeadsByStage(stage.id);
+            const nextStage = stages[index + 1];
+            const nextStageLeads = getLeadsByStage(nextStage.id);
+            const conversionRate = stageLeads.length > 0 ? (nextStageLeads.length / stageLeads.length) * 100 : 0;
+            
+            return (
+              <div key={stage.id} className="flex items-center space-x-4">
+                <div className="w-32">
+                  <p className="text-sm font-medium text-slate-900">{stage.name}</p>
+                  <p className="text-xs text-slate-500">{stageLeads.length} leads</p>
+                </div>
+                <div className="flex-1">
+                  <div className="bg-slate-200 rounded-full h-2">
+                    <div
+                      className="bg-blue-500 h-2 rounded-full transition-all duration-300"
+                      style={{ width: `${Math.min(conversionRate, 100)}%` }}
+                    />
+                  </div>
+                </div>
+                <div className="w-16 text-right">
+                  <p className="text-sm font-medium text-slate-900">{conversionRate.toFixed(1)}%</p>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
     </div>
   );
 };

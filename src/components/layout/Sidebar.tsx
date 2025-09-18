@@ -1,138 +1,168 @@
 import React from 'react';
-import { User } from '../../types';
+import { ModuleType, User } from '../../types';
 import {
   LayoutDashboard,
   Users,
   UserCheck,
   BarChart3,
   Settings,
-  LogOut,
   Building2,
-  Briefcase,
+  LogOut,
+  ChevronRight,
 } from 'lucide-react';
 
 interface SidebarProps {
+  currentModule: ModuleType;
+  onModuleChange: (module: ModuleType) => void;
   user: User;
-  currentModule: string;
-  onModuleChange: (module: string) => void;
   onLogout: () => void;
 }
 
-const Sidebar: React.FC<SidebarProps> = ({
-  user,
-  currentModule,
-  onModuleChange,
-  onLogout,
-}) => {
+const Sidebar: React.FC<SidebarProps> = ({ currentModule, onModuleChange, user, onLogout }) => {
   const menuItems = [
-    {
-      id: 'dashboard',
-      name: 'Dashboard',
+    { 
+      id: 'dashboard' as ModuleType, 
+      label: 'Dashboard', 
       icon: LayoutDashboard,
-      roles: ['admin', 'manager', 'employee'],
+      description: 'Overview & Analytics'
     },
-    {
-      id: 'crm',
-      name: 'CRM',
+    { 
+      id: 'crm' as ModuleType, 
+      label: 'CRM', 
       icon: Users,
-      roles: ['admin', 'manager'],
+      description: 'Customer Management'
     },
-    {
-      id: 'hrms',
-      name: 'HRMS',
+    { 
+      id: 'hrms' as ModuleType, 
+      label: 'HRMS', 
       icon: UserCheck,
-      roles: ['admin', 'manager'],
+      description: 'Human Resources'
     },
-    {
-      id: 'employee',
-      name: 'Employee Portal',
-      icon: Briefcase,
-      roles: ['employee'],
-    },
-    {
-      id: 'reports',
-      name: 'Reports',
+    { 
+      id: 'reports' as ModuleType, 
+      label: 'Reports', 
       icon: BarChart3,
-      roles: ['admin', 'manager'],
+      description: 'Analytics & Reports'
     },
-    {
-      id: 'settings',
-      name: 'Settings',
+    { 
+      id: 'settings' as ModuleType, 
+      label: 'Settings', 
       icon: Settings,
-      roles: ['admin'],
+      description: 'System Configuration'
     },
   ];
 
-  const filteredMenuItems = menuItems.filter(item =>
-    item.roles.includes(user.role)
-  );
+  // Filter menu items based on user role
+  const filteredMenuItems = menuItems.filter(item => {
+    if (user.role === 'employee') {
+      return ['dashboard', 'hrms'].includes(item.id);
+    }
+    if (user.role === 'manager') {
+      return ['dashboard', 'crm', 'hrms', 'reports'].includes(item.id);
+    }
+    return true; // Admin sees all
+  });
+
+  const getRoleColor = (role: string) => {
+    switch (role) {
+      case 'admin':
+        return 'bg-red-100 text-red-800';
+      case 'manager':
+        return 'bg-blue-100 text-blue-800';
+      case 'employee':
+        return 'bg-green-100 text-green-800';
+      default:
+        return 'bg-slate-100 text-slate-800';
+    }
+  };
 
   return (
-    <div className="h-full bg-white border-r border-gray-200 flex flex-col">
-      {/* Logo and Company */}
-      <div className="p-6 border-b border-gray-200">
-        <div className="flex items-center space-x-3">
-          <div className="w-10 h-10 bg-gradient-to-br from-orange-500 to-amber-500 rounded-xl flex items-center justify-center">
+    <div className="w-72 bg-white border-r border-slate-200 min-h-screen flex flex-col shadow-sm">
+      {/* Header */}
+      <div className="p-6 border-b border-slate-200">
+        <div className="flex items-center space-x-3 mb-4">
+          <div className="w-10 h-10 bg-gradient-to-r from-orange-500 to-amber-500 rounded-xl flex items-center justify-center">
             <Building2 className="w-6 h-6 text-white" />
           </div>
           <div>
-            <h1 className="text-lg font-bold text-gray-900">BIDUA ERP</h1>
-            <p className="text-xs text-gray-500">Enterprise Solution</p>
+            <h1 className="text-xl font-bold text-slate-900">BIDUA ERP</h1>
+            <p className="text-xs text-slate-500">Enterprise System</p>
+          </div>
+        </div>
+        
+        {/* User Info */}
+        <div className="bg-gradient-to-r from-orange-50 to-amber-50 rounded-lg p-3">
+          <div className="flex items-center space-x-3">
+            <div className="w-8 h-8 bg-gradient-to-r from-orange-400 to-amber-400 rounded-full flex items-center justify-center">
+              <span className="text-white text-sm font-semibold">
+                {user.username.charAt(0).toUpperCase()}
+              </span>
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="text-sm font-medium text-slate-900 truncate">
+                {user.username}
+              </p>
+              <div className="flex items-center space-x-2">
+                <span className={`px-2 py-0.5 text-xs rounded-full ${getRoleColor(user.role)}`}>
+                  {user.role}
+                </span>
+                <span className="text-xs text-slate-500">{user.department}</span>
+              </div>
+            </div>
           </div>
         </div>
       </div>
-
-      {/* User Info */}
-      <div className="p-4 border-b border-gray-200">
-        <div className="flex items-center space-x-3">
-          <div className="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center">
-            <span className="text-sm font-medium text-gray-600">
-              {user.username.charAt(0).toUpperCase()}
-            </span>
-          </div>
-          <div className="flex-1 min-w-0">
-            <p className="text-sm font-medium text-gray-900 truncate">
-              {user.username}
-            </p>
-            <p className="text-xs text-gray-500 truncate">
-              {user.role.charAt(0).toUpperCase() + user.role.slice(1)} • {user.department}
-            </p>
-          </div>
-        </div>
-      </div>
-
-      {/* Navigation Menu */}
-      <nav className="flex-1 p-4 space-y-1">
+      
+      {/* Navigation */}
+      <nav className="flex-1 p-4 space-y-2">
         {filteredMenuItems.map((item) => {
           const Icon = item.icon;
           const isActive = currentModule === item.id;
-
+          
           return (
             <button
               key={item.id}
               onClick={() => onModuleChange(item.id)}
-              className={`w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-left transition-colors ${
+              className={`w-full group flex items-center justify-between p-3 rounded-xl transition-all duration-200 ${
                 isActive
-                  ? 'bg-orange-50 text-orange-700 border border-orange-200'
-                  : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
+                  ? 'bg-gradient-to-r from-orange-500 to-amber-500 text-white shadow-lg'
+                  : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
               }`}
             >
-              <Icon className={`w-5 h-5 ${isActive ? 'text-orange-600' : 'text-gray-400'}`} />
-              <span className="font-medium">{item.name}</span>
+              <div className="flex items-center space-x-3">
+                <Icon className={`w-5 h-5 ${isActive ? 'text-white' : 'text-slate-400 group-hover:text-slate-600'}`} />
+                <div className="text-left">
+                  <p className={`font-medium ${isActive ? 'text-white' : 'text-slate-900'}`}>
+                    {item.label}
+                  </p>
+                  <p className={`text-xs ${isActive ? 'text-orange-100' : 'text-slate-500'}`}>
+                    {item.description}
+                  </p>
+                </div>
+              </div>
+              <ChevronRight className={`w-4 h-4 transition-transform ${
+                isActive ? 'text-white rotate-90' : 'text-slate-400 group-hover:text-slate-600'
+              }`} />
             </button>
           );
         })}
       </nav>
-
-      {/* Logout Button */}
-      <div className="p-4 border-t border-gray-200">
+      
+      {/* Footer */}
+      <div className="p-4 border-t border-slate-200">
         <button
           onClick={onLogout}
-          className="w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-gray-600 hover:bg-red-50 hover:text-red-700 transition-colors"
+          className="w-full flex items-center space-x-3 p-3 rounded-xl text-slate-600 hover:bg-red-50 hover:text-red-600 transition-colors duration-200"
         >
           <LogOut className="w-5 h-5" />
-          <span className="font-medium">Logout</span>
+          <span className="font-medium">Sign Out</span>
         </button>
+        
+        <div className="mt-3 text-center">
+          <p className="text-xs text-slate-400">
+            © 2025 BIDUA Industries
+          </p>
+        </div>
       </div>
     </div>
   );
