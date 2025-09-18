@@ -26,8 +26,10 @@ const TaskForm: React.FC<TaskFormProps> = ({
     priority: 'medium' as 'low' | 'medium' | 'high' | 'urgent',
     status: 'pending' as 'pending' | 'in-progress' | 'completed' | 'cancelled',
     dueDate: '',
-    estimatedHours: 0,
-    actualHours: 0
+    startDate: '',
+    progress: 0,
+    tags: [] as string[],
+    project: ''
   });
 
   useEffect(() => {
@@ -41,8 +43,10 @@ const TaskForm: React.FC<TaskFormProps> = ({
         priority: task.priority,
         status: task.status,
         dueDate: task.dueDate,
-        estimatedHours: task.estimatedHours || 0,
-        actualHours: task.actualHours || 0
+        startDate: task.startDate || '',
+        progress: task.progress || 0,
+        tags: task.tags || [],
+        project: task.project || ''
       });
     }
   }, [task]);
@@ -60,7 +64,7 @@ const TaskForm: React.FC<TaskFormProps> = ({
     const { name, value } = e.target;
     setFormData(prev => ({
       ...prev,
-      [name]: name === 'estimatedHours' || name === 'actualHours' ? Number(value) : value
+      [name]: name === 'progress' ? Number(value) : value
     }));
   };
 
@@ -252,41 +256,52 @@ const TaskForm: React.FC<TaskFormProps> = ({
             />
           </div>
 
-          {/* Time Estimates */}
+          {/* Start Date and Progress */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                <Clock className="w-4 h-4 inline mr-2" />
-                Estimated Hours
+                <Calendar className="w-4 h-4 inline mr-2" />
+                Start Date
               </label>
               <input
-                type="number"
-                name="estimatedHours"
-                value={formData.estimatedHours}
+                type="date"
+                name="startDate"
+                value={formData.startDate}
                 onChange={handleChange}
-                min="0"
-                step="0.5"
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
-                placeholder="0"
               />
             </div>
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                <Clock className="w-4 h-4 inline mr-2" />
-                Actual Hours
+                Progress (%)
               </label>
               <input
                 type="number"
-                name="actualHours"
-                value={formData.actualHours}
+                name="progress"
+                value={formData.progress}
                 onChange={handleChange}
                 min="0"
-                step="0.5"
+                max="100"
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
                 placeholder="0"
               />
             </div>
+          </div>
+
+          {/* Project */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Project
+            </label>
+            <input
+              type="text"
+              name="project"
+              value={formData.project}
+              onChange={handleChange}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+              placeholder="Enter project name"
+            />
           </div>
 
           {/* Form Actions */}
