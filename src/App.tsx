@@ -260,26 +260,28 @@ function App() {
         />
       )}
 
-      {/* Sidebar */}
-      <div className={`
-        ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'}
-        md:translate-x-0 fixed md:relative z-50 md:z-auto
-        w-full md:w-72 h-full md:h-auto
-        transition-transform duration-300 ease-in-out
-      `}>
-        <Sidebar
-          currentUser={currentUser}
-          activeModule={activeModule}
-          onModuleChange={(module) => {
-            setActiveModule(module);
-            setIsSidebarOpen(false);
-          }}
-          onLogout={handleLogout}
-        />
-      </div>
+      {/* Sidebar - Only show for non-employee portal views */}
+      {activeModule !== 'employee-portal' && (
+        <div className={`
+          ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'}
+          md:translate-x-0 fixed md:relative z-50 md:z-auto
+          w-full md:w-72 h-full md:h-auto
+          transition-transform duration-300 ease-in-out
+        `}>
+          <Sidebar
+            currentUser={currentUser}
+            activeModule={activeModule}
+            onModuleChange={(module) => {
+              setActiveModule(module);
+              setIsSidebarOpen(false);
+            }}
+            onLogout={handleLogout}
+          />
+        </div>
+      )}
 
       {/* Main Content */}
-      <main className="flex-1 p-4 md:p-8 overflow-auto">
+      <main className={`flex-1 overflow-auto ${activeModule !== 'employee-portal' ? 'p-4 md:p-8' : ''}`}>
         {renderModule()}
       </main>
     </div>
