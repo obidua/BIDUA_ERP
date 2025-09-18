@@ -110,6 +110,7 @@ export const mockLeads: Lead[] = [
     assignedTo: 'Amit Patel',
     lastContact: '2025-01-11',
     nextFollowUp: '2025-01-18',
+  }
 ];
 
 export const mockSupportTickets: SupportTicket[] = [
