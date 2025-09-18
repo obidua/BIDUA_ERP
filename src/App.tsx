@@ -1,6 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import { User } from './types';
-import { mockUsers, staticPassword } from './data/mockData';
+import { 
+  mockUsers, 
+  staticPassword, 
+  mockLeads, 
+  mockEmployees, 
+  mockTasks, 
+  mockAttendance, 
+  mockLeaveRequests, 
+  mockSupportTickets, 
+  mockPayroll, 
+  mockPerformance, 
+  mockDocuments 
+} from './data/mockData';
 import LoginForm from './components/auth/LoginForm';
 import Sidebar from './components/layout/Sidebar';
 import Dashboard from './components/dashboard/Dashboard';
@@ -15,6 +27,17 @@ function App() {
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [activeModule, setActiveModule] = useState('dashboard');
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
+  // Initialize state with mock data
+  const [leads, setLeads] = useState(mockLeads);
+  const [employees, setEmployees] = useState(mockEmployees);
+  const [tasks, setTasks] = useState(mockTasks);
+  const [attendance, setAttendance] = useState(mockAttendance);
+  const [leaveRequests, setLeaveRequests] = useState(mockLeaveRequests);
+  const [supportTickets, setSupportTickets] = useState(mockSupportTickets);
+  const [payroll, setPayroll] = useState(mockPayroll);
+  const [performance, setPerformance] = useState(mockPerformance);
+  const [documents, setDocuments] = useState(mockDocuments);
 
   useEffect(() => {
     const savedUser = localStorage.getItem('currentUser');
@@ -51,6 +74,71 @@ function App() {
     setIsSidebarOpen(!isSidebarOpen);
   };
 
+  // Data manipulation functions
+  const handleAddLead = (lead: any) => {
+    setLeads([...leads, { ...lead, id: Date.now().toString() }]);
+  };
+
+  const handleUpdateLead = (id: string, updatedLead: any) => {
+    setLeads(leads.map(lead => lead.id === id ? { ...lead, ...updatedLead } : lead));
+  };
+
+  const handleDeleteLead = (id: string) => {
+    setLeads(leads.filter(lead => lead.id !== id));
+  };
+
+  const handleAddEmployee = (employee: any) => {
+    setEmployees([...employees, { ...employee, id: Date.now().toString() }]);
+  };
+
+  const handleUpdateEmployee = (id: string, updatedEmployee: any) => {
+    setEmployees(employees.map(emp => emp.id === id ? { ...emp, ...updatedEmployee } : emp));
+  };
+
+  const handleDeleteEmployee = (id: string) => {
+    setEmployees(employees.filter(emp => emp.id !== id));
+  };
+
+  const handleAddTask = (task: any) => {
+    setTasks([...tasks, { ...task, id: Date.now().toString() }]);
+  };
+
+  const handleUpdateTask = (id: string, updatedTask: any) => {
+    setTasks(tasks.map(task => task.id === id ? { ...task, ...updatedTask } : task));
+  };
+
+  const handleDeleteTask = (id: string) => {
+    setTasks(tasks.filter(task => task.id !== id));
+  };
+
+  const handleAddTicket = (ticket: any) => {
+    setSupportTickets([...supportTickets, { ...ticket, id: Date.now().toString() }]);
+  };
+
+  const handleUpdateTicket = (id: string, updatedTicket: any) => {
+    setSupportTickets(supportTickets.map(ticket => ticket.id === id ? { ...ticket, ...updatedTicket } : ticket));
+  };
+
+  const handleDeleteTicket = (id: string) => {
+    setSupportTickets(supportTickets.filter(ticket => ticket.id !== id));
+  };
+
+  const handleAddAttendance = (attendanceRecord: any) => {
+    setAttendance([...attendance, { ...attendanceRecord, id: Date.now().toString() }]);
+  };
+
+  const handleUpdateAttendance = (id: string, updatedAttendance: any) => {
+    setAttendance(attendance.map(att => att.id === id ? { ...att, ...updatedAttendance } : att));
+  };
+
+  const handleAddLeaveRequest = (leave: any) => {
+    setLeaveRequests([...leaveRequests, { ...leave, id: Date.now().toString() }]);
+  };
+
+  const handleUpdateLeaveRequest = (id: string, updatedLeave: any) => {
+    setLeaveRequests(leaveRequests.map(leave => leave.id === id ? { ...leave, ...updatedLeave } : leave));
+  };
+
   if (!currentUser) {
     return <LoginForm onLogin={handleLogin} />;
   }
@@ -58,19 +146,91 @@ function App() {
   const renderModule = () => {
     switch (activeModule) {
       case 'dashboard':
-        return <Dashboard currentUser={currentUser} />;
+        return (
+          <Dashboard 
+            currentUser={currentUser} 
+            leads={leads}
+            employees={employees}
+            tasks={tasks}
+            attendance={attendance}
+            leaveRequests={leaveRequests}
+          />
+        );
       case 'crm':
-        return <CRMModule />;
+        return (
+          <CRMModule 
+            currentUser={currentUser}
+            leads={leads}
+            supportTickets={supportTickets}
+            onAddLead={handleAddLead}
+            onUpdateLead={handleUpdateLead}
+            onDeleteLead={handleDeleteLead}
+            onAddTicket={handleAddTicket}
+            onUpdateTicket={handleUpdateTicket}
+            onDeleteTicket={handleDeleteTicket}
+          />
+        );
       case 'hrms':
-        return <HRMModule currentUser={currentUser} />;
+        return (
+          <HRMSModule 
+            currentUser={currentUser}
+            employees={employees}
+            attendance={attendance}
+            leaveRequests={leaveRequests}
+            payroll={payroll}
+            performance={performance}
+            tasks={tasks}
+            onAddEmployee={handleAddEmployee}
+            onUpdateEmployee={handleUpdateEmployee}
+            onDeleteEmployee={handleDeleteEmployee}
+            onAddAttendance={handleAddAttendance}
+            onUpdateAttendance={handleUpdateAttendance}
+            onAddLeaveRequest={handleAddLeaveRequest}
+            onUpdateLeaveRequest={handleUpdateLeaveRequest}
+            onAddTask={handleAddTask}
+            onUpdateTask={handleUpdateTask}
+            onDeleteTask={handleDeleteTask}
+          />
+        );
       case 'reports':
-        return <ReportsModule />;
+        return (
+          <ReportsModule 
+            currentUser={currentUser}
+            leads={leads}
+            employees={employees}
+            tasks={tasks}
+            attendance={attendance}
+            payroll={payroll}
+          />
+        );
       case 'settings':
         return <SettingsModule />;
       case 'employee-portal':
-        return <EmployeePortal currentUser={currentUser} />;
+        return (
+          <EmployeePortal 
+            currentUser={currentUser}
+            employees={employees}
+            attendance={attendance}
+            leaveRequests={leaveRequests}
+            payroll={payroll}
+            tasks={tasks}
+            documents={documents}
+            onAddLeaveRequest={handleAddLeaveRequest}
+            onUpdateTask={handleUpdateTask}
+            onLogout={handleLogout}
+          />
+        );
       default:
-        return <Dashboard currentUser={currentUser} />;
+        return (
+          <Dashboard 
+            currentUser={currentUser} 
+            leads={leads}
+            employees={employees}
+            tasks={tasks}
+            attendance={attendance}
+            leaveRequests={leaveRequests}
+          />
+        );
     }
   };
 
