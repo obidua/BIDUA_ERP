@@ -215,6 +215,7 @@ function App() {
             payroll={payroll}
             tasks={tasks}
             documents={documents}
+            onAddAttendance={handleAddAttendance}
             onAddLeaveRequest={handleAddLeaveRequest}
             onUpdateTask={handleUpdateTask}
             onLogout={handleLogout}

@@ -26,6 +26,7 @@ interface EmployeePortalProps {
   payroll: any[];
   tasks: any[];
   documents: any[];
+  onAddAttendance: (attendance: any) => void;
   onAddLeaveRequest: (leave: any) => void;
   onUpdateTask: (id: string, task: any) => void;
   onLogout: () => void;
@@ -39,6 +40,7 @@ const EmployeePortal: React.FC<EmployeePortalProps> = ({
   payroll,
   tasks,
   documents,
+  onAddAttendance,
   onAddLeaveRequest,
   onUpdateTask,
   onLogout
@@ -86,6 +88,7 @@ const EmployeePortal: React.FC<EmployeePortalProps> = ({
           <Component
             currentUser={currentUser}
             attendance={attendance}
+            onAddAttendance={onAddAttendance}
           />
         );
       case 'leaves':

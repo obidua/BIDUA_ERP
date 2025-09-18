@@ -1,16 +1,20 @@
 import React, { useState } from 'react';
-import { Clock, Calendar, MapPin, TrendingUp, CheckCircle, AlertTriangle } from 'lucide-react';
+import { Clock, Calendar, MapPin, TrendingUp, CheckCircle, AlertTriangle, Plus } from 'lucide-react';
+import AttendanceForm from '../hrms/AttendanceForm';
 
 interface EmployeeAttendanceProps {
   currentUser: any;
   attendance: any[];
+  onAddAttendance?: (attendance: any) => void;
 }
 
 const EmployeeAttendance: React.FC<EmployeeAttendanceProps> = ({
   currentUser,
-  attendance
+  attendance,
+  onAddAttendance
 }) => {
   const [selectedPeriod, setSelectedPeriod] = useState('month');
+  const [showAttendanceForm, setShowAttendanceForm] = useState(false);
 
   // Filter attendance for current user
   const userAttendance = attendance.filter(att => 
@@ -59,6 +63,13 @@ const EmployeeAttendance: React.FC<EmployeeAttendanceProps> = ({
   const totalHours = filteredAttendance.reduce((sum, att) => sum + att.totalHours, 0);
   const avgHours = totalDays > 0 ? (totalHours / totalDays).toFixed(1) : '0';
 
+  const handleAddAttendance = (attendanceData: any) => {
+    if (onAddAttendance) {
+      onAddAttendance(attendanceData);
+    }
+    setShowAttendanceForm(false);
+  };
+
   return (
     <div className="space-y-4 md:space-y-6">
       {/* Header */}
@@ -67,16 +78,25 @@ const EmployeeAttendance: React.FC<EmployeeAttendanceProps> = ({
           <h2 className="text-xl md:text-2xl font-bold text-gray-900">My Attendance</h2>
           <p className="text-sm md:text-base text-gray-600">Track your attendance and working hours</p>
         </div>
-        <select
-          value={selectedPeriod}
-          onChange={(e) => setSelectedPeriod(e.target.value)}
-          className="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
-        >
-          <option value="week">This Week</option>
-          <option value="month">This Month</option>
-          <option value="quarter">This Quarter</option>
-          <option value="all">All Time</option>
-        </select>
+        <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
+          <button
+            onClick={() => setShowAttendanceForm(true)}
+            className="flex items-center space-x-2 bg-teal-600 text-white px-4 py-2 rounded-lg hover:bg-teal-700 transition-colors text-sm md:text-base"
+          >
+            <Plus className="w-4 h-4 md:w-5 md:h-5" />
+            <span>Mark Attendance</span>
+          </button>
+          <select
+            value={selectedPeriod}
+            onChange={(e) => setSelectedPeriod(e.target.value)}
+            className="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+          >
+            <option value="week">This Week</option>
+            <option value="month">This Month</option>
+            <option value="quarter">This Quarter</option>
+            <option value="all">All Time</option>
+          </select>
+        </div>
       </div>
 
       {/* Quick Stats */}
@@ -209,6 +229,16 @@ const EmployeeAttendance: React.FC<EmployeeAttendanceProps> = ({
           </table>
         </div>
       </div>
+
+      {/* Attendance Form Modal */}
+      {showAttendanceForm && onAddAttendance && (
+        <AttendanceForm
+          employees={[]} // Not needed for employee self-marking
+          user={currentUser}
+          onSubmit={handleAddAttendance}
+          onCancel={() => setShowAttendanceForm(false)}
+        />
+      )}
     </div>
   );
 };

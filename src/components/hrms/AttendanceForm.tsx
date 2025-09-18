@@ -24,7 +24,14 @@ const AttendanceForm: React.FC<AttendanceFormProps> = ({
     totalHours: 0,
     status: 'present' as const,
     location: 'Office',
+    coordinates: {
+      latitude: 0,
+      longitude: 0,
+    },
+    isWithinGeofence: false,
   });
+  const [locationError, setLocationError] = useState<string>('');
+  const [isGettingLocation, setIsGettingLocation] = useState(false);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -66,19 +73,89 @@ const AttendanceForm: React.FC<AttendanceFormProps> = ({
 
   const handleClockIn = () => {
     const now = new Date();
+    setIsGettingLocation(true);
+    setLocationError('');
+    
+    // Get current location
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const { latitude, longitude } = position.coords;
+          setFormData(prev => ({
+            ...prev,
+            clockIn: now.toTimeString().slice(0, 5),
+            date: now.toISOString().split('T')[0],
+            coordinates: { latitude, longitude },
+            isWithinGeofence: true, // You can implement geofence logic here
+          }));
+          setIsGettingLocation(false);
+        },
+        (error) => {
+          setLocationError('Unable to get location. Please enable location services.');
+          setFormData(prev => ({
+            ...prev,
+            clockIn: now.toTimeString().slice(0, 5),
+            date: now.toISOString().split('T')[0],
+          }));
+          setIsGettingLocation(false);
+        },
+        {
+          enableHighAccuracy: true,
+          timeout: 10000,
+          maximumAge: 60000
+        }
+      );
+    } else {
+      setLocationError('Geolocation is not supported by this browser.');
     setFormData(prev => ({
       ...prev,
       clockIn: now.toTimeString().slice(0, 5),
       date: now.toISOString().split('T')[0],
     }));
+      setIsGettingLocation(false);
+    }
   };
 
   const handleClockOut = () => {
     const now = new Date();
+    setIsGettingLocation(true);
+    setLocationError('');
+    
+    // Get current location
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const { latitude, longitude } = position.coords;
+          setFormData(prev => ({
+            ...prev,
+            clockOut: now.toTimeString().slice(0, 5),
+            coordinates: { latitude, longitude },
+            isWithinGeofence: true, // You can implement geofence logic here
+          }));
+          setIsGettingLocation(false);
+        },
+        (error) => {
+          setLocationError('Unable to get location. Please enable location services.');
+          setFormData(prev => ({
+            ...prev,
+            clockOut: now.toTimeString().slice(0, 5),
+          }));
+          setIsGettingLocation(false);
+        },
+        {
+          enableHighAccuracy: true,
+          timeout: 10000,
+          maximumAge: 60000
+        }
+      );
+    } else {
+      setLocationError('Geolocation is not supported by this browser.');
     setFormData(prev => ({
       ...prev,
       clockOut: now.toTimeString().slice(0, 5),
     }));
+      setIsGettingLocation(false);
+    }
   };
 
   return (
@@ -165,10 +242,11 @@ const AttendanceForm: React.FC<AttendanceFormProps> = ({
                 <button
                   type="button"
                   onClick={handleClockIn}
+                  disabled={isGettingLocation}
                   className="px-3 py-2 bg-teal-600 text-white rounded-lg hover:bg-teal-700 transition-colors flex items-center space-x-1"
                 >
                   <Clock className="w-4 h-4" />
-                  <span>Now</span>
+                  <span>{isGettingLocation ? 'Getting...' : 'Now'}</span>
                 </button>
               </div>
             </div>
@@ -187,13 +265,42 @@ const AttendanceForm: React.FC<AttendanceFormProps> = ({
                 <button
                   type="button"
                   onClick={handleClockOut}
+                  disabled={isGettingLocation}
                   className="px-3 py-2 bg-slate-600 text-white rounded-lg hover:bg-slate-700 transition-colors flex items-center space-x-1"
                 >
                   <Clock className="w-4 h-4" />
-                  <span>Now</span>
+                  <span>{isGettingLocation ? 'Getting...' : 'Now'}</span>
                 </button>
               </div>
             </div>
+          </div>
+
+          {/* Location Information */}
+          <div>
+            <label className="block text-sm font-medium text-slate-700 mb-1">
+              <MapPin className="w-4 h-4 inline mr-2" />
+              Current Location
+            </label>
+            {locationError ? (
+              <div className="p-3 bg-red-50 border border-red-200 rounded-lg">
+                <p className="text-sm text-red-600">{locationError}</p>
+              </div>
+            ) : formData.coordinates.latitude !== 0 && formData.coordinates.longitude !== 0 ? (
+              <div className="p-3 bg-green-50 border border-green-200 rounded-lg">
+                <p className="text-sm text-green-700">
+                  📍 Location captured: {formData.coordinates.latitude.toFixed(6)}, {formData.coordinates.longitude.toFixed(6)}
+                </p>
+                <p className="text-xs text-green-600 mt-1">
+                  {formData.isWithinGeofence ? '✅ Within office premises' : '⚠️ Outside office premises'}
+                </p>
+              </div>
+            ) : (
+              <div className="p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                <p className="text-sm text-blue-700">
+                  {isGettingLocation ? '📍 Getting your location...' : '📍 Click Clock In/Out to capture location'}
+                </p>
+              </div>
+            )}
           </div>
 
           <div>
