@@ -21,8 +21,8 @@ const LeadsManagement: React.FC<LeadsManagementProps> = ({
   const [stageFilter, setStageFilter] = useState('all');
 
   const filteredLeads = leads.filter(lead => {
-    const matchesSearch = lead.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         lead.company.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesSearch = (lead.name || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         (lead.company || '').toLowerCase().includes(searchTerm.toLowerCase());
     const matchesStatus = statusFilter === 'all' || lead.status === statusFilter;
     const matchesStage = stageFilter === 'all' || lead.stage === stageFilter;
     
