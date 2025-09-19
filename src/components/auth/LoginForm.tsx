@@ -108,12 +108,9 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLogin, error }) => {
 
         {/* Footer */}
         <div className="mt-8 text-center">
-          <Link
-            to="/documentation"
-            className="text-sm text-indigo-600 hover:text-indigo-800 transition-colors"
-          >
-            📚 View Documentation
-          </Link>
+          <p className="text-sm text-gray-500">
+            📚 Use "doc" account to access documentation portal
+          </p>
         </div>
       </div>
     </div>

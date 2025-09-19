@@ -22,7 +22,7 @@ import HRMSModule from './components/hrms/HRMSModule';
 import ReportsModule from './components/reports/ReportsModule';
 import SettingsModule from './components/settings/SettingsModule';
 import EmployeePortal from './components/employee/EmployeePortal';
-import DocumentationPage from './components/documentation/DocumentationPage';
+import DocumentationPortal from './components/documentation/DocumentationPortal';
 import { Menu, X } from 'lucide-react';
 
 function App() {
@@ -228,6 +228,13 @@ function App() {
             onLogout={handleLogout}
           />
         );
+      case 'documentation-portal':
+        return (
+          <DocumentationPortal 
+            currentUser={currentUser}
+            onLogout={handleLogout}
+          />
+        );
       default:
         return (
           <Dashboard 
@@ -245,7 +252,6 @@ function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/documentation" element={<DocumentationPage />} />
         <Route path="/" element={
           <div className="min-h-screen bg-gray-50 flex flex-col md:flex-row">
             {!currentUser ? (
