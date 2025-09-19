@@ -24,7 +24,7 @@ export const navigationItems: NavigationItem[] = [
       { id: 'frontend-setup', title: 'Frontend Setup (React)' },
       { id: 'backend-setup', title: 'Backend Setup (FastAPI)' },
       { id: 'database-setup', title: 'Database Setup (PostgreSQL)' },
-      { id: 'deployment', title: 'Deployment Guide' },
+      { id: 'deployment-guide', title: 'Deployment Guide' },
       { id: 'testing', title: 'Testing Strategy' }
     ]
   },
@@ -72,7 +72,7 @@ export const navigationItems: NavigationItem[] = [
     id: 'deployment',
     title: 'Deployment',
     children: [
-      { id: 'deployment', title: 'Deployment Guide' },
+      { id: 'deployment-overview', title: 'Deployment Overview' },
       { id: 'monitoring', title: 'Monitoring' },
       { id: 'performance', title: 'Performance Optimization' }
     ]
