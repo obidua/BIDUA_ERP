@@ -1,24 +1,10 @@
 import React, { useState } from 'react';
 import { 
-  BookOpen, 
-  FileText, 
-  Code, 
-  Database, 
-  Settings, 
-  Users,
-  Home,
-  Layers,
-  GitBranch,
+  BookOpen,
+  Download,
+  Code,
+  Database,
   Server,
-  Smartphone,
-  Globe,
-  Shield,
-  Zap,
-  Target,
-  CheckCircle,
-  Clock,
-}
-import {
   Globe,
   Shield,
   Zap,
