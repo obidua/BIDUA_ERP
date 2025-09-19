@@ -339,31 +339,7 @@ echo "Deployment completed successfully!"`}
           <div>
             <h4 className="font-semibold text-gray-900 mb-3">Monitoring with Prometheus</h4>
             <pre className="bg-gray-900 text-green-400 p-4 rounded-lg overflow-x-auto text-sm">
-{\`# docker-compose.monitoring.yml
-version: '3.8'
-
-services:
-  prometheus:
-    image: prom/prometheus
-    ports:
-      - "9090:9090"
-    volumes:
-      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml
-      - prometheus_data:/prometheus
-
-  grafana:
-    image: grafana/grafana
-    ports:
-      - "3000:3000"
-    environment:
-      - GF_SECURITY_ADMIN_PASSWORD=admin
-    volumes:
-      - grafana_data:/var/lib/grafana
-      - ./monitoring/grafana/dashboards:/etc/grafana/provisioning/dashboards
-
-volumes:
-  prometheus_data:
-  grafana_data:`}
+{"# docker-compose.monitoring.yml\nversion: '3.8'\n\nservices:\n  prometheus:\n    image: prom/prometheus\n    ports:\n      - \"9090:9090\"\n    volumes:\n      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml\n      - prometheus_data:/prometheus\n\n  grafana:\n    image: grafana/grafana\n    ports:\n      - \"3000:3000\"\n    environment:\n      - GF_SECURITY_ADMIN_PASSWORD=admin\n    volumes:\n      - grafana_data:/var/lib/grafana\n      - ./monitoring/grafana/dashboards:/etc/grafana/provisioning/dashboards\n\nvolumes:\n  prometheus_data:\n  grafana_data:"}
             </pre>
           </div>
         </div>
