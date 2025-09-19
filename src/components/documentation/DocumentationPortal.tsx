@@ -700,11 +700,171 @@ const DocumentationPortal: React.FC<DocumentationPortalProps> = ({
 
   return (
     <div className="min-h-screen bg-gray-50 flex">
+      {/* Mobile Header */}
+      <div className="md:hidden fixed top-0 left-0 right-0 bg-white border-b border-gray-200 px-4 py-3 flex items-center justify-between z-30">
+        <div className="flex items-center space-x-3">
+          <div className="bg-indigo-600 p-2 rounded-lg">
+            <Book className="w-6 h-6 text-white" />
+          </div>
+          <div>
+            <h1 className="text-lg font-bold text-gray-900">BIDUA ERP</h1>
+            <p className="text-xs text-gray-500">Development Docs</p>
+          </div>
+        </div>
+        <button
+          onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+          className="p-2 rounded-lg text-gray-600 hover:bg-gray-100 transition-colors"
+        >
+          {isSidebarOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+        </button>
+      </div>
+
+      {/* Mobile Overlay */}
+      {isSidebarOpen && (
+        <div 
+          className="fixed inset-0 bg-black bg-opacity-50 z-40 md:hidden"
+          onClick={() => setIsSidebarOpen(false)}
+        />
+      )}
+
       {/* Documentation Sidebar */}
-      <div className="w-80 bg-white border-r border-gray-200 flex flex-col">
+      <div className={`
+        fixed md:static inset-y-0 left-0 z-50 w-80 bg-white border-r border-gray-200 flex flex-col transform transition-transform duration-300 ease-in-out
+        ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}
+      `}>
         {/* Header */}
-        <div className="p-6 border-b border-gray-200">
-          <div className="flex items-center justify-between mb-4">
+        <div className="hidden md:flex items-center space-x-3 p-6 border-b border-gray-200">
+          <div className="bg-indigo-600 p-3 rounded-xl">
+            <Book className="w-8 h-8 text-white" />
+          </div>
+          <div>
+            <h1 className="text-xl font-bold text-gray-900">BIDUA ERP</h1>
+            <p className="text-sm text-gray-500">Development Docs</p>
+          </div>
+        </div>
+
+        {/* Search */}
+        <div className="p-4 md:p-6 border-b border-gray-200 mt-16 md:mt-0">
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+            <input
+              type="text"
+              placeholder="Search documentation..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm"
+            />
+          </div>
+        </div>
+
+        {/* User Info */}
+        <div className="p-4 md:p-6 border-b border-gray-200">
+          <div className="flex items-center space-x-3">
+            <div className="w-10 h-10 bg-indigo-100 rounded-full flex items-center justify-center">
+              <span className="text-indigo-600 font-semibold text-sm">
+                {currentUser.username.charAt(0).toUpperCase()}
+              </span>
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="text-sm font-medium text-gray-900 truncate">
+                {currentUser.username}
+              </p>
+              <p className="text-xs text-gray-500 capitalize truncate">
+                {currentUser.role} • Documentation Access
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* Navigation */}
+        <nav className="flex-1 p-4 md:p-6 space-y-2 overflow-y-auto">
+          <div className="space-y-2">
+            {filteredNavItems.map((section) => {
+              const isExpanded = expandedSections.includes(section.id);
+              
+              return (
+                <div key={section.id}>
+                  <button
+                    onClick={() => toggleSection(section.id)}
+                    className="w-full flex items-center justify-between px-3 py-2 text-left text-sm font-medium text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
+                  >
+                    <span>{section.title}</span>
+                    {section.children && (
+                      isExpanded ? <ChevronDown className="w-4 h-4" /> : <ChevronRight className="w-4 h-4" />
+                    )}
+                  </button>
+                  
+                  {section.children && isExpanded && (
+                    <div className="ml-6 mt-1 space-y-1">
+                      {section.children.map((child) => (
+                        <button
+                          key={child.id}
+                          onClick={() => {
+                            onSectionChange(child.id);
+                            if (window.innerWidth < 768) setIsSidebarOpen(false);
+                          }}
+                          className={`w-full text-left px-3 py-2 text-sm rounded-lg transition-colors ${
+                            activeSection === child.id
+                              ? 'bg-indigo-50 text-indigo-700 border-l-2 border-indigo-500'
+                              : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
+                          }`}
+                        >
+                          {child.title}
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+            
+            {/* Logout button */}
+            <div className="pt-6 border-t border-gray-200">
+              <button
+                onClick={onLogout}
+                className="w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-700 hover:bg-red-50 hover:text-red-700 transition-all duration-200"
+              >
+                <LogOut className="w-5 h-5" />
+                <span className="font-medium">Logout</span>
+              </button>
+            </div>
+          </div>
+        </nav>
+      </div>
+
+      {/* Main Content */}
+      <div className="flex-1 flex flex-col min-w-0">
+        {/* Content Header */}
+        <div className="bg-white border-b border-gray-200 px-8 py-6">
+          <div className="flex items-center space-x-2 text-sm text-gray-500 mb-2">
+            <span>Development Documentation</span>
+            <ChevronRight className="w-4 h-4" />
+            <span className="text-indigo-600 font-medium">
+              {navigationItems.find(section => 
+                section.children?.some(child => child.id === activeSection)
+              )?.title || 'Getting Started'}
+            </span>
+          </div>
+        </div>
+
+        {/* Content Area */}
+        <main className="flex-1 p-8 overflow-y-auto mt-16 md:mt-0">
+          <div className="max-w-5xl">
+            {getContentForSection(activeSection)}
+            
+            {/* Navigation Buttons */}
+            <NavigationButtons
+              currentSection={activeSection}
+              onSectionChange={onSectionChange}
+            />
+          </div>
+        </main>
+      </div>
+    </div>
+  );
+};
+
+export default DocumentationPortal;
             <div className="flex items-center space-x-3">
               <div className="bg-indigo-600 p-2 rounded-lg">
                 <Book className="w-6 h-6 text-white" />
