@@ -35,6 +35,7 @@ const DocumentationPortal: React.FC<DocumentationPortalProps> = ({
   onSectionChange
 }) => {
   const [searchTerm, setSearchTerm] = useState('');
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [expandedSections, setExpandedSections] = useState<string[]>([
     'getting-started', 
     'development-guide', 
