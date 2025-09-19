@@ -126,19 +126,19 @@ const CompleteEndpoints: React.FC = () => {
                   </tr>
                   <tr>
                     <td className="px-4 py-3"><span className="bg-blue-100 text-blue-800 px-2 py-1 rounded text-xs">GET</span></td>
-                    <td className="px-4 py-3 font-mono text-sm">/employees/{id}</td>
+                    <td className="px-4 py-3 font-mono text-sm">/employees/&#123;id&#125;</td>
                     <td className="px-4 py-3 text-sm">Get employee details by ID</td>
                     <td className="px-4 py-3 text-sm">Admin, Manager, Self</td>
                   </tr>
                   <tr>
                     <td className="px-4 py-3"><span className="bg-yellow-100 text-yellow-800 px-2 py-1 rounded text-xs">PUT</span></td>
-                    <td className="px-4 py-3 font-mono text-sm">/employees/{id}</td>
+                    <td className="px-4 py-3 font-mono text-sm">/employees/&#123;id&#125;</td>
                     <td className="px-4 py-3 text-sm">Update employee information</td>
                     <td className="px-4 py-3 text-sm">Admin, Manager</td>
                   </tr>
                   <tr>
                     <td className="px-4 py-3"><span className="bg-blue-100 text-blue-800 px-2 py-1 rounded text-xs">GET</span></td>
-                    <td className="px-4 py-3 font-mono text-sm">/employees/{id}/hierarchy</td>
+                    <td className="px-4 py-3 font-mono text-sm">/employees/&#123;id&#125;/hierarchy</td>
                     <td className="px-4 py-3 text-sm">Get employee organizational hierarchy</td>
                     <td className="px-4 py-3 text-sm">Admin, Manager</td>
                   </tr>
@@ -190,7 +190,7 @@ const CompleteEndpoints: React.FC = () => {
                   </tr>
                   <tr>
                     <td className="px-4 py-3"><span className="bg-yellow-100 text-yellow-800 px-2 py-1 rounded text-xs">PUT</span></td>
-                    <td className="px-4 py-3 font-mono text-sm">/attendance/{id}/approve</td>
+                    <td className="px-4 py-3 font-mono text-sm">/attendance/&#123;id&#125;/approve</td>
                     <td className="px-4 py-3 text-sm">Approve attendance record</td>
                     <td className="px-4 py-3 text-sm">Manager, Admin</td>
                   </tr>
