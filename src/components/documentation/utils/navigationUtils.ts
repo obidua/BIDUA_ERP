@@ -7,24 +7,25 @@ export interface NavigationItem {
 
 export const navigationItems: NavigationItem[] = [
   {
-    id: 'project-structure',
-    title: 'Project Structure',
+    id: 'getting-started',
+    title: 'Getting Started',
     children: [
       { id: 'project-overview', title: 'Project Overview' },
       { id: 'architecture', title: 'System Architecture' },
       { id: 'tech-stack', title: 'Technology Stack' },
-      { id: 'folder-structure', title: 'Folder Structure' }
+      { id: 'project-blueprint', title: 'Project Blueprint' },
+      { id: 'setup', title: 'Development Setup' },
     ]
   },
   {
     id: 'development-guide',
     title: 'Development Guide',
     children: [
-      { id: 'setup-environment', title: 'Environment Setup' },
       { id: 'frontend-setup', title: 'Frontend Setup (React)' },
       { id: 'backend-setup', title: 'Backend Setup (FastAPI)' },
       { id: 'database-setup', title: 'Database Setup (PostgreSQL)' },
-      { id: 'deployment', title: 'Deployment Guide' }
+      { id: 'deployment', title: 'Deployment Guide' },
+      { id: 'testing', title: 'Testing Strategy' }
     ]
   },
   {
@@ -32,6 +33,12 @@ export const navigationItems: NavigationItem[] = [
     title: 'Database Schema',
     children: [
       { id: 'schema-overview', title: 'Schema Overview' },
+      { id: 'user-auth-schema', title: 'User & Authentication' },
+      { id: 'crm-schema', title: 'CRM Schema' },
+      { id: 'hrms-employee-schema', title: 'HRMS Employee Schema' },
+      { id: 'hrms-attendance-schema', title: 'HRMS Attendance Schema' },
+      { id: 'hrms-leave-schema', title: 'HRMS Leave Schema' },
+      { id: 'hrms-task-schema', title: 'HRMS Task Schema' },
       { id: 'user-auth-schema', title: 'User & Authentication' },
       { id: 'crm-schema', title: 'CRM Schema' },
       { id: 'hrms-employee-schema', title: 'HRMS Employee Schema' },
@@ -53,28 +60,27 @@ export const navigationItems: NavigationItem[] = [
       { id: 'user-endpoints', title: 'User Management Endpoints' },
       { id: 'crm-endpoints', title: 'CRM Endpoints' },
       { id: 'hrms-endpoints', title: 'HRMS Endpoints' },
-      { id: 'file-endpoints', title: 'File Management Endpoints' }
+      { id: 'file-endpoints', title: 'File Management Endpoints' },
+      { id: 'endpoints', title: 'Complete Endpoint Reference' }
     ]
   },
   {
-    id: 'portal-communication',
-    title: 'Portal Communication',
+    id: 'frontend-guide',
+    title: 'Frontend Guide',
     children: [
-      { id: 'communication-overview', title: 'Communication Overview' },
-      { id: 'admin-portal', title: 'Admin Portal Flow' },
-      { id: 'manager-portal', title: 'Manager Portal Flow' },
-      { id: 'employee-portal', title: 'Employee Portal Flow' },
-      { id: 'data-flow', title: 'Data Flow Diagrams' }
+      { id: 'components', title: 'Components' },
+      { id: 'routing', title: 'Routing' },
+      { id: 'state-management', title: 'State Management' },
+      { id: 'api-integration', title: 'API Integration' }
     ]
   },
   {
-    id: 'features',
-    title: 'Feature Documentation',
+    id: 'deployment',
+    title: 'Deployment',
     children: [
-      { id: 'crm-features', title: 'CRM Features' },
-      { id: 'hrms-features', title: 'HRMS Features' },
-      { id: 'reporting-features', title: 'Reporting Features' },
-      { id: 'security-features', title: 'Security Features' }
+      { id: 'deployment', title: 'Deployment Guide' },
+      { id: 'monitoring', title: 'Monitoring' },
+      { id: 'performance', title: 'Performance Optimization' }
     ]
   }
 ];

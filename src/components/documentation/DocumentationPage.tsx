@@ -7,9 +7,15 @@ import { getParentSection, getSectionTitle } from './utils/navigationUtils';
 // Import all section components
 import ProjectOverview from './sections/ProjectOverview';
 import SystemArchitecture from './sections/SystemArchitecture';
+import TechnologyStack from './sections/TechnologyStack';
+import ProjectBlueprint from './sections/ProjectBlueprint';
+import FrontendSetup from './sections/FrontendSetup';
+import BackendSetup from './sections/BackendSetup';
+import DatabaseRelationships from './sections/DatabaseRelationships';
 import UserAuthSchema from './sections/UserAuthSchema';
 import HRMSEmployeeSchema from './sections/HRMSEmployeeSchema';
 import HRMSPayrollSchema from './sections/HRMSPayrollSchema';
+import HRMSAttendanceSchema from './sections/HRMSAttendanceSchema';
 import CRMSchema from './sections/CRMSchema';
 import APIDocumentationOverview from './sections/APIDocumentationOverview';
 
@@ -37,66 +43,39 @@ const DocumentationPage: React.FC = () => {
         return <ProjectOverview />;
       case 'architecture':
         return <SystemArchitecture />;
+      case 'tech-stack':
+        return <TechnologyStack />;
+      case 'project-blueprint':
+        return <ProjectBlueprint />;
+      case 'frontend-setup':
+        return <FrontendSetup />;
+      case 'backend-setup':
+        return <BackendSetup />;
+      case 'relationships':
+        return <DatabaseRelationships />;
       case 'user-auth-schema':
         return <UserAuthSchema />;
       case 'hrms-employee-schema':
         return <HRMSEmployeeSchema />;
       case 'hrms-payroll-schema':
         return <HRMSPayrollSchema />;
+      case 'hrms-attendance-schema':
+        return <HRMSAttendanceSchema />;
       case 'crm-schema':
         return <CRMSchema />;
       case 'api-overview':
         return <APIDocumentationOverview />;
       
       // Placeholder sections - these can be implemented later
-      case 'tech-stack':
+      case 'setup':
         return (
           <div className="space-y-6">
-            <h1 className="text-3xl font-bold text-gray-900">Technology Stack</h1>
+            <h1 className="text-3xl font-bold text-gray-900">Development Setup</h1>
             <p className="text-lg text-gray-600">
-              Detailed information about the technologies used in BIDUA ERP system.
+              Quick start guide for setting up the development environment.
             </p>
             <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-6">
-              <p className="text-yellow-800">This section is under development. Please check back later for detailed technology stack information.</p>
-            </div>
-          </div>
-        );
-      
-      case 'folder-structure':
-        return (
-          <div className="space-y-6">
-            <h1 className="text-3xl font-bold text-gray-900">Folder Structure</h1>
-            <p className="text-lg text-gray-600">
-              Complete project folder structure and organization.
-            </p>
-            <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-6">
-              <p className="text-yellow-800">This section is under development. Please check back later for detailed folder structure information.</p>
-            </div>
-          </div>
-        );
-      
-      case 'frontend-setup':
-        return (
-          <div className="space-y-6">
-            <h1 className="text-3xl font-bold text-gray-900">Frontend Setup (React)</h1>
-            <p className="text-lg text-gray-600">
-              Step-by-step guide to set up the React frontend.
-            </p>
-            <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-6">
-              <p className="text-yellow-800">This section is under development. Please check back later for detailed frontend setup instructions.</p>
-            </div>
-          </div>
-        );
-      
-      case 'backend-setup':
-        return (
-          <div className="space-y-6">
-            <h1 className="text-3xl font-bold text-gray-900">Backend Setup (FastAPI)</h1>
-            <p className="text-lg text-gray-600">
-              Complete guide to set up the FastAPI backend.
-            </p>
-            <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-6">
-              <p className="text-yellow-800">This section is under development. Please check back later for detailed backend setup instructions.</p>
+              <p className="text-yellow-800">This section is under development. Please check back later for detailed setup instructions.</p>
             </div>
           </div>
         );
@@ -123,6 +102,45 @@ const DocumentationPage: React.FC = () => {
             </p>
             <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-6">
               <p className="text-yellow-800">This section is under development. Please check back later for detailed schema overview.</p>
+            </div>
+          </div>
+        );
+      
+      case 'authentication':
+        return (
+          <div className="space-y-6">
+            <h1 className="text-3xl font-bold text-gray-900">Authentication</h1>
+            <p className="text-lg text-gray-600">
+              Authentication and authorization implementation details.
+            </p>
+            <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-6">
+              <p className="text-yellow-800">This section is under development. Please check back later for detailed authentication documentation.</p>
+            </div>
+          </div>
+        );
+      
+      case 'endpoints':
+        return (
+          <div className="space-y-6">
+            <h1 className="text-3xl font-bold text-gray-900">Complete Endpoint Reference</h1>
+            <p className="text-lg text-gray-600">
+              Comprehensive API endpoint documentation with examples.
+            </p>
+            <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-6">
+              <p className="text-yellow-800">This section is under development. Please check back later for complete endpoint documentation.</p>
+            </div>
+          </div>
+        );
+      
+      case 'components':
+        return (
+          <div className="space-y-6">
+            <h1 className="text-3xl font-bold text-gray-900">React Components</h1>
+            <p className="text-lg text-gray-600">
+              Component architecture and reusable UI components.
+            </p>
+            <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-6">
+              <p className="text-yellow-800">This section is under development. Please check back later for component documentation.</p>
             </div>
           </div>
         );
