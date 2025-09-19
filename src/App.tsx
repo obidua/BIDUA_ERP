@@ -292,7 +292,7 @@ function App() {
           <div className={`
             ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'}
             md:translate-x-0 fixed md:relative z-50 md:z-auto
-            w-full md:w-72 h-full md:h-auto
+            w-full md:w-72 h-screen
             transition-transform duration-300 ease-in-out
           `}>
             <Sidebar
