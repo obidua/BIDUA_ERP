@@ -13,7 +13,12 @@ import CRMSchema from './sections/CRMSchema';
 import APIDocumentationOverview from './sections/APIDocumentationOverview';
 import FrontendSetup from './sections/FrontendSetup';
 import BackendSetup from './sections/BackendSetup';
-import UnderDevelopmentSection from './sections/UnderDevelopmentSection';
+import DevelopmentSetup from './sections/DevelopmentSetup';
+import DatabaseSetup from './sections/DatabaseSetup';
+import DeploymentGuide from './sections/DeploymentGuide';
+import TestingStrategy from './sections/TestingStrategy';
+import SchemaOverview from './sections/SchemaOverview';
+import NavigationButtons from './components/NavigationButtons';
 
 interface DocumentationPortalProps {
   currentUser: any;
@@ -136,88 +141,15 @@ const DocumentationPortal: React.FC<DocumentationPortalProps> = ({
       case 'project-blueprint':
         return <ProjectBlueprint />;
       case 'setup':
-        return (
-          <UnderDevelopmentSection
-            title="Development Setup"
-            description="Complete development environment setup guide for BIDUA ERP system including all prerequisites, tools, and configuration."
-            estimatedCompletion="February 2025"
-            plannedFeatures={[
-              'Prerequisites installation guide (Node.js, Python, PostgreSQL)',
-              'IDE setup and recommended extensions',
-              'Environment variable configuration templates',
-              'Docker development environment setup',
-              'Git workflow and branching strategies',
-              'Code quality tools configuration (ESLint, Prettier)',
-              'Database initialization scripts',
-              'Local development server setup',
-              'Troubleshooting common setup issues',
-              'Team collaboration guidelines'
-            ]}
-            relatedSections={[
-              'Frontend Setup (React)',
-              'Backend Setup (FastAPI)',
-              'Database Setup (PostgreSQL)',
-              'Technology Stack'
-            ]}
-            currentProgress="Creating comprehensive setup guides for Windows, macOS, and Linux environments with automated setup scripts."
-          />
-        );
+        return <DevelopmentSetup />;
       case 'frontend-setup':
         return <FrontendSetup />;
       case 'backend-setup':
         return <BackendSetup />;
       case 'database-setup':
-        return (
-          <UnderDevelopmentSection
-            title="Database Setup (PostgreSQL)"
-            description="Complete PostgreSQL database setup, configuration, and optimization guide for BIDUA ERP system."
-            estimatedCompletion="February 2025"
-            plannedFeatures={[
-              'PostgreSQL 14+ installation on different operating systems',
-              'Database server configuration and tuning',
-              'User and role management setup',
-              'Connection pooling configuration (pgBouncer)',
-              'SSL/TLS encryption setup',
-              'Backup and recovery strategies',
-              'Performance monitoring and optimization',
-              'Database security hardening',
-              'Replication setup for high availability',
-              'Migration from development to production',
-              'Troubleshooting common database issues'
-            ]}
-            relatedSections={[
-              'Database Schema sections',
-              'Backend Setup (FastAPI)',
-              'Table Relationships',
-              'User & Authentication Schema'
-            ]}
-            currentProgress="Developing comprehensive PostgreSQL setup guide with security best practices, performance optimization, and production deployment strategies."
-          />
-        );
+        return <DatabaseSetup />;
       case 'deployment-guide':
-        return (
-          <UnderDevelopmentSection
-            title="Deployment Guide"
-            description="Production deployment guide for React + FastAPI + PostgreSQL stack."
-            estimatedCompletion="Coming soon"
-            plannedFeatures={[
-              'Docker containerization guide',
-              'Cloud deployment strategies (AWS, GCP, Azure)',
-              'CI/CD pipeline setup',
-              'Environment configuration management',
-              'SSL certificate setup',
-              'Load balancing configuration',
-              'Monitoring and logging setup'
-            ]}
-            relatedSections={[
-              'System Architecture',
-              'Technology Stack',
-              'Monitoring',
-              'Performance Optimization'
-            ]}
-            currentProgress="Developing comprehensive deployment strategies for various cloud platforms and containerization approaches."
-          />
-        );
+        return <DeploymentGuide />;
       case 'deployment-overview':
         return (
           <UnderDevelopmentSection
@@ -242,70 +174,12 @@ const DocumentationPortal: React.FC<DocumentationPortalProps> = ({
           />
         );
       case 'testing':
-        return (
-          <UnderDevelopmentSection
-            title="Testing Strategy"
-            description="Comprehensive testing framework covering frontend, backend, and integration testing for the BIDUA ERP system."
-            estimatedCompletion="March 2025"
-            plannedFeatures={[
-              'Unit testing with Jest and React Testing Library',
-              'Component testing strategies and best practices',
-              'API testing with pytest and httpx',
-              'Database testing with test fixtures',
-              'Integration testing between frontend and backend',
-              'End-to-end testing with Playwright',
-              'Performance testing and load testing',
-              'Security testing and vulnerability assessment',
-              'Test data management and factories',
-              'Continuous testing in CI/CD pipelines',
-              'Code coverage reporting and analysis',
-              'Mock data and service stubbing',
-              'Testing role-based access control',
-              'Mobile responsiveness testing'
-            ]}
-            relatedSections={[
-              'Frontend Setup (React)',
-              'Backend Setup (FastAPI)',
-              'API Overview',
-              'Components',
-              'Development Setup'
-            ]}
-            currentProgress="Developing comprehensive testing framework with automated test suites for all system components, including role-based testing scenarios and performance benchmarks."
-          />
-        );
+        return <TestingStrategy />;
       case 'schema':
       case 'technology-stack':
         return <TechnologyStack />;
       case 'schema-overview':
-        return (
-          <UnderDevelopmentSection
-            title="Database Schema Overview"
-            description="Comprehensive overview of the complete PostgreSQL database schema with visual diagrams and design rationale."
-            estimatedCompletion="February 2025"
-            plannedFeatures={[
-              'Complete database schema diagram (ERD)',
-              'Table relationship visualization',
-              'Data flow documentation across modules',
-              'Schema design principles and patterns',
-              'Normalization strategies and trade-offs',
-              'Index optimization strategies',
-              'Schema migration best practices',
-              'Data integrity constraints explanation',
-              'Performance considerations for each table',
-              'Scalability planning and partitioning',
-              'Security considerations in schema design',
-              'Audit trail implementation patterns'
-            ]}
-            relatedSections={[
-              'Table Relationships',
-              'User & Authentication Schema',
-              'CRM Schema',
-              'HRMS Employee Schema',
-              'Database Setup (PostgreSQL)'
-            ]}
-            currentProgress="Creating comprehensive schema overview with interactive diagrams, detailed explanations of design decisions, and visual representation of all table relationships."
-          />
-        );
+        return <SchemaOverview />;
       case 'user-auth-schema':
         return <UserAuthSchema />;
       case 'crm-schema':
@@ -954,6 +828,12 @@ const DocumentationPortal: React.FC<DocumentationPortalProps> = ({
         <main className="flex-1 p-8 overflow-y-auto">
           <div className="max-w-5xl">
             {getContentForSection(activeSection)}
+            
+            {/* Navigation Buttons */}
+            <NavigationButtons
+              currentSection={activeSection}
+              onSectionChange={onSectionChange}
+            />
           </div>
         </main>
       </div>
