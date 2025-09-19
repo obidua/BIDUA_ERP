@@ -152,7 +152,7 @@ Content-Type: application/json
 
 Response (200 OK):
 {
-  "access_token": "eyJ0eXAiOiJKV1QiLCJhbGc...",
+  "access_token": "eyJ0eXAiOiJKV1QiLCJhbGci...",
   "token_type": "bearer",
   "expires_in": 3600,
   "user": {
@@ -450,7 +450,7 @@ Response (201 Created):
                 <tr>
                   <td className="px-4 py-3"><span className="bg-blue-100 text-blue-800 px-2 py-1 rounded text-xs">GET</span></td>
                   <td className="px-4 py-3 font-mono text-sm">/employees/{employee_id}/bank_account</td>
-                  <td className="px-4 py-3 text-sm">Get employee bank account</td>
+                  <td className="px-4 py-3 text-sm">Get employee's bank account</td>
                   <td className="px-4 py-3 text-sm">Admin, Self</td>
                 </tr>
                 <tr>

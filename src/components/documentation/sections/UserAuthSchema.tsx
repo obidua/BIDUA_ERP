@@ -198,7 +198,6 @@ CREATE TABLE user_role (
 -- Indexes for performance
 CREATE INDEX idx_users_username ON users(username);
 CREATE INDEX idx_users_email ON users(email);
-CREATE INDEX idx_users_role ON users(role);
 CREATE INDEX idx_sessions_user_id ON user_sessions(user_id);
 CREATE INDEX idx_sessions_expires_at ON user_sessions(expires_at);
 CREATE INDEX idx_sessions_active ON user_sessions(is_active);

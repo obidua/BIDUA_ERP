@@ -70,6 +70,7 @@ const DocumentationSidebar: React.FC<DocumentationSidebarProps> = ({
       <nav className="flex-1 p-4 overflow-y-auto">
         <div className="space-y-2">
           {filteredNavItems.map((section) => {
+            const Icon = section.icon;
             const isExpanded = expandedSections.includes(section.id);
             
             return (

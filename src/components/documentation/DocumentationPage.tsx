@@ -23,10 +23,12 @@ const DocumentationPage: React.FC = () => {
   const [activeSection, setActiveSection] = useState('project-overview');
   const [searchTerm, setSearchTerm] = useState('');
   const [expandedSections, setExpandedSections] = useState<string[]>([
-    'project-structure', 
+    'getting-started', 
     'development-guide', 
     'database-schema',
-    'api-documentation'
+    'api-documentation',
+    'frontend-guide',
+    'deployment'
   ]);
 
   const toggleSection = (sectionId: string) => {

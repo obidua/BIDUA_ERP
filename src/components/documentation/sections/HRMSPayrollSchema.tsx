@@ -321,36 +321,34 @@ INSERT INTO payroll_components (name, type, calculation_type, value, is_taxable)
       {/* Payroll Processing Workflow */}
       <div className="bg-white border border-gray-200 rounded-lg p-6">
         <h2 className="text-2xl font-semibold text-gray-900 mb-6">Payroll Processing Workflow</h2>
-        <div className="space-y-4">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-            <div className="text-center">
-              <div className="bg-yellow-100 p-4 rounded-lg mb-2">
-                <FileText className="w-8 h-8 text-yellow-600 mx-auto" />
-              </div>
-              <h4 className="font-semibold text-gray-900 text-sm">1. Draft Creation</h4>
-              <p className="text-xs text-gray-600">Generate draft payroll records</p>
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+          <div className="text-center">
+            <div className="bg-yellow-100 p-4 rounded-lg mb-2">
+              <FileText className="w-8 h-8 text-yellow-600 mx-auto" />
             </div>
-            <div className="text-center">
-              <div className="bg-blue-100 p-4 rounded-lg mb-2">
-                <Calculator className="w-8 h-8 text-blue-600 mx-auto" />
-              </div>
-              <h4 className="font-semibold text-gray-900 text-sm">2. Calculation</h4>
-              <p className="text-xs text-gray-600">Apply formulas and calculate amounts</p>
+            <h4 className="font-semibold text-gray-900 text-sm">1. Draft Creation</h4>
+            <p className="text-xs text-gray-600">Generate draft payroll records</p>
+          </div>
+          <div className="text-center">
+            <div className="bg-blue-100 p-4 rounded-lg mb-2">
+              <Calculator className="w-8 h-8 text-blue-600 mx-auto" />
             </div>
-            <div className="text-center">
-              <div className="bg-green-100 p-4 rounded-lg mb-2">
-                <TrendingUp className="w-8 h-8 text-green-600 mx-auto" />
-              </div>
-              <h4 className="font-semibold text-gray-900 text-sm">3. Processing</h4>
-              <p className="text-xs text-gray-600">Review and approve payroll</p>
+            <h4 className="font-semibold text-gray-900 text-sm">2. Calculation</h4>
+            <p className="text-xs text-gray-600">Apply formulas and calculate amounts</p>
+          </div>
+          <div className="text-center">
+            <div className="bg-green-100 p-4 rounded-lg mb-2">
+              <TrendingUp className="w-8 h-8 text-green-600 mx-auto" />
             </div>
-            <div className="text-center">
-              <div className="bg-purple-100 p-4 rounded-lg mb-2">
-                <DollarSign className="w-8 h-8 text-purple-600 mx-auto" />
-              </div>
-              <h4 className="font-semibold text-gray-900 text-sm">4. Payment</h4>
-              <p className="text-xs text-gray-600">Execute salary payments</p>
+            <h4 className="font-semibold text-gray-900 text-sm">3. Processing</h4>
+            <p className="text-xs text-gray-600">Review and approve payroll</p>
+          </div>
+          <div className="text-center">
+            <div className="bg-purple-100 p-4 rounded-lg mb-2">
+              <DollarSign className="w-8 h-8 text-purple-600 mx-auto" />
             </div>
+            <h4 className="font-semibold text-gray-900 text-sm">4. Payment</h4>
+            <p className="text-xs text-gray-600">Execute salary payments</p>
           </div>
         </div>
       </div>
