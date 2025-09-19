@@ -48,7 +48,6 @@ const Sidebar: React.FC<SidebarProps> = ({
     { id: 'crm', name: 'CRM', icon: Users },
     { id: 'hrms', name: 'HRMS', icon: UserCheck },
     { id: 'reports', name: 'Reports', icon: FileText },
-    { id: 'documentation-portal', name: 'Documentation', icon: BookOpen },
     { id: 'settings', name: 'Settings', icon: Settings },
   ];
 
@@ -57,11 +56,13 @@ const Sidebar: React.FC<SidebarProps> = ({
     if (currentUser.role === 'employee') {
       return ['dashboard'].includes(item.id);
     }
-    if (currentUser.role === 'documentation') {
-      return ['dashboard', 'documentation-portal'].includes(item.id);
-    }
     return true;
   });
+
+  // Add documentation menu item only for documentation role
+  if (currentUser.role === 'documentation') {
+    filteredMenuItems.push({ id: 'documentation-portal', name: 'Documentation', icon: BookOpen });
+  }
 
   const getIconComponent = (iconName: string) => {
     const iconMap: { [key: string]: React.ComponentType<any> } = {
