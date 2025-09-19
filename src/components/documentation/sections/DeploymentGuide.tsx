@@ -100,7 +100,7 @@ services:
     ports:
       - "8000:8000"
     environment:
-      - DATABASE_URL=postgresql://bidua_user:${DB_PASSWORD}@db:5432/bidua_erp
+      - DATABASE_URL=postgresql://bidua_user:\${DB_PASSWORD}@db:5432/bidua_erp
       - SECRET_KEY=\${SECRET_KEY}
     depends_on:
       - db
@@ -112,17 +112,14 @@ services:
       - POSTGRES_DB=bidua_erp
       - POSTGRES_USER=bidua_user
       - POSTGRES_PASSWORD=\${DB_PASSWORD}
-    }
     volumes:
       - postgres_data:/var/lib/postgresql/data
       - ./backups:/backups
     restart: unless-stopped
-  )
 
   redis:
     image: redis:7-alpine
     restart: unless-stopped
-}
 
 volumes:
   postgres_data:`}
