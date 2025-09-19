@@ -218,7 +218,7 @@ Response (202 Accepted):
           </div>
 
           <div>
-            <h4 className="font-semibold text-gray-900 mb-3">GET /api/payroll/{employee_id}/salary-slip - Generate Salary Slip</h4>
+            <h4 className="font-semibold text-gray-900 mb-3">GET /api/payroll/&#123;employee_id&#125;/salary-slip - Generate Salary Slip</h4>
             <pre className="bg-gray-900 text-green-400 p-4 rounded-lg overflow-x-auto text-sm">
 {`GET /api/payroll/emp-uuid-123/salary-slip?month=December&year=2024&format=pdf
 Authorization: Bearer <token>
