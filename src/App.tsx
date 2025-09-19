@@ -233,7 +233,7 @@ function App() {
         return (
           <DocumentationPortal 
             currentUser={currentUser}
-            activeSection={activeDocumentationSection}
+            activeSection="overview"
             onLogout={handleLogout}
           />
         );
