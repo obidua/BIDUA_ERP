@@ -143,7 +143,6 @@ CREATE TABLE task_templates (
         </pre>
       </div>
     </div>
-  )
   );
 };
 
