@@ -18,83 +18,64 @@ const DatabaseRelationships: React.FC = () => {
         {/* Core Entities */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
           {/* Authentication Cluster */}
-          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-            <h3 className="font-semibold text-blue-900 mb-3 flex items-center">
-              <Users className="w-5 h-5 mr-2" />
-              Authentication Cluster
-            </h3>
+          <div className="bg-blue-100 p-4 rounded-lg">
+            <h4 className="font-semibold text-blue-900 mb-3 text-center">Authentication Core</h4>
             <div className="space-y-2">
-              <div className="bg-white p-3 rounded border border-blue-200">
-                <h4 className="font-semibold text-gray-900 text-sm">users</h4>
-                <p className="text-xs text-gray-600">Core authentication</p>
+              <div className="bg-white p-2 rounded border text-center">
+                <strong className="text-sm">users</strong>
+                <div className="text-xs text-gray-600">id, username, email, role</div>
               </div>
-              <div className="bg-white p-3 rounded border border-blue-200">
-                <h4 className="font-semibold text-gray-900 text-sm">user_sessions</h4>
-                <p className="text-xs text-gray-600">JWT token management</p>
-              </div>
-              <div className="bg-white p-3 rounded border border-blue-200">
-                <h4 className="font-semibold text-gray-900 text-sm">roles</h4>
-                <p className="text-xs text-gray-600">Role definitions</p>
-              </div>
-              <div className="bg-white p-3 rounded border border-blue-200">
-                <h4 className="font-semibold text-gray-900 text-sm">permissions</h4>
-                <p className="text-xs text-gray-600">Permission definitions</p>
+              <div className="text-center">↓ (1:1)</div>
+              <div className="bg-white p-2 rounded border text-center">
+                <strong className="text-sm">employees</strong>
+                <div className="text-xs text-gray-600">employee_id, name, department</div>
               </div>
             </div>
           </div>
 
-          {/* CRM Cluster */}
-          <div className="bg-green-50 border border-green-200 rounded-lg p-4">
-            <h3 className="font-semibold text-green-900 mb-3 flex items-center">
-              <UserCheck className="w-5 h-5 mr-2" />
-              CRM Cluster
-            </h3>
+          {/* CRM Flow */}
+          <div className="bg-green-100 p-4 rounded-lg">
+            <h4 className="font-semibold text-green-900 mb-3 text-center">CRM Flow</h4>
             <div className="space-y-2">
-              <div className="bg-white p-3 rounded border border-green-200">
-                <h4 className="font-semibold text-gray-900 text-sm">leads</h4>
-                <p className="text-xs text-gray-600">Sales prospects</p>
+              <div className="bg-white p-2 rounded border text-center">
+                <strong className="text-sm">leads</strong>
+                <div className="text-xs text-gray-600">name, company, status, stage</div>
               </div>
-              <div className="bg-white p-3 rounded border border-green-200">
-                <h4 className="font-semibold text-gray-900 text-sm">support_tickets</h4>
-                <p className="text-xs text-gray-600">Customer support</p>
+              <div className="text-center">↓ (1:M)</div>
+              <div className="bg-white p-2 rounded border text-center">
+                <strong className="text-sm">support_tickets</strong>
+                <div className="text-xs text-gray-600">title, priority, status</div>
               </div>
-              <div className="bg-white p-3 rounded border border-green-200">
-                <h4 className="font-semibold text-gray-900 text-sm">lead_activities</h4>
-                <p className="text-xs text-gray-600">Interaction history</p>
-              </div>
-              <div className="bg-white p-3 rounded border border-green-200">
-                <h4 className="font-semibold text-gray-900 text-sm">ticket_comments</h4>
-                <p className="text-xs text-gray-600">Support communication</p>
+              <div className="text-center">↓ (1:M)</div>
+              <div className="bg-white p-2 rounded border text-center">
+                <strong className="text-sm">ticket_comments</strong>
+                <div className="text-xs text-gray-600">content, author</div>
               </div>
             </div>
           </div>
 
-          {/* HRMS Cluster */}
-          <div className="bg-purple-50 border border-purple-200 rounded-lg p-4">
-            <h3 className="font-semibold text-purple-900 mb-3 flex items-center">
-              <FileText className="w-5 h-5 mr-2" />
-              HRMS Cluster
-            </h3>
+          {/* HRMS Flow */}
+          <div className="bg-purple-100 p-4 rounded-lg">
+            <h4 className="font-semibold text-purple-900 mb-3 text-center">HRMS Flow</h4>
             <div className="space-y-2">
-              <div className="bg-white p-3 rounded border border-purple-200">
-                <h4 className="font-semibold text-gray-900 text-sm">employees</h4>
-                <p className="text-xs text-gray-600">Employee master</p>
+              <div className="bg-white p-2 rounded border text-center">
+                <strong className="text-sm">employees</strong>
+                <div className="text-xs text-gray-600">Central hub</div>
               </div>
-              <div className="bg-white p-3 rounded border border-purple-200">
-                <h4 className="font-semibold text-gray-900 text-sm">attendance_records</h4>
-                <p className="text-xs text-gray-600">Time tracking</p>
-              </div>
-              <div className="bg-white p-3 rounded border border-purple-200">
-                <h4 className="font-semibold text-gray-900 text-sm">leave_requests</h4>
-                <p className="text-xs text-gray-600">Leave management</p>
-              </div>
-              <div className="bg-white p-3 rounded border border-purple-200">
-                <h4 className="font-semibold text-gray-900 text-sm">payroll_records</h4>
-                <p className="text-xs text-gray-600">Salary processing</p>
-              </div>
-              <div className="bg-white p-3 rounded border border-purple-200">
-                <h4 className="font-semibold text-gray-900 text-sm">tasks</h4>
-                <p className="text-xs text-gray-600">Task management</p>
+              <div className="text-center">↓ (1:M)</div>
+              <div className="grid grid-cols-2 gap-1">
+                <div className="bg-white p-1 rounded border text-center">
+                  <strong className="text-xs">attendance</strong>
+                </div>
+                <div className="bg-white p-1 rounded border text-center">
+                  <strong className="text-xs">leaves</strong>
+                </div>
+                <div className="bg-white p-1 rounded border text-center">
+                  <strong className="text-xs">payroll</strong>
+                </div>
+                <div className="bg-white p-1 rounded border text-center">
+                  <strong className="text-xs">tasks</strong>
+                </div>
               </div>
             </div>
           </div>
@@ -220,7 +201,7 @@ const DatabaseRelationships: React.FC = () => {
         </div>
       </div>
 
-      {/* Detailed Relationship Mapping */}
+      {/* Complete Relationship Mapping */}
       <div className="bg-white border border-gray-200 rounded-lg p-6">
         <h2 className="text-2xl font-semibold text-gray-900 mb-6">Complete Relationship Mapping</h2>
         <div className="overflow-x-auto">
@@ -310,57 +291,41 @@ const DatabaseRelationships: React.FC = () => {
         </div>
       </div>
 
-      {/* Database Constraints */}
+      {/* Database Design Patterns */}
       <div className="bg-white border border-gray-200 rounded-lg p-6">
-        <h2 className="text-2xl font-semibold text-gray-900 mb-6">Database Constraints & Indexes</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div>
-            <h3 className="font-semibold text-gray-900 mb-3">Primary Indexes</h3>
-            <div className="bg-gray-50 p-4 rounded-lg">
-              <pre className="text-sm text-gray-800 overflow-x-auto">
-{`-- Performance indexes
-CREATE INDEX idx_users_username ON users(username);
-CREATE INDEX idx_users_email ON users(email);
-CREATE INDEX idx_employees_employee_id ON employees(employee_id);
-CREATE INDEX idx_employees_department ON employees(department);
-CREATE INDEX idx_leads_email ON leads(email);
-CREATE INDEX idx_leads_status ON leads(status);
-CREATE INDEX idx_leads_assigned_to ON leads(assigned_to_employee_id);
-CREATE INDEX idx_attendance_employee_date ON attendance_records(employee_id, date);
-CREATE INDEX idx_tasks_assigned_to ON tasks(assigned_to_employee_id);
-CREATE INDEX idx_tasks_status ON tasks(status);
-CREATE INDEX idx_payroll_employee_month ON payroll_records(employee_id, month, year);`}
-              </pre>
+        <h2 className="text-2xl font-semibold text-gray-900 mb-6">Database Design Patterns</h2>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="bg-blue-50 p-4 rounded-lg">
+            <h3 className="font-semibold text-blue-900 mb-2">Audit Trail Pattern</h3>
+            <p className="text-sm text-blue-800 mb-3">Every table includes audit fields</p>
+            <div className="bg-white p-3 rounded border border-blue-200">
+              <code className="text-xs text-gray-800">
+                created_at TIMESTAMP DEFAULT NOW()<br/>
+                updated_at TIMESTAMP DEFAULT NOW()
+              </code>
             </div>
           </div>
-
-          <div>
-            <h3 className="font-semibold text-gray-900 mb-3">Business Constraints</h3>
-            <div className="space-y-3">
-              <div className="bg-blue-50 p-3 rounded-lg">
-                <h4 className="font-semibold text-blue-900 text-sm">Unique Constraints</h4>
-                <ul className="text-xs text-blue-800 space-y-1">
-                  <li>• One attendance record per employee per day</li>
-                  <li>• Unique employee IDs (BID001, BID002, etc.)</li>
-                  <li>• One payroll record per employee per month</li>
-                </ul>
-              </div>
-              <div className="bg-green-50 p-3 rounded-lg">
-                <h4 className="font-semibold text-green-900 text-sm">Check Constraints</h4>
-                <ul className="text-xs text-green-800 space-y-1">
-                  <li>• Task progress between 0-100%</li>
-                  <li>• Positive salary amounts</li>
-                  <li>• Valid date ranges for leave requests</li>
-                </ul>
-              </div>
-              <div className="bg-purple-50 p-3 rounded-lg">
-                <h4 className="font-semibold text-purple-900 text-sm">Referential Integrity</h4>
-                <ul className="text-xs text-purple-800 space-y-1">
-                  <li>• CASCADE deletes for dependent records</li>
-                  <li>• SET NULL for optional references</li>
-                  <li>• RESTRICT for critical relationships</li>
-                </ul>
-              </div>
+          
+          <div className="bg-green-50 p-4 rounded-lg">
+            <h3 className="font-semibold text-green-900 mb-2">Soft Delete Pattern</h3>
+            <p className="text-sm text-green-800 mb-3">Logical deletion for data integrity</p>
+            <div className="bg-white p-3 rounded border border-green-200">
+              <code className="text-xs text-gray-800">
+                is_active BOOLEAN DEFAULT TRUE<br/>
+                deleted_at TIMESTAMP NULL
+              </code>
+            </div>
+          </div>
+          
+          <div className="bg-purple-50 p-4 rounded-lg">
+            <h3 className="font-semibold text-purple-900 mb-2">JSONB Storage Pattern</h3>
+            <p className="text-sm text-purple-800 mb-3">Flexible data storage for complex objects</p>
+            <div className="bg-white p-3 rounded border border-purple-200">
+              <code className="text-xs text-gray-800">
+                personal_details JSONB<br/>
+                bank_account JSONB<br/>
+                metadata JSONB
+              </code>
             </div>
           </div>
         </div>
@@ -442,48 +407,8 @@ CREATE INDEX idx_payroll_employee_month ON payroll_records(employee_id, month, y
           </div>
         </div>
       </div>
-
-      {/* Database Design Patterns */}
-      <div className="bg-white border border-gray-200 rounded-lg p-6">
-        <h2 className="text-2xl font-semibold text-gray-900 mb-6">Database Design Patterns</h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div className="bg-blue-50 p-4 rounded-lg">
-            <h3 className="font-semibold text-blue-900 mb-2">Audit Trail Pattern</h3>
-            <p className="text-sm text-blue-800 mb-3">Every table includes audit fields</p>
-            <div className="bg-white p-3 rounded border border-blue-200">
-              <code className="text-xs text-gray-800">
-                created_at TIMESTAMP DEFAULT NOW()<br/>
-                updated_at TIMESTAMP DEFAULT NOW()
-              </code>
-            </div>
-          </div>
-          
-          <div className="bg-green-50 p-4 rounded-lg">
-            <h3 className="font-semibold text-green-900 mb-2">Soft Delete Pattern</h3>
-            <p className="text-sm text-green-800 mb-3">Logical deletion for data integrity</p>
-            <div className="bg-white p-3 rounded border border-green-200">
-              <code className="text-xs text-gray-800">
-                is_active BOOLEAN DEFAULT TRUE<br/>
-                deleted_at TIMESTAMP NULL
-              </code>
-            </div>
-          </div>
-          
-          <div className="bg-purple-50 p-4 rounded-lg">
-            <h3 className="font-semibold text-purple-900 mb-2">JSONB Storage Pattern</h3>
-            <p className="text-sm text-purple-800 mb-3">Flexible data storage for complex objects</p>
-            <div className="bg-white p-3 rounded border border-purple-200">
-              <code className="text-xs text-gray-800">
-                personal_details JSONB<br/>
-                bank_account JSONB<br/>
-                metadata JSONB
-              </code>
-            </div>
-          </div>
-        </div>
-      </div>
     </div>
   );
 };
 
-export default ProjectBlueprint;
+export default DatabaseRelationships;
