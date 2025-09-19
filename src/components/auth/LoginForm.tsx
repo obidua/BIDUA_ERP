@@ -101,7 +101,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLogin, error }) => {
                 <p><span className="font-medium">Employee:</span> employee / bidua123</p>
               </div>
             </div>
-            
+          </div>
         </div>
         
         {/* Footer */}
