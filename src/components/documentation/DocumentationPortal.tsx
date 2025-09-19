@@ -1,25 +1,7 @@
 import React, { useState } from 'react';
 import { 
-  BookOpen, 
-  Download,
-  Code,
-  Database,
-  Server,
-  Globe,
-  Shield,
-  Zap,
-  Smartphone,
-  Target,
-  AlertTriangle,
-  Home,
-  Layers,
-  Settings,
-  GitBranch,
-  Clock,
-  CheckCircle,
-  Users,
-  ArrowRight,
-  FileText
+  BookOpen, Download, Code, Database, Server, Globe, Shield, Zap, Smartphone, Target,
+  AlertTriangle, Home, Layers, Settings, GitBranch, Clock, CheckCircle, Users, ArrowRight, FileText
 } from 'lucide-react';
 import { documentationSections } from '../../data/mockData';
 
