@@ -164,39 +164,52 @@ const Sidebar: React.FC<SidebarProps> = ({
                   </div>
                 </div>
               ))}
+              
+              {/* Logout button for documentation portal */}
+              <div className="pt-6 border-t border-gray-200">
+                <button
+                  onClick={onLogout}
+                  className="w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-700 hover:bg-red-50 hover:text-red-700 transition-all duration-200"
+                >
+                  <LogOut className="w-5 h-5" />
+                  <span className="font-medium">Logout</span>
+                </button>
+              </div>
             </div>
           ) : (
             // Regular menu items
-            filteredMenuItems.map((item) => {
-              const Icon = item.icon;
-              return (
+            <div className="space-y-2">
+              {filteredMenuItems.map((item) => {
+                const Icon = item.icon;
+                return (
+                  <button
+                    key={item.id}
+                    onClick={() => onModuleChange(item.id)}
+                    className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-left transition-all duration-200 ${
+                      activeModule === item.id
+                        ? 'bg-indigo-50 text-indigo-700 border border-indigo-200'
+                        : 'text-gray-700 hover:bg-gray-50 hover:text-gray-900'
+                    }`}
+                  >
+                    <Icon className="w-5 h-5" />
+                    <span className="font-medium">{item.name}</span>
+                  </button>
+                );
+              })}
+              
+              {/* Logout button for regular menu */}
+              <div className="pt-6 border-t border-gray-200">
                 <button
-                  key={item.id}
-                  onClick={() => onModuleChange(item.id)}
-                  className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-left transition-all duration-200 ${
-                    activeModule === item.id
-                      ? 'bg-indigo-50 text-indigo-700 border border-indigo-200'
-                      : 'text-gray-700 hover:bg-gray-50 hover:text-gray-900'
-                  }`}
+                  onClick={onLogout}
+                  className="w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-700 hover:bg-red-50 hover:text-red-700 transition-all duration-200"
                 >
-                  <Icon className="w-5 h-5" />
-                  <span className="font-medium">{item.name}</span>
+                  <LogOut className="w-5 h-5" />
+                  <span className="font-medium">Logout</span>
                 </button>
-              );
-            })
+              </div>
+            </div>
           )}
         </nav>
-
-        {/* Logout */}
-        <div className="p-6 border-t border-gray-200">
-          <button
-            onClick={onLogout}
-            className="w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-700 hover:bg-red-50 hover:text-red-700 transition-all duration-200"
-          >
-            <LogOut className="w-5 h-5" />
-            <span className="font-medium">Logout</span>
-          </button>
-        </div>
       </div>
     </div>
   );
