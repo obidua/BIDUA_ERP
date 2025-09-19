@@ -124,7 +124,7 @@ const APIDocumentationOverview: React.FC = () => {
                 </div>
                 <div className="flex items-center space-x-2">
                   <span className="bg-blue-100 text-blue-800 px-2 py-1 rounded">GET</span>
-                  <code>/payroll/{employee_id}</code>
+                  <code>/payroll/&#123;employee_id&#125;</code>
                   <span className="text-gray-500">- Get payroll</span>
                 </div>
                 <div className="flex items-center space-x-2">
