@@ -266,7 +266,7 @@ jobs:
           <div>
             <h4 className="font-semibold text-gray-900 mb-3">Deployment Script</h4>
             <pre className="bg-gray-900 text-green-400 p-4 rounded-lg overflow-x-auto text-sm">
-{\`#!/bin/bash
+{`#!/\\/bin\\/bash
 # deploy.sh - Production deployment script
 
 set -e
