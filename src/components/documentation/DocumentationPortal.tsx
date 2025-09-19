@@ -1,9 +1,22 @@
 import React, { useState } from 'react';
 import { 
-  BookOpen,
+  BookOpen, 
   Download,
   Code,
   Database,
+  Server,
+  Globe,
+  Shield,
+  Zap,
+  Smartphone,
+  Target,
+  AlertTriangle,
+  Home,
+  Layers,
+  Settings,
+  GitBranch,
+  Clock
+} from 'lucide-react';
   Server,
   Globe,
   Shield,
