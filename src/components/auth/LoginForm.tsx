@@ -101,6 +101,17 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLogin, error }) => {
                 <p><span className="font-medium">Employee:</span> employee / bidua123</p>
               </div>
             </div>
+            
+            <div className="mt-4 pt-4 border-t border-gray-200 text-center">
+              <a 
+                href="/documentation" 
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-xs text-indigo-600 hover:text-indigo-800 transition-colors"
+              >
+                📚 View Documentation
+              </a>
+            </div>
           </div>
         </div>
       </div>
