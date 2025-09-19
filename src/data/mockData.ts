@@ -26,6 +26,14 @@ export const mockUsers: User[] = [
     department: 'Marketing',
     isActive: true,
   },
+  {
+    id: '4',
+    username: 'doc',
+    email: 'doc@bidua.com',
+    role: 'documentation',
+    department: 'Documentation',
+    isActive: true,
+  },
 ];
 
 // Static password for all users (in real app, this would be hashed)
