@@ -399,39 +399,7 @@ echo "Deployment completed successfully!"`}
           <div>
             <h4 className="font-semibold text-gray-900 mb-3">Horizontal Scaling</h4>
             <pre className="bg-gray-900 text-green-400 p-4 rounded-lg overflow-x-auto text-sm">
-{\`# Kubernetes deployment
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: bidua-backend
-spec:
-  replicas: 3
-  selector:
-    matchLabels:
-      app: bidua-backend
-  template:
-    metadata:
-      labels:
-        app: bidua-backend
-    spec:
-      containers:
-      - name: backend
-        image: bidua/backend:latest
-        ports:
-        - containerPort: 8000
-        env:
-        - name: DATABASE_URL
-          valueFrom:
-            secretKeyRef:
-              name: db-secret
-              key: url
-        resources:
-          requests:
-            memory: "256Mi"
-            cpu: "250m"
-          limits:
-            memory: "512Mi"
-            cpu: "500m"`}
+{"# Kubernetes deployment\napiVersion: apps/v1\nkind: Deployment\nmetadata:\n  name: bidua-backend\nspec:\n  replicas: 3\n  selector:\n    matchLabels:\n      app: bidua-backend\n  template:\n    metadata:\n      labels:\n        app: bidua-backend\n    spec:\n      containers:\n      - name: backend\n        image: bidua/backend:latest\n        ports:\n        - containerPort: 8000\n        env:\n        - name: DATABASE_URL\n          valueFrom:\n            secretKeyRef:\n              name: db-secret\n              key: url\n        resources:\n          requests:\n            memory: \"256Mi\"\n            cpu: \"250m\"\n          limits:\n            memory: \"512Mi\"\n            cpu: \"500m\""}
             </pre>
           </div>
 
