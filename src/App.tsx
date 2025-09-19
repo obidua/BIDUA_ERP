@@ -142,7 +142,11 @@ function App() {
   };
 
   if (!currentUser) {
-    return <LoginForm onLogin={handleLogin} />;
+    return (
+      <Router>
+        <LoginForm onLogin={handleLogin} />
+      </Router>
+    );
   }
 
   const renderModule = () => {
