@@ -100,7 +100,6 @@ CREATE TABLE performance_goals (
     target_date DATE,
     status goal_status DEFAULT 'not-started',
     progress INTEGER DEFAULT 0 CHECK (progress >= 0 AND progress <= 100),
-    progress INTEGER DEFAULT 0 CHECK (progress &gt;= 0 AND progress &lt;= 100),
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
@@ -149,7 +148,6 @@ CREATE INDEX idx_feedback_360_review ON feedback_360(review_id);`}
         </pre>
       </div>
     </div>
-  )
   );
 };
 
