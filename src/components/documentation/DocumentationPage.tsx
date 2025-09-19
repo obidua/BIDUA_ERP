@@ -1,6 +1,5 @@
-```typescript
 import React, { useState } from 'react';
-import { ArrowLeft, Book, Search, ChevronRight, ChevronDown, Home, Users, UserCheck, BarChart3, Settings, Clock, Calendar, DollarSign, FileText, Shield, Globe, Zap, CheckCircle, AlertTriangle, Info, Database, Code, GitBranch, Layers, Network, Server, Monitor } from 'lucide-react';
+import { ArrowLeft, Book, Search, ChevronRight, ChevronDown, Home, Users, UserCheck, BarChart3, Settings, Clock, Calendar, DollarSign, FileText, Shield, Globe, Zap, CheckCircle, AlertTriangle, Info, Database, Code, GitBranch, Layers, Network, Server, Monitor, User } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 const DocumentationPage: React.FC = () => {
@@ -279,7 +278,7 @@ const DocumentationPage: React.FC = () => {
                       <h4 className="font-semibold text-gray-900 mb-2">Business Logic</h4>
                       <ul className="text-sm text-gray-600 space-y-1">
                         <li>• CRM operations</li>
-                        <li>• • HRMS workflows</li>
+                        <li>• HRMS workflows</li>
                         <li>• Report generation</li>
                         <li>• File management</li>
                       </ul>
@@ -961,7 +960,7 @@ class ApiService {
   }
 
   async request(endpoint: string, options: RequestInit = {}) {
-    const url = \`${this.baseURL}\${endpoint}\`;
+    const url = \`\${this.baseURL}\${endpoint}\`;
     const headers = {
       'Content-Type': 'application/json',
       ...(this.token && { Authorization: \`Bearer \${this.token}\` }),
@@ -1042,16 +1041,12 @@ pip install python-multipart pydantic-settings python-dotenv`}
 │   ├── employee.py       # Employee model
 │   ├── lead.py           # Lead model
 │   ├── attendance.py     # Attendance model
-│   ├── task.py           # Task model
-│   └── document.py       # Document model
+│   └── task.py           # Task model
 ├── schemas/
 │   ├── __init__.py
 │   ├── user.py           # User Pydantic schemas
 │   ├── employee.py       # Employee schemas
 │   ├── lead.py           # Lead schemas
-│   ├── attendance.py     # Attendance schemas
-│   ├── task.py           # Task schemas
-│   ├── document.py       # Document schemas
 │   └── common.py         # Common schemas
 ├── api/
 │   ├── __init__.py
@@ -1060,8 +1055,7 @@ pip install python-multipart pydantic-settings python-dotenv`}
 │   ├── employees.py      # Employee endpoints
 │   ├── leads.py          # Lead endpoints
 │   ├── attendance.py     # Attendance endpoints
-│   ├── tasks.py          # Task endpoints
-│   └── documents.py      # Document endpoints
+│   └── tasks.py          # Task endpoints
 ├── core/
 │   ├── __init__.py
 │   ├── security.py       # Password hashing, JWT
@@ -1072,9 +1066,6 @@ pip install python-multipart pydantic-settings python-dotenv`}
 │   ├── auth_service.py   # Authentication business logic
 │   ├── employee_service.py
 │   ├── lead_service.py
-│   ├── attendance_service.py
-│   ├── task_service.py
-│   ├── document_service.py
 │   └── notification_service.py
 └── alembic/              # Database migrations
     ├── versions/
@@ -1087,9 +1078,9 @@ pip install python-multipart pydantic-settings python-dotenv`}
                 <pre className="bg-gray-900 text-green-400 p-4 rounded-lg overflow-x-auto text-sm">
 {`from fastapi import FastAPI, Depends
 from fastapi.middleware.cors import CORSMiddleware
-from app.api import auth, users, employees, leads, attendance, tasks, documents
+from app.api import auth, users, employees, leads, attendance, tasks
 from app.database import engine
-from app.models import user, employee, lead, attendance as att_model, task, document
+from app.models import user, employee, lead, attendance as att_model, task
 
 # Create database tables
 user.Base.metadata.create_all(bind=engine)
@@ -1097,7 +1088,6 @@ employee.Base.metadata.create_all(bind=engine)
 lead.Base.metadata.create_all(bind=engine)
 att_model.Base.metadata.create_all(bind=engine)
 task.Base.metadata.create_all(bind=engine)
-document.Base.metadata.create_all(bind=engine)
 
 app = FastAPI(
     title="BIDUA ERP API",
@@ -1121,7 +1111,6 @@ app.include_router(employees.router, prefix="/api/employees", tags=["employees"]
 app.include_router(leads.router, prefix="/api/leads", tags=["leads"])
 app.include_router(attendance.router, prefix="/api/attendance", tags=["attendance"])
 app.include_router(tasks.router, prefix="/api/tasks", tags=["tasks"])
-app.include_router(documents.router, prefix="/api/documents", tags=["documents"])
 
 @app.get("/")
 async def root():
@@ -1197,7 +1186,7 @@ def get_db():
                 <h3 className="text-lg font-semibold text-gray-900 mb-4">Complete Schema Creation Script</h3>
                 <pre className="bg-gray-900 text-green-400 p-4 rounded-lg overflow-x-auto text-sm">
 {`-- Create ENUMS
-CREATE TYPE user_role AS ENUM ('admin', 'manager', 'employee', 'documentation');
+CREATE TYPE user_role AS ENUM ('admin', 'manager', 'employee');
 CREATE TYPE lead_status AS ENUM ('hot', 'warm', 'cold');
 CREATE TYPE lead_stage AS ENUM ('lead', 'qualified', 'proposal', 'negotiation', 'closed-won', 'closed-lost');
 CREATE TYPE ticket_priority AS ENUM ('low', 'medium', 'high', 'urgent');
@@ -1209,7 +1198,6 @@ CREATE TYPE leave_status AS ENUM ('pending', 'approved', 'rejected');
 CREATE TYPE task_priority AS ENUM ('low', 'medium', 'high', 'urgent');
 CREATE TYPE task_status AS ENUM ('pending', 'in-progress', 'completed', 'cancelled');
 CREATE TYPE payroll_status AS ENUM ('draft', 'processed', 'paid');
-CREATE TYPE document_type AS ENUM ('offer-letter', 'salary-slip', 'experience-letter', 'id-card', 'policy', 'other');
 
 -- Users table
 CREATE TABLE users (
@@ -1222,17 +1210,6 @@ CREATE TABLE users (
     is_active BOOLEAN DEFAULT TRUE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-
--- User sessions table
-CREATE TABLE user_sessions (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    user_id UUID REFERENCES users(id) ON DELETE CASCADE,
-    token_hash VARCHAR(255) NOT NULL,
-    expires_at TIMESTAMP NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    ip_address INET,
-    user_agent TEXT
 );
 
 -- Employees table
@@ -1276,189 +1253,7 @@ CREATE TABLE leads (
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- Support Tickets table
-CREATE TABLE support_tickets (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    title VARCHAR(255) NOT NULL,
-    description TEXT NOT NULL,
-    customer_id UUID REFERENCES leads(id) ON DELETE SET NULL,
-    customer_name VARCHAR(255) NOT NULL,
-    priority ticket_priority DEFAULT 'medium',
-    status ticket_status DEFAULT 'open',
-    assigned_to UUID REFERENCES employees(id) ON DELETE SET NULL,
-    category VARCHAR(100),
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    resolved_at TIMESTAMP
-);
-
--- Attendance table
-CREATE TABLE attendance (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    employee_id UUID REFERENCES employees(id) ON DELETE CASCADE,
-    date DATE NOT NULL,
-    clock_in TIME NOT NULL,
-    clock_out TIME,
-    total_hours DECIMAL(4,2) DEFAULT 0,
-    status attendance_status DEFAULT 'present',
-    location VARCHAR(255) NOT NULL,
-    coordinates POINT,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-
--- Leave Requests table
-CREATE TABLE leave_requests (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    employee_id UUID REFERENCES employees(id) ON DELETE CASCADE,
-    leave_type leave_type NOT NULL,
-    start_date DATE NOT NULL,
-    end_date DATE NOT NULL,
-    days INTEGER NOT NULL,
-    reason TEXT NOT NULL,
-    status leave_status DEFAULT 'pending',
-    applied_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    approved_by UUID REFERENCES employees(id) ON DELETE SET NULL,
-    approved_at TIMESTAMP,
-    comments TEXT,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-
--- Tasks table
-CREATE TABLE tasks (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    title VARCHAR(255) NOT NULL,
-    description TEXT,
-    assigned_to UUID REFERENCES employees(id) ON DELETE SET NULL,
-    assigned_by UUID REFERENCES employees(id) ON DELETE SET NULL,
-    priority task_priority DEFAULT 'medium',
-    status task_status DEFAULT 'pending',
-    progress INTEGER DEFAULT 0,
-    start_date DATE,
-    due_date DATE NOT NULL,
-    completed_at TIMESTAMP,
-    project VARCHAR(255),
-    tags TEXT[],
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-
--- Task Comments table
-CREATE TABLE task_comments (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    task_id UUID REFERENCES tasks(id) ON DELETE CASCADE,
-    author_id UUID REFERENCES users(id) ON DELETE SET NULL,
-    author_name VARCHAR(255) NOT NULL,
-    content TEXT NOT NULL,
-    type VARCHAR(50) NOT NULL, -- 'comment', 'status-change', 'progress-update', 'work-report'
-    metadata JSONB,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-
--- Payroll table
-CREATE TABLE payroll (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    employee_id UUID REFERENCES employees(id) ON DELETE CASCADE,
-    month VARCHAR(20) NOT NULL,
-    year INTEGER NOT NULL,
-    basic_salary DECIMAL(10,2) NOT NULL,
-    allowances DECIMAL(10,2) NOT NULL,
-    deductions DECIMAL(10,2) NOT NULL,
-    overtime DECIMAL(10,2) DEFAULT 0,
-    net_salary DECIMAL(10,2) NOT NULL,
-    status payroll_status DEFAULT 'draft',
-    pay_date DATE,
-    generated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-
--- Performance Reviews table
-CREATE TABLE performance_reviews (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    employee_id UUID REFERENCES employees(id) ON DELETE CASCADE,
-    reviewer_id UUID REFERENCES employees(id) ON DELETE SET NULL,
-    period VARCHAR(50) NOT NULL,
-    overall_rating DECIMAL(2,1) NOT NULL,
-    kpis JSONB,
-    manager_feedback TEXT,
-    goals TEXT[],
-    achievements TEXT[],
-    areas_of_improvement TEXT[],
-    review_date DATE NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-
--- Documents table
-CREATE TABLE documents (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    employee_id UUID REFERENCES employees(id) ON DELETE CASCADE,
-    type document_type NOT NULL,
-    title VARCHAR(255) NOT NULL,
-    file_name VARCHAR(255) NOT NULL,
-    file_url TEXT NOT NULL,
-    uploaded_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    uploaded_by UUID REFERENCES users(id) ON DELETE SET NULL,
-    size INTEGER,
-    is_public BOOLEAN DEFAULT FALSE,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-
--- Notifications table
-CREATE TABLE notifications (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    user_id UUID REFERENCES users(id) ON DELETE CASCADE,
-    message TEXT NOT NULL,
-    type VARCHAR(50) NOT NULL, -- 'success', 'info', 'warning', 'error'
-    read BOOLEAN DEFAULT FALSE,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-
--- Audit Logs table
-CREATE TABLE audit_logs (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    user_id UUID REFERENCES users(id) ON DELETE SET NULL,
-    action VARCHAR(255) NOT NULL,
-    entity_type VARCHAR(100) NOT NULL,
-    entity_id UUID,
-    old_value JSONB,
-    new_value JSONB,
-    ip_address INET,
-    user_agent TEXT,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-
--- Geofence Locations table
-CREATE TABLE geofence_locations (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    name VARCHAR(255) NOT NULL,
-    latitude DECIMAL(10,8) NOT NULL,
-    longitude DECIMAL(11,8) NOT NULL,
-    radius INTEGER NOT NULL, -- in meters
-    is_active BOOLEAN DEFAULT TRUE,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-
--- Indexes for performance
-CREATE INDEX idx_users_username ON users(username);
-CREATE INDEX idx_users_email ON users(email);
-CREATE INDEX idx_employees_employee_id ON employees(employee_id);
-CREATE INDEX idx_leads_assigned_to ON leads(assigned_to);
-CREATE INDEX idx_support_tickets_assigned_to ON support_tickets(assigned_to);
-CREATE INDEX idx_attendance_employee_id_date ON attendance(employee_id, date);
-CREATE INDEX idx_leave_requests_employee_id ON leave_requests(employee_id);
-CREATE INDEX idx_tasks_assigned_to ON tasks(assigned_to);
-CREATE INDEX idx_payroll_employee_id_month_year ON payroll(employee_id, month, year);
-CREATE INDEX idx_performance_reviews_employee_id ON performance_reviews(employee_id);
-CREATE INDEX idx_documents_employee_id ON documents(employee_id);
-CREATE INDEX idx_notifications_user_id ON notifications(user_id);
-CREATE INDEX idx_audit_logs_user_id ON audit_logs(user_id);
-CREATE INDEX idx_audit_logs_entity_type_id ON audit_logs(entity_type, entity_id);
-CREATE INDEX idx_task_comments_task_id ON task_comments(task_id);
-CREATE INDEX idx_geofence_locations_name ON geofence_locations(name);`}
+-- Continue with other tables...`}
                 </pre>
               </div>
             </div>
@@ -2166,4 +1961,3 @@ Response:
 };
 
 export default DocumentationPage;
-```
