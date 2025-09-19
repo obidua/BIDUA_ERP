@@ -8,7 +8,7 @@ import {
   LogOut,
   Building2,
   Menu,
-  X
+  X,
   BookOpen
 } from 'lucide-react';
 
