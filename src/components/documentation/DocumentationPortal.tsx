@@ -726,7 +726,7 @@ const DocumentationPortal: React.FC<DocumentationPortalProps> = ({
                 <h2 className="text-xl font-semibold text-gray-900 mb-4">Frontend Setup</h2>
                 <div className="bg-gray-50 p-4 rounded-lg">
                   <pre className="text-sm text-gray-800 overflow-x-auto">
-{\`# Clone the repository
+{`# Clone the repository
 git clone https://github.com/bidua/erp-system.git
 cd erp-system/frontend
 
@@ -746,7 +746,7 @@ npm run build`}
                 <h2 className="text-xl font-semibold text-gray-900 mb-4">FastAPI Backend Setup</h2>
                 <div className="bg-gray-50 p-4 rounded-lg">
                   <pre className="text-sm text-gray-800 overflow-x-auto">
-{\`# Navigate to backend directory
+{`# Navigate to backend directory
 cd ../backend
 
 # Create virtual environment
@@ -773,7 +773,7 @@ uvicorn main:app --reload --host 0.0.0.0 --port 8000`}
                 <h2 className="text-xl font-semibold text-gray-900 mb-4">Database Setup</h2>
                 <div className="bg-gray-50 p-4 rounded-lg">
                   <pre className="text-sm text-gray-800 overflow-x-auto">
-{\`# Install PostgreSQL (Ubuntu/Debian)
+{`# Install PostgreSQL (Ubuntu/Debian)
 sudo apt update
 sudo apt install postgresql postgresql-contrib
 
@@ -1002,7 +1002,7 @@ psql -h localhost -U bidua_user -d bidua_erp`}
               <h2 className="text-xl font-semibold text-gray-900 mb-4">Component Structure</h2>
               <div className="bg-gray-50 p-4 rounded-lg">
                 <pre className="text-sm text-gray-800 overflow-x-auto">
-{\`src/components/
+{`src/components/
 ├── auth/
 │   └── LoginForm.tsx
 ├── layout/
@@ -1040,7 +1040,7 @@ psql -h localhost -U bidua_user -d bidua_erp`}
               <h2 className="text-xl font-semibold text-gray-900 mb-4">Route Structure</h2>
               <div className="bg-gray-50 p-4 rounded-lg">
                 <pre className="text-sm text-gray-800 overflow-x-auto">
-{\`Routes:
+{`Routes:
 / - Main application (protected)
   ├── dashboard - Executive dashboard
   ├── crm - Customer relationship management
