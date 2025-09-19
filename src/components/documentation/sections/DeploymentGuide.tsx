@@ -185,7 +185,7 @@ volumes:
           <div>
             <h4 className="font-semibold text-gray-900 mb-3">GitHub Actions Workflow</h4>
             <pre className="bg-gray-900 text-green-400 p-4 rounded-lg overflow-x-auto text-sm">
-{\`# .github/workflows/deploy.yml
+{`# .github/workflows/deploy.yml
 name: Deploy BIDUA ERP
 
 on:
