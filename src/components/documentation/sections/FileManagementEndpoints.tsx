@@ -120,7 +120,7 @@ File Size Limits:
 
       {/* File Download Endpoint */}
       <div className="bg-white border border-gray-200 rounded-lg p-6">
-        <h3 className="text-lg font-semibold text-gray-900 mb-4">GET /api/files/{file_id}/download - Secure File Download</h3>
+        <h3 className="text-lg font-semibold text-gray-900 mb-4">GET /api/files/&#123;file_id&#125;/download - Secure File Download</h3>
         
         <div className="space-y-6">
           <div>
