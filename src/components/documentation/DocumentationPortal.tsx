@@ -57,7 +57,7 @@ const DocumentationPortal: React.FC<DocumentationPortalProps> = ({
         { id: 'frontend-setup', title: 'Frontend Setup (React)' },
         { id: 'backend-setup', title: 'Backend Setup (FastAPI)' },
         { id: 'database-setup', title: 'Database Setup (PostgreSQL)' },
-        { id: 'deployment', title: 'Deployment Guide' },
+        { id: 'deployment-guide', title: 'Deployment Guide' },
         { id: 'testing', title: 'Testing Strategy' }
       ]
     },
@@ -105,7 +105,7 @@ const DocumentationPortal: React.FC<DocumentationPortalProps> = ({
       id: 'deployment',
       title: 'Deployment',
       children: [
-        { id: 'deployment', title: 'Deployment Guide' },
+        { id: 'deployment-overview', title: 'Deployment Overview' },
         { id: 'monitoring', title: 'Monitoring' },
         { id: 'performance', title: 'Performance Optimization' }
       ]
@@ -155,11 +155,19 @@ const DocumentationPortal: React.FC<DocumentationPortalProps> = ({
             estimatedCompletion="Coming soon"
           />
         );
-      case 'deployment':
+      case 'deployment-guide':
         return (
           <UnderDevelopmentSection 
             title="Deployment Guide"
             description="Production deployment guide for React + FastAPI + PostgreSQL stack."
+            estimatedCompletion="Coming soon"
+          />
+        );
+      case 'deployment-overview':
+        return (
+          <UnderDevelopmentSection 
+            title="Deployment Overview"
+            description="Overview of deployment strategies and infrastructure options."
             estimatedCompletion="Coming soon"
           />
         );
