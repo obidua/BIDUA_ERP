@@ -4,12 +4,14 @@ import { Book, Search, ChevronRight, ChevronDown, LogOut, ArrowLeft } from 'luci
 interface DocumentationPortalProps {
   currentUser: any;
   activeSection: string;
+  onSectionChange: (section: string) => void;
   onLogout: () => void;
 }
 
 const DocumentationPortal: React.FC<DocumentationPortalProps> = ({
   currentUser,
   activeSection,
+  onSectionChange,
   onLogout
 }) => {
   const [searchTerm, setSearchTerm] = useState('');
