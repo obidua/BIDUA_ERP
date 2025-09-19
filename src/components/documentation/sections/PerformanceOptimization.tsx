@@ -675,10 +675,10 @@ JOIN salary_components sc ON e.id = sc.employee_id;`}
               <div className="bg-green-50 p-3 rounded-lg">
                 <h5 className="font-semibold text-green-900 text-sm">Response Times</h5>
                 <ul className="text-xs text-green-800 space-y-1">
-                  <li>• API endpoints: < 200ms (95th percentile)</li>
-                  <li>• Database queries: < 100ms average</li>
-                  <li>• Page load time: < 2 seconds</li>
-                  <li>• Time to interactive: < 3 seconds</li>
+                  <li>• API endpoints: &lt; 200ms (95th percentile)</li>
+                  <li>• Database queries: &lt; 100ms average</li>
+                  <li>• Page load time: &lt; 2 seconds</li>
+                  <li>• Time to interactive: &lt; 3 seconds</li>
                 </ul>
               </div>
               <div className="bg-blue-50 p-3 rounded-lg">
@@ -694,9 +694,9 @@ JOIN salary_components sc ON e.id = sc.employee_id;`}
                 <h5 className="font-semibold text-purple-900 text-sm">Availability</h5>
                 <ul className="text-xs text-purple-800 space-y-1">
                   <li>• Uptime SLA: 99.9%</li>
-                  <li>• Recovery time: < 5 minutes</li>
+                  <li>• Recovery time: &lt; 5 minutes</li>
                   <li>• Data backup: 99.99% durability</li>
-                  <li>• Disaster recovery: < 1 hour</li>
+                  <li>• Disaster recovery: &lt; 1 hour</li>
                 </ul>
               </div>
             </div>
@@ -721,9 +721,9 @@ export let options = {
     { duration: '2m', target: 0 },     // Ramp down
   ],
   thresholds: {
-    http_req_duration: ['p(95)<500'],   // 95% under 500ms
-    http_req_failed: ['rate<0.1'],      // Error rate under 10%
-    errors: ['rate<0.1'],
+    http_req_duration: ['p(95)&lt;500'],   // 95% under 500ms
+    http_req_failed: ['rate&lt;0.1'],      // Error rate under 10%
+    errors: ['rate&lt;0.1'],
   },
 };
 
@@ -754,7 +754,7 @@ export default function() {
     
     check(response, {
       [\`\${endpoint} status is 200\`]: (r) => r.status === 200,
-      [\`\${endpoint} response time < 500ms\`]: (r) => r.timings.duration < 500,
+      [\`\${endpoint} response time &lt; 500ms\`]: (r) => r.timings.duration &lt; 500,
     });
     
     errorRate.add(response.status !== 200);
