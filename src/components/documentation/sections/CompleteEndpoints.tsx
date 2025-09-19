@@ -394,8 +394,8 @@ print(f"Found {len(employees['employees'])} active sales employees")`}
           <div className="bg-green-50 p-4 rounded-lg">
             <h4 className="font-semibold text-green-900 mb-2">Performance Metrics</h4>
             <ul className="text-sm text-green-800 space-y-1">
-              <li>• <strong>Average Response:</strong> < 200ms</li>
-              <li>• <strong>95th Percentile:</strong> < 500ms</li>
+              <li>• <strong>Average Response:</strong> &lt; 200ms</li>
+              <li>• <strong>95th Percentile:</strong> &lt; 500ms</li>
               <li>• <strong>Uptime SLA:</strong> 99.9%</li>
               <li>• <strong>Throughput:</strong> 1000 req/sec</li>
             </ul>
