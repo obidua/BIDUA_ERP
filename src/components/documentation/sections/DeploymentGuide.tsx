@@ -113,14 +113,17 @@ services:
       - POSTGRES_DB=bidua_erp
       - POSTGRES_USER=bidua_user
       - POSTGRES_PASSWORD={'${'}DB_PASSWORD}
+    }
     volumes:
       - postgres_data:/var/lib/postgresql/data
       - ./backups:/backups
     restart: unless-stopped
+  )
 
   redis:
     image: redis:7-alpine
     restart: unless-stopped
+}
 
 volumes:
   postgres_data:`}
@@ -183,7 +186,7 @@ volumes:
           <div>
             <h4 className="font-semibold text-gray-900 mb-3">GitHub Actions Workflow</h4>
             <pre className="bg-gray-900 text-green-400 p-4 rounded-lg overflow-x-auto text-sm">
-{`# .github/workflows/deploy.yml
+{\`# .github/workflows/deploy.yml
 name: Deploy BIDUA ERP
 
 on:
@@ -264,7 +267,7 @@ jobs:
           <div>
             <h4 className="font-semibold text-gray-900 mb-3">Deployment Script</h4>
             <pre className="bg-gray-900 text-green-400 p-4 rounded-lg overflow-x-auto text-sm">
-{`#!/bin/bash
+{\`#!/bin/bash
 # deploy.sh - Production deployment script
 
 set -e
@@ -306,7 +309,7 @@ echo "Deployment completed successfully!"`}
           <div>
             <h4 className="font-semibold text-gray-900 mb-3">Let's Encrypt SSL</h4>
             <pre className="bg-gray-900 text-green-400 p-4 rounded-lg overflow-x-auto text-sm">
-{`# Install Certbot
+{\`# Install Certbot
 sudo apt install certbot python3-certbot-nginx
 
 # Obtain SSL certificate
@@ -322,7 +325,7 @@ sudo crontab -e
           <div>
             <h4 className="font-semibold text-gray-900 mb-3">Nginx SSL Configuration</h4>
             <pre className="bg-gray-900 text-green-400 p-4 rounded-lg overflow-x-auto text-sm">
-{`# nginx.conf
+{\`# nginx.conf
 server {
     listen 443 ssl http2;
     server_name yourdomain.com;
@@ -361,7 +364,7 @@ server {
           <div>
             <h4 className="font-semibold text-gray-900 mb-3">Health Check Endpoints</h4>
             <pre className="bg-gray-900 text-green-400 p-4 rounded-lg overflow-x-auto text-sm">
-{`# Add to FastAPI main.py
+{\`# Add to FastAPI main.py
 @app.get("/health")
 async def health_check():
     return {
@@ -391,7 +394,7 @@ async def readiness_check():
           <div>
             <h4 className="font-semibold text-gray-900 mb-3">Monitoring with Prometheus</h4>
             <pre className="bg-gray-900 text-green-400 p-4 rounded-lg overflow-x-auto text-sm">
-{`# docker-compose.monitoring.yml
+{\`# docker-compose.monitoring.yml
 version: '3.8'
 
 services:
@@ -475,7 +478,7 @@ volumes:
           <div>
             <h4 className="font-semibold text-gray-900 mb-3">Horizontal Scaling</h4>
             <pre className="bg-gray-900 text-green-400 p-4 rounded-lg overflow-x-auto text-sm">
-{`# Kubernetes deployment
+{\`# Kubernetes deployment
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -514,7 +517,7 @@ spec:
           <div>
             <h4 className="font-semibold text-gray-900 mb-3">Load Balancer Configuration</h4>
             <pre className="bg-gray-900 text-green-400 p-4 rounded-lg overflow-x-auto text-sm">
-{`# nginx load balancer
+{\`# nginx load balancer
 upstream backend_servers {
     least_conn;
     server backend1:8000 max_fails=3 fail_timeout=30s;
