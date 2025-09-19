@@ -1,5 +1,19 @@
 import React, { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { User } from './types';
+import { 
+  mockUsers, 
+  staticPassword, 
+  mockLeads, 
+  mockEmployees, 
+  mockTasks, 
+  mockAttendance, 
+  mockLeaveRequests, 
+  mockSupportTickets, 
+  mockPayroll, 
+  mockPerformance, 
+  mockDocuments 
+} from './data/mockData';
 import LoginForm from './components/auth/LoginForm';
 import Sidebar from './components/layout/Sidebar';
 import Dashboard from './components/dashboard/Dashboard';
@@ -9,230 +23,141 @@ import ReportsModule from './components/reports/ReportsModule';
 import SettingsModule from './components/settings/SettingsModule';
 import EmployeePortal from './components/employee/EmployeePortal';
 import DocumentationPortal from './components/documentation/DocumentationPortal';
-import NotificationDisplay from './components/common/NotificationDisplay';
-import { User, ModuleType, Notification } from './types';
-import { mockUsers, staticPassword, mockLeads, mockSupportTickets, mockEmployees, mockAttendance, mockLeaveRequests, mockTasks, mockPerformance, mockPayroll, mockSalarySlips, mockDocuments } from './data/mockData';
-import { v4 as uuidv4 } from 'uuid';
+import { Menu, X } from 'lucide-react';
 
 function App() {
   const [currentUser, setCurrentUser] = useState<User | null>(null);
-  const [activeModule, setActiveModule] = useState<ModuleType>('dashboard');
+  const [activeModule, setActiveModule] = useState('dashboard');
   const [activeDocumentationSection, setActiveDocumentationSection] = useState('overview');
-  const [loginError, setLoginError] = useState<string>('');
-  const [notifications, setNotifications] = useState<Notification[]>([]);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
-  // Data states
+  // Initialize state with mock data
   const [leads, setLeads] = useState(mockLeads);
-  const [supportTickets, setSupportTickets] = useState(mockSupportTickets);
   const [employees, setEmployees] = useState(mockEmployees);
+  const [tasks, setTasks] = useState(mockTasks);
   const [attendance, setAttendance] = useState(mockAttendance);
   const [leaveRequests, setLeaveRequests] = useState(mockLeaveRequests);
-  const [tasks, setTasks] = useState(mockTasks);
-  const [performance, setPerformance] = useState(mockPerformance);
+  const [supportTickets, setSupportTickets] = useState(mockSupportTickets);
   const [payroll, setPayroll] = useState(mockPayroll);
+  const [performance, setPerformance] = useState(mockPerformance);
   const [documents, setDocuments] = useState(mockDocuments);
 
-  // Check for existing session on app load
   useEffect(() => {
     const savedUser = localStorage.getItem('currentUser');
     if (savedUser) {
-      try {
-        setCurrentUser(JSON.parse(savedUser));
-      } catch (error) {
-        localStorage.removeItem('currentUser');
-      }
+      setCurrentUser(JSON.parse(savedUser));
     }
   }, []);
 
   const handleLogin = (username: string, password: string) => {
     const user = mockUsers.find(u => u.username === username);
-    
-    if (!user) {
-      setLoginError('User not found');
-      return;
+    if (user && password === staticPassword) {
+      setCurrentUser(user);
+      localStorage.setItem('currentUser', JSON.stringify(user));
+      
+      // Set default module based on role
+      if (user.role === 'employee') {
+        setActiveModule('employee-portal');
+      } else if (user.role === 'documentation') {
+        setActiveModule('documentation-portal');
+      } else {
+        setActiveModule('dashboard');
+      }
+      return true;
     }
-
-    if (password !== staticPassword) {
-      setLoginError('Invalid password');
-      return;
-    }
-
-    setCurrentUser(user);
-    setLoginError('');
-    localStorage.setItem('currentUser', JSON.stringify(user));
-    addNotification(`Welcome back, ${user.username}!`, 'success');
+    return false;
   };
 
   const handleLogout = () => {
     setCurrentUser(null);
-    setActiveModule('dashboard');
     localStorage.removeItem('currentUser');
-    addNotification('Logged out successfully', 'info');
+    setActiveModule('dashboard');
+    setIsSidebarOpen(false);
   };
 
-  const addNotification = (message: string, type: 'success' | 'info' | 'warning' | 'error') => {
-    const notification: Notification = {
-      id: uuidv4(),
-      message,
-      type,
-      timestamp: new Date().toISOString(),
-      read: false,
-    };
-    setNotifications(prev => [notification, ...prev]);
+  const toggleSidebar = () => {
+    setIsSidebarOpen(!isSidebarOpen);
   };
 
-  const dismissNotification = (id: string) => {
-    setNotifications(prev => prev.filter(n => n.id !== id));
+  // Data manipulation functions
+  const handleAddLead = (lead: any) => {
+    setLeads([...leads, { ...lead, id: Date.now().toString() }]);
   };
 
-  // Data handlers
-  const handleAddLead = (leadData: any) => {
-    const newLead = { ...leadData, id: uuidv4() };
-    setLeads(prev => [...prev, newLead]);
-    addNotification('Lead added successfully', 'success');
-  };
-
-  const handleUpdateLead = (id: string, leadData: any) => {
-    setLeads(prev => prev.map(lead => lead.id === id ? { ...lead, ...leadData } : lead));
-    addNotification('Lead updated successfully', 'success');
+  const handleUpdateLead = (id: string, updatedLead: any) => {
+    setLeads(leads.map(lead => lead.id === id ? { ...lead, ...updatedLead } : lead));
   };
 
   const handleDeleteLead = (id: string) => {
-    setLeads(prev => prev.filter(lead => lead.id !== id));
-    addNotification('Lead deleted successfully', 'info');
+    setLeads(leads.filter(lead => lead.id !== id));
   };
 
-  const handleAddTicket = (ticketData: any) => {
-    const newTicket = { ...ticketData, id: uuidv4() };
-    setSupportTickets(prev => [...prev, newTicket]);
-    addNotification('Support ticket created successfully', 'success');
+  const handleAddEmployee = (employee: any) => {
+    setEmployees([...employees, { ...employee, id: Date.now().toString() }]);
   };
 
-  const handleUpdateTicket = (id: string, ticketData: any) => {
-    setSupportTickets(prev => prev.map(ticket => ticket.id === id ? { ...ticket, ...ticketData } : ticket));
-    addNotification('Support ticket updated successfully', 'success');
-  };
-
-  const handleDeleteTicket = (id: string) => {
-    setSupportTickets(prev => prev.filter(ticket => ticket.id !== id));
-    addNotification('Support ticket deleted successfully', 'info');
-  };
-
-  const handleAddEmployee = (employeeData: any) => {
-    const newEmployee = { ...employeeData, id: uuidv4() };
-    setEmployees(prev => [...prev, newEmployee]);
-    addNotification('Employee added successfully', 'success');
-  };
-
-  const handleUpdateEmployee = (id: string, employeeData: any) => {
-    setEmployees(prev => prev.map(emp => emp.id === id ? { ...emp, ...employeeData } : emp));
-    addNotification('Employee updated successfully', 'success');
+  const handleUpdateEmployee = (id: string, updatedEmployee: any) => {
+    setEmployees(employees.map(emp => emp.id === id ? { ...emp, ...updatedEmployee } : emp));
   };
 
   const handleDeleteEmployee = (id: string) => {
-    setEmployees(prev => prev.filter(emp => emp.id !== id));
-    addNotification('Employee deleted successfully', 'info');
+    setEmployees(employees.filter(emp => emp.id !== id));
   };
 
-  const handleAddAttendance = (attendanceData: any) => {
-    const newAttendance = { ...attendanceData, id: uuidv4() };
-    setAttendance(prev => [...prev, newAttendance]);
-    addNotification('Attendance marked successfully', 'success');
+  const handleAddTask = (task: any) => {
+    setTasks([...tasks, { ...task, id: Date.now().toString() }]);
   };
 
-  const handleUpdateAttendance = (id: string, attendanceData: any) => {
-    setAttendance(prev => prev.map(att => att.id === id ? { ...att, ...attendanceData } : att));
-    addNotification('Attendance updated successfully', 'success');
-  };
-
-  const handleAddLeaveRequest = (leaveData: any) => {
-    const newLeave = { ...leaveData, id: uuidv4() };
-    setLeaveRequests(prev => [...prev, newLeave]);
-    addNotification('Leave request submitted successfully', 'success');
-  };
-
-  const handleUpdateLeaveRequest = (id: string, leaveData: any) => {
-    setLeaveRequests(prev => prev.map(leave => leave.id === id ? { ...leave, ...leaveData } : leave));
-    addNotification('Leave request updated successfully', 'success');
-  };
-
-  const handleAddTask = (taskData: any) => {
-    const newTask = { 
-      ...taskData, 
-      id: uuidv4(),
-      comments: [],
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString()
-    };
-    setTasks(prev => [...prev, newTask]);
-    addNotification('Task created successfully', 'success');
-  };
-
-  const handleUpdateTask = (id: string, taskData: any) => {
-    setTasks(prev => prev.map(task => 
-      task.id === id ? { ...task, ...taskData, updatedAt: new Date().toISOString() } : task
-    ));
-    addNotification('Task updated successfully', 'success');
+  const handleUpdateTask = (id: string, updatedTask: any) => {
+    setTasks(tasks.map(task => task.id === id ? { ...task, ...updatedTask } : task));
   };
 
   const handleDeleteTask = (id: string) => {
-    setTasks(prev => prev.filter(task => task.id !== id));
-    addNotification('Task deleted successfully', 'info');
+    setTasks(tasks.filter(task => task.id !== id));
   };
 
-  // If no user is logged in, show login form
+  const handleAddTicket = (ticket: any) => {
+    setSupportTickets([...supportTickets, { ...ticket, id: Date.now().toString() }]);
+  };
+
+  const handleUpdateTicket = (id: string, updatedTicket: any) => {
+    setSupportTickets(supportTickets.map(ticket => ticket.id === id ? { ...ticket, ...updatedTicket } : ticket));
+  };
+
+  const handleDeleteTicket = (id: string) => {
+    setSupportTickets(supportTickets.filter(ticket => ticket.id !== id));
+  };
+
+  const handleAddAttendance = (attendanceRecord: any) => {
+    setAttendance([...attendance, { ...attendanceRecord, id: Date.now().toString() }]);
+  };
+
+  const handleUpdateAttendance = (id: string, updatedAttendance: any) => {
+    setAttendance(attendance.map(att => att.id === id ? { ...att, ...updatedAttendance } : att));
+  };
+
+  const handleAddLeaveRequest = (leave: any) => {
+    setLeaveRequests([...leaveRequests, { ...leave, id: Date.now().toString() }]);
+  };
+
+  const handleUpdateLeaveRequest = (id: string, updatedLeave: any) => {
+    setLeaveRequests(leaveRequests.map(leave => leave.id === id ? { ...leave, ...updatedLeave } : leave));
+  };
+
   if (!currentUser) {
     return (
-      <>
-        <LoginForm onLogin={handleLogin} error={loginError} />
-        <NotificationDisplay notifications={notifications} onDismiss={dismissNotification} />
-      </>
+      <Router>
+        <LoginForm onLogin={handleLogin} />
+      </Router>
     );
   }
 
-  // Employee portal for employee role
-  if (currentUser.role === 'employee') {
-    return (
-      <>
-        <EmployeePortal
-          currentUser={currentUser}
-          employees={employees}
-          attendance={attendance}
-          leaveRequests={leaveRequests}
-          payroll={payroll}
-          tasks={tasks}
-          documents={documents}
-          onAddLeaveRequest={handleAddLeaveRequest}
-          onUpdateTask={handleUpdateTask}
-          onLogout={handleLogout}
-        />
-        <NotificationDisplay notifications={notifications} onDismiss={dismissNotification} />
-      </>
-    );
-  }
-
-  // Documentation portal for documentation role
-  if (currentUser.role === 'documentation') {
-    return (
-      <>
-        <DocumentationPortal
-          currentUser={currentUser}
-          activeSection={activeDocumentationSection}
-          onSectionChange={setActiveDocumentationSection}
-          onLogout={handleLogout}
-        />
-        <NotificationDisplay notifications={notifications} onDismiss={dismissNotification} />
-      </>
-    );
-  }
-
-  // Main admin/manager portal
-  const renderActiveModule = () => {
+  const renderModule = () => {
     switch (activeModule) {
       case 'dashboard':
         return (
-          <Dashboard
-            currentUser={currentUser}
+          <Dashboard 
+            currentUser={currentUser} 
             leads={leads}
             employees={employees}
             tasks={tasks}
@@ -242,21 +167,21 @@ function App() {
         );
       case 'crm':
         return (
-          <CRMModule
+          <CRMModule 
             currentUser={currentUser}
+            leads={leads}
+            supportTickets={supportTickets}
             onAddLead={handleAddLead}
             onUpdateLead={handleUpdateLead}
             onDeleteLead={handleDeleteLead}
             onAddTicket={handleAddTicket}
             onUpdateTicket={handleUpdateTicket}
             onDeleteTicket={handleDeleteTicket}
-            leads={leads}
-            supportTickets={supportTickets}
           />
         );
       case 'hrms':
         return (
-          <HRMSModule
+          <HRMSModule 
             currentUser={currentUser}
             employees={employees}
             attendance={attendance}
@@ -278,7 +203,7 @@ function App() {
         );
       case 'reports':
         return (
-          <ReportsModule
+          <ReportsModule 
             currentUser={currentUser}
             leads={leads}
             employees={employees}
@@ -288,11 +213,34 @@ function App() {
           />
         );
       case 'settings':
-        return <SettingsModule currentUser={currentUser} />;
+        return <SettingsModule />;
+      case 'employee-portal':
+        return (
+          <EmployeePortal 
+            currentUser={currentUser}
+            employees={employees}
+            attendance={attendance}
+            leaveRequests={leaveRequests}
+            payroll={payroll}
+            tasks={tasks}
+            documents={documents}
+            onAddLeaveRequest={handleAddLeaveRequest}
+            onUpdateTask={handleUpdateTask}
+            onLogout={handleLogout}
+          />
+        );
+      case 'documentation-portal':
+        return (
+          <DocumentationPortal 
+            currentUser={currentUser}
+            activeSection={activeDocumentationSection}
+            onLogout={handleLogout}
+          />
+        );
       default:
         return (
-          <Dashboard
-            currentUser={currentUser}
+          <Dashboard 
+            currentUser={currentUser} 
             leads={leads}
             employees={employees}
             tasks={tasks}
@@ -304,20 +252,68 @@ function App() {
   };
 
   return (
-    <>
-      <div className="min-h-screen bg-gray-50 flex">
-        <Sidebar
-          currentUser={currentUser}
-          activeModule={activeModule}
-          onModuleChange={setActiveModule}
-          onLogout={handleLogout}
-        />
-        <main className="flex-1 p-8">
-          {renderActiveModule()}
-        </main>
-      </div>
-      <NotificationDisplay notifications={notifications} onDismiss={dismissNotification} />
-    </>
+    <Router>
+      <Routes>
+        <Route path="/" element={
+          <div className="min-h-screen bg-gray-50 flex flex-col md:flex-row">
+            {!currentUser ? (
+              <LoginForm onLogin={handleLogin} />
+            ) : (
+              <>
+                {/* Mobile Header */}
+                <div className="md:hidden bg-white shadow-sm border-b px-4 py-3 flex items-center justify-between">
+                  <div className="flex items-center space-x-3">
+                    <button
+                      onClick={toggleSidebar}
+                      className="p-2 rounded-lg hover:bg-gray-100 transition-colors"
+                    >
+                      {isSidebarOpen ? <X size={20} /> : <Menu size={20} />}
+                    </button>
+                    <h1 className="text-lg font-bold text-indigo-600">BIDUA ERP</h1>
+                  </div>
+                  <div className="text-sm text-gray-600">
+                    {currentUser.username}
+                  </div>
+                </div>
+
+                {/* Mobile Overlay */}
+                {isSidebarOpen && (
+                  <div 
+                    className="fixed inset-0 bg-black bg-opacity-50 z-40 md:hidden"
+                    onClick={() => setIsSidebarOpen(false)}
+                  />
+                )}
+
+                {/* Sidebar */}
+                <div className={`
+                  ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'}
+                  md:translate-x-0 fixed md:relative z-50 md:z-auto
+                  w-full md:w-72 h-full md:h-auto
+                  transition-transform duration-300 ease-in-out
+                `}>
+                  <Sidebar
+                    currentUser={currentUser}
+                    activeModule={activeModule}
+                    activeDocumentationSection={activeDocumentationSection}
+                    onModuleChange={(module) => {
+                      setActiveModule(module);
+                      setIsSidebarOpen(false);
+                    }}
+                    onDocumentationSectionChange={setActiveDocumentationSection}
+                    onLogout={handleLogout}
+                  />
+                </div>
+
+                {/* Main Content */}
+                <main className="flex-1 p-4 md:p-8 overflow-auto">
+                  {renderModule()}
+                </main>
+              </>
+            )}
+          </div>
+        } />
+      </Routes>
+    </Router>
   );
 }
 
