@@ -54,8 +54,8 @@ const Sidebar: React.FC<SidebarProps> = ({
   // Filter menu items based on user role
   const filteredMenuItems = (() => {
     if (currentUser.role === 'documentation') {
-      // Only show documentation menu for documentation role
-      return [{ id: 'documentation-portal', name: 'Documentation', icon: BookOpen }];
+      // Documentation role sees no menu items - only documentation sections
+      return [];
     } else if (currentUser.role === 'employee') {
       return [{ id: 'dashboard', name: 'Dashboard', icon: LayoutDashboard }];
     } else {
@@ -134,7 +134,7 @@ const Sidebar: React.FC<SidebarProps> = ({
         {/* Navigation */}
         <nav className="flex-1 p-6 space-y-2 overflow-y-auto">
           {activeModule === 'documentation-portal' ? (
-            // Documentation sections
+            // Documentation sections only
             <div className="space-y-6">
               {documentationSections.map((section, sectionIndex) => (
                 <div key={sectionIndex}>
@@ -164,20 +164,9 @@ const Sidebar: React.FC<SidebarProps> = ({
                   </div>
                 </div>
               ))}
-              
-              {/* Logout button for documentation portal */}
-              <div className="pt-6 border-t border-gray-200">
-                <button
-                  onClick={onLogout}
-                  className="w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-700 hover:bg-red-50 hover:text-red-700 transition-all duration-200"
-                >
-                  <LogOut className="w-5 h-5" />
-                  <span className="font-medium">Logout</span>
-                </button>
-              </div>
             </div>
           ) : (
-            // Regular menu items
+            // Regular menu items for other roles
             <div className="space-y-2">
               {filteredMenuItems.map((item) => {
                 const Icon = item.icon;
@@ -197,18 +186,19 @@ const Sidebar: React.FC<SidebarProps> = ({
                 );
               })}
               
-              {/* Logout button for regular menu */}
-              <div className="pt-6 border-t border-gray-200">
-                <button
-                  onClick={onLogout}
-                  className="w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-700 hover:bg-red-50 hover:text-red-700 transition-all duration-200"
-                >
-                  <LogOut className="w-5 h-5" />
-                  <span className="font-medium">Logout</span>
-                </button>
-              </div>
             </div>
           )}
+          
+          {/* Logout button for all roles */}
+          <div className="pt-6 border-t border-gray-200">
+            <button
+              onClick={onLogout}
+              className="w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-700 hover:bg-red-50 hover:text-red-700 transition-all duration-200"
+            >
+              <LogOut className="w-5 h-5" />
+              <span className="font-medium">Logout</span>
+            </button>
+          </div>
         </nav>
       </div>
     </div>
