@@ -192,7 +192,7 @@ Response (201 Created):
           </div>
 
           <div>
-            <h4 className="font-semibold text-gray-900 mb-3">PUT /api/support-tickets/{ticket_id}/status - Update Ticket Status</h4>
+            <h4 className="font-semibold text-gray-900 mb-3">PUT /api/support-tickets/&#123;ticket_id&#125;/status - Update Ticket Status</h4>
             <pre className="bg-gray-900 text-green-400 p-4 rounded-lg overflow-x-auto text-sm">
 {`PUT /api/support-tickets/ticket-uuid-456/status
 Authorization: Bearer <token>
