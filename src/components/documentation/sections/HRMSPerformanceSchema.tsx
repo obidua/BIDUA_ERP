@@ -148,6 +148,7 @@ CREATE INDEX idx_feedback_360_review ON feedback_360(review_id);`}
         </pre>
       </div>
     </div>
+  )
   );
 };
 
