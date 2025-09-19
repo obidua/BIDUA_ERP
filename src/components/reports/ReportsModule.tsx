@@ -34,6 +34,8 @@ const ReportsModule: React.FC<ReportsModuleProps> = ({
   // Calculate executive summary metrics
   const totalRevenue = leads.reduce((sum, lead) => sum + (lead.value || 0), 0);
   const totalEmployees = employees.length;
+  const totalLeads = leads.length;
+  const totalTasks = tasks.length;
   const completedTasks = tasks.filter(task => task.status === 'completed').length;
   const avgAttendance = attendance.length > 0 ? (attendance.reduce((sum, att) => sum + att.totalHours, 0) / attendance.length) : 0;
 
