@@ -18,6 +18,7 @@ import DatabaseSetup from './sections/DatabaseSetup';
 import DeploymentGuide from './sections/DeploymentGuide';
 import TestingStrategy from './sections/TestingStrategy';
 import SchemaOverview from './sections/SchemaOverview';
+import UnderDevelopmentSection from './sections/UnderDevelopmentSection';
 import NavigationButtons from './components/NavigationButtons';
 
 interface DocumentationPortalProps {
