@@ -932,3 +932,47 @@ export const mockGeofenceLocations = [
   { id: '2', name: 'Pune Office', latitude: 18.5204, longitude: 73.8567, radius: 100, isActive: true },
   { id: '3', name: 'Bangalore Office', latitude: 12.9716, longitude: 77.5946, radius: 100, isActive: true },
 ];
+
+// Documentation navigation structure
+export const documentationSections = [
+  {
+    title: 'Getting Started',
+    items: [
+      { id: 'overview', name: 'Project Overview', icon: 'Home' },
+      { id: 'architecture', name: 'System Architecture', icon: 'Layers' },
+      { id: 'tech-stack', name: 'Technology Stack', icon: 'Code' },
+      { id: 'setup', name: 'Development Setup', icon: 'Settings' },
+    ]
+  },
+  {
+    title: 'Database Design',
+    items: [
+      { id: 'schema', name: 'Database Schema', icon: 'Database' },
+      { id: 'relationships', name: 'Table Relationships', icon: 'GitBranch' },
+      { id: 'migrations', name: 'Migrations', icon: 'Server' },
+    ]
+  },
+  {
+    title: 'API Documentation',
+    items: [
+      { id: 'api-overview', name: 'API Overview', icon: 'Globe' },
+      { id: 'authentication', name: 'Authentication', icon: 'Shield' },
+      { id: 'endpoints', name: 'Endpoints', icon: 'Zap' },
+    ]
+  },
+  {
+    title: 'Frontend Guide',
+    items: [
+      { id: 'components', name: 'Components', icon: 'Smartphone' },
+      { id: 'routing', name: 'Routing', icon: 'GitBranch' },
+      { id: 'state-management', name: 'State Management', icon: 'Target' },
+    ]
+  },
+  {
+    title: 'Deployment',
+    items: [
+      { id: 'deployment', name: 'Deployment Guide', icon: 'Server' },
+      { id: 'monitoring', name: 'Monitoring', icon: 'AlertTriangle' },
+    ]
+  }
+];

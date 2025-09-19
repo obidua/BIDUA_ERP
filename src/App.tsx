@@ -28,6 +28,7 @@ import { Menu, X } from 'lucide-react';
 function App() {
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [activeModule, setActiveModule] = useState('dashboard');
+  const [activeDocumentationSection, setActiveDocumentationSection] = useState('overview');
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   // Initialize state with mock data
@@ -292,10 +293,12 @@ function App() {
                   <Sidebar
                     currentUser={currentUser}
                     activeModule={activeModule}
+                    activeDocumentationSection={activeDocumentationSection}
                     onModuleChange={(module) => {
                       setActiveModule(module);
                       setIsSidebarOpen(false);
                     }}
+                    onDocumentationSectionChange={setActiveDocumentationSection}
                     onLogout={handleLogout}
                   />
                 </div>
