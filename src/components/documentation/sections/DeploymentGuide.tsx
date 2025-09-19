@@ -406,29 +406,7 @@ echo "Deployment completed successfully!"`}
           <div>
             <h4 className="font-semibold text-gray-900 mb-3">Load Balancer Configuration</h4>
             <pre className="bg-gray-900 text-green-400 p-4 rounded-lg overflow-x-auto text-sm">
-{\`# nginx load balancer
-upstream backend_servers {
-    least_conn;
-    server backend1:8000 max_fails=3 fail_timeout=30s;
-    server backend2:8000 max_fails=3 fail_timeout=30s;
-    server backend3:8000 max_fails=3 fail_timeout=30s;
-}
-
-server {
-    listen 80;
-    server_name api.bidua.com;
-    
-    location / {
-        proxy_pass http://backend_servers;
-        proxy_set_header Host $host;
-        proxy_set_header X-Real-IP $remote_addr;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto $scheme;
-        
-        # Health check
-        proxy_next_upstream error timeout invalid_header http_500 http_502 http_503;
-    }
-}`}
+{"# nginx load balancer\nupstream backend_servers {\n    least_conn;\n    server backend1:8000 max_fails=3 fail_timeout=30s;\n    server backend2:8000 max_fails=3 fail_timeout=30s;\n    server backend3:8000 max_fails=3 fail_timeout=30s;\n}\n\nserver {\n    listen 80;\n    server_name api.bidua.com;\n    \n    location / {\n        proxy_pass http://backend_servers;\n        proxy_set_header Host $host;\n        proxy_set_header X-Real-IP $remote_addr;\n        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;\n        proxy_set_header X-Forwarded-Proto $scheme;\n        \n        # Health check\n        proxy_next_upstream error timeout invalid_header http_500 http_502 http_503;\n    }\n}"}
             </pre>
           </div>
         </div>
