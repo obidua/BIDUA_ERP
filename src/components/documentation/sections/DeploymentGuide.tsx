@@ -332,30 +332,7 @@ echo "Deployment completed successfully!"`}
           <div>
             <h4 className="font-semibold text-gray-900 mb-3">Health Check Endpoints</h4>
             <pre className="bg-gray-900 text-green-400 p-4 rounded-lg overflow-x-auto text-sm">
-{\`# Add to FastAPI main.py
-@app.get("/health")
-async def health_check():
-    return {
-        "status": "healthy",
-        "timestamp": datetime.utcnow().isoformat(),
-        "version": "1.0.0",
-        "database": await check_db_health(),
-        "redis": await check_redis_health()
-    }
-
-@app.get("/ready")
-async def readiness_check():
-    # Check if all dependencies are ready
-    checks = {
-        "database": await check_db_health(),
-        "migrations": await check_migrations(),
-        "external_apis": await check_external_services()
-    }
-    
-    if all(checks.values()):
-        return {"status": "ready", "checks": checks}
-    else:
-        raise HTTPException(status_code=503, detail="Service not ready")`}
+{"# Add to FastAPI main.py\n@app.get(\"/health\")\nasync def health_check():\n    return {\n        \"status\": \"healthy\",\n        \"timestamp\": datetime.utcnow().isoformat(),\n        \"version\": \"1.0.0\",\n        \"database\": await check_db_health(),\n        \"redis\": await check_redis_health()\n    }\n\n@app.get(\"/ready\")\nasync def readiness_check():\n    # Check if all dependencies are ready\n    checks = {\n        \"database\": await check_db_health(),\n        \"migrations\": await check_migrations(),\n        \"external_apis\": await check_external_services()\n    }\n    \n    if all(checks.values()):\n        return {\"status\": \"ready\", \"checks\": checks}\n    else:\n        raise HTTPException(status_code=503, detail=\"Service not ready\")"}
             </pre>
           </div>
 
