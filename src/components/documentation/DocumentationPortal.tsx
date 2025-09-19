@@ -656,7 +656,7 @@ const DocumentationPortal: React.FC<DocumentationPortalProps> = ({
                   </div>
                   <div className="flex items-center justify-between p-3 bg-yellow-50 rounded border border-yellow-200">
                     <div>
-                      <span className="font-mono text-sm">PUT /crm/leads/{id}</span>
+                      <span className="font-mono text-sm">PUT /crm/leads/{"{id}"}</span>
                       <p className="text-xs text-gray-600">Update lead</p>
                     </div>
                     <span className="bg-yellow-600 text-white px-2 py-1 rounded text-xs">PUT</span>
