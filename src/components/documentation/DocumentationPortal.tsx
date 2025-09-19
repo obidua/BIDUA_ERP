@@ -777,7 +777,7 @@ const DocumentationPortal: React.FC<DocumentationPortalProps> = ({
         </div>
 
         {/* Navigation */}
-        <nav className="flex-1 h-0 p-4 md:p-6 space-y-2 overflow-y-auto">
+        <nav className="flex-1 p-4 md:p-6 space-y-2 overflow-y-auto">
           <div className="space-y-2">
             {filteredNavItems.map((section) => {
               const isExpanded = expandedSections.includes(section.id);
