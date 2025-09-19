@@ -103,24 +103,6 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLogin, error }) => {
             </div>
           </div>
         </div>
-        
-        {/* Footer */}
-        <div className="mt-6 text-center">
-          <div className="flex items-center justify-center space-x-4 text-xs text-gray-500">
-            <span>© 2025 BIDUA ERP. All rights reserved.</span>
-            <span>|</span>
-            <a 
-              href="/documentation" 
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-indigo-600 hover:text-indigo-800 transition-colors"
-            >
-              📚 Documentation
-            </a>
-            <span>|</span>
-            <span>Version 1.0.0</span>
-          </div>
-        </div>
       </div>
     </div>
   );

@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
 import { User } from './types';
 import { 
   mockUsers, 
@@ -22,7 +21,6 @@ import HRMSModule from './components/hrms/HRMSModule';
 import ReportsModule from './components/reports/ReportsModule';
 import SettingsModule from './components/settings/SettingsModule';
 import EmployeePortal from './components/employee/EmployeePortal';
-import DocumentationPage from './components/documentation/DocumentationPage';
 import { Menu, X } from 'lucide-react';
 
 function App() {
@@ -217,7 +215,6 @@ function App() {
             payroll={payroll}
             tasks={tasks}
             documents={documents}
-            onAddAttendance={handleAddAttendance}
             onAddLeaveRequest={handleAddLeaveRequest}
             onUpdateTask={handleUpdateTask}
             onLogout={handleLogout}
@@ -238,86 +235,54 @@ function App() {
   };
 
   return (
-    <BrowserRouter>
-      <div className="min-h-screen bg-gray-50 flex flex-col">
-        <Routes>
-          <Route path="/documentation" element={<DocumentationPage />} />
-          <Route path="/" element={
-            <div className="flex flex-col md:flex-row flex-1">
-              {/* Mobile Header */}
-              <div className="md:hidden bg-white shadow-sm border-b px-4 py-3 flex items-center justify-between">
-                <div className="flex items-center space-x-3">
-                  <button
-                    onClick={toggleSidebar}
-                    className="p-2 rounded-lg hover:bg-gray-100 transition-colors"
-                  >
-                    {isSidebarOpen ? <X size={20} /> : <Menu size={20} />}
-                  </button>
-                  <h1 className="text-lg font-bold text-indigo-600">BIDUA ERP</h1>
-                </div>
-                <div className="text-sm text-gray-600">
-                  {currentUser.username}
-                </div>
-              </div>
-
-              {/* Mobile Overlay */}
-              {isSidebarOpen && (
-                <div 
-                  className="fixed inset-0 bg-black bg-opacity-50 z-40 md:hidden"
-                  onClick={() => setIsSidebarOpen(false)}
-                />
-              )}
-
-              {/* Sidebar - Only show for non-employee portal views */}
-              {activeModule !== 'employee-portal' && (
-                <div className={`
-                  ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'}
-                  md:translate-x-0 fixed md:relative z-50 md:z-auto
-                  w-full md:w-72 h-full md:h-auto
-                  transition-transform duration-300 ease-in-out
-                `}>
-                  <Sidebar
-                    currentUser={currentUser}
-                    activeModule={activeModule}
-                    onModuleChange={(module) => {
-                      setActiveModule(module);
-                      setIsSidebarOpen(false);
-                    }}
-                    onLogout={handleLogout}
-                  />
-                </div>
-              )}
-
-              {/* Main Content */}
-              <main className={`flex-1 overflow-auto ${activeModule !== 'employee-portal' ? 'p-4 md:p-8' : ''}`}>
-                {renderModule()}
-              </main>
-
-              {/* Footer - Only show for non-employee portal views */}
-              {activeModule !== 'employee-portal' && (
-                <footer className="bg-white border-t border-gray-200 px-4 md:px-8 py-4">
-                  <div className="flex flex-col sm:flex-row items-center justify-between">
-                    <div className="text-sm text-gray-600 mb-2 sm:mb-0">
-                      © 2025 BIDUA ERP. All rights reserved.
-                    </div>
-                    <div className="flex items-center space-x-4 text-sm">
-                      <Link 
-                        to="/documentation" 
-                        className="text-indigo-600 hover:text-indigo-800 transition-colors"
-                      >
-                        📚 Documentation
-                      </Link>
-                      <span className="text-gray-400">|</span>
-                      <span className="text-gray-600">Version 1.0.0</span>
-                    </div>
-                  </div>
-                </footer>
-              )}
-            </div>
-          } />
-        </Routes>
+    <div className="min-h-screen bg-gray-50 flex flex-col md:flex-row">
+      {/* Mobile Header */}
+      <div className="md:hidden bg-white shadow-sm border-b px-4 py-3 flex items-center justify-between">
+        <div className="flex items-center space-x-3">
+          <button
+            onClick={toggleSidebar}
+            className="p-2 rounded-lg hover:bg-gray-100 transition-colors"
+          >
+            {isSidebarOpen ? <X size={20} /> : <Menu size={20} />}
+          </button>
+          <h1 className="text-lg font-bold text-indigo-600">BIDUA ERP</h1>
+        </div>
+        <div className="text-sm text-gray-600">
+          {currentUser.username}
+        </div>
       </div>
-    </BrowserRouter>
+
+      {/* Mobile Overlay */}
+      {isSidebarOpen && (
+        <div 
+          className="fixed inset-0 bg-black bg-opacity-50 z-40 md:hidden"
+          onClick={() => setIsSidebarOpen(false)}
+        />
+      )}
+
+      {/* Sidebar */}
+      <div className={`
+        ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'}
+        md:translate-x-0 fixed md:relative z-50 md:z-auto
+        w-full md:w-72 h-full md:h-auto
+        transition-transform duration-300 ease-in-out
+      `}>
+        <Sidebar
+          currentUser={currentUser}
+          activeModule={activeModule}
+          onModuleChange={(module) => {
+            setActiveModule(module);
+            setIsSidebarOpen(false);
+          }}
+          onLogout={handleLogout}
+        />
+      </div>
+
+      {/* Main Content */}
+      <main className="flex-1 p-4 md:p-8 overflow-auto">
+        {renderModule()}
+      </main>
+    </div>
   );
 }
 

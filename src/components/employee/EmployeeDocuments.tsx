@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { FileText, Download, Eye, Search, Filter, Calendar, User, DollarSign, Award } from 'lucide-react';
+import { FileText, Download, Eye, Search, Filter, Calendar, User } from 'lucide-react';
 
 interface EmployeeDocumentsProps {
   currentUser: any;
