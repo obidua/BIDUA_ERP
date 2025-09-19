@@ -991,7 +991,7 @@ const DocumentationPage: React.FC = () => {
           {/* Future Enhancements */}
           <section>
             <div className="flex items-center space-x-3 mb-6">
-              <TrendingUp className="w-6 h-6 text-indigo-600" />
+              <BarChart3 className="w-6 h-6 text-indigo-600" />
               <h2 className="text-2xl font-bold text-gray-900">Future Enhancements</h2>
             </div>
             <div className="bg-white rounded-lg p-6 shadow-sm border border-gray-100">
