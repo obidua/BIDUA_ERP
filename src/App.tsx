@@ -292,7 +292,7 @@ function App() {
           <div className={`
             ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'}
             md:translate-x-0 fixed md:relative z-50 md:z-auto
-            w-full md:w-72 h-screen
+            w-full md:w-72 h-screen top-14 md:top-0
             transition-transform duration-300 ease-in-out
           `}>
             <Sidebar
@@ -309,7 +309,7 @@ function App() {
           </div>
 
           {/* Main Content */}
-          <main className="flex-1 p-4 md:p-8 overflow-auto">
+          <main className="flex-1 p-4 md:p-8 overflow-auto mt-14 md:mt-0">
             {renderModule()}
           </main>
         </div>
