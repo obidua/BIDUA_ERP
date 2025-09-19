@@ -37,7 +37,7 @@ const HRMSPerformanceSchema: React.FC = () => {
               <tr><td className="px-6 py-4 text-sm font-mono">reviewer_id</td><td className="px-6 py-4 text-sm">UUID</td><td className="px-6 py-4 text-sm">NOT NULL, FOREIGN KEY REFERENCES employees(id)</td><td className="px-6 py-4 text-sm">Reviewing manager</td></tr>
               <tr><td className="px-6 py-4 text-sm font-mono">review_period</td><td className="px-6 py-4 text-sm">VARCHAR(50)</td><td className="px-6 py-4 text-sm">NOT NULL</td><td className="px-6 py-4 text-sm">Review period (Q1 2025, Annual 2024)</td></tr>
               <tr><td className="px-6 py-4 text-sm font-mono">review_type</td><td className="px-6 py-4 text-sm">review_type</td><td className="px-6 py-4 text-sm">NOT NULL</td><td className="px-6 py-4 text-sm">annual, quarterly, probation, promotion</td></tr>
-              <tr><td className="px-6 py-4 text-sm font-mono">overall_rating</td><td className="px-6 py-4 text-sm">NUMERIC(3,2)</td><td className="px-6 py-4 text-sm">CHECK (overall_rating >= 1 AND overall_rating <= 5)</td><td className="px-6 py-4 text-sm">Overall performance rating (1-5)</td></tr>
+              <tr><td className="px-6 py-4 text-sm font-mono">overall_rating</td><td className="px-6 py-4 text-sm">NUMERIC(3,2)</td><td className="px-6 py-4 text-sm">CHECK (overall_rating &gt;= 1 AND overall_rating &lt;= 5)</td><td className="px-6 py-4 text-sm">Overall performance rating (1-5)</td></tr>
               <tr><td className="px-6 py-4 text-sm font-mono">manager_feedback</td><td className="px-6 py-4 text-sm">TEXT</td><td className="px-6 py-4 text-sm">NULL</td><td className="px-6 py-4 text-sm">Manager's detailed feedback</td></tr>
               <tr><td className="px-6 py-4 text-sm font-mono">employee_self_review</td><td className="px-6 py-4 text-sm">TEXT</td><td className="px-6 py-4 text-sm">NULL</td><td className="px-6 py-4 text-sm">Employee's self-assessment</td></tr>
               <tr><td className="px-6 py-4 text-sm font-mono">status</td><td className="px-6 py-4 text-sm">review_status</td><td className="px-6 py-4 text-sm">DEFAULT 'draft'</td><td className="px-6 py-4 text-sm">draft, in-progress, completed, approved</td></tr>
@@ -75,7 +75,7 @@ const HRMSPerformanceSchema: React.FC = () => {
               <tr><td className="px-6 py-4 text-sm font-mono">achieved_value</td><td className="px-6 py-4 text-sm">NUMERIC(10,2)</td><td className="px-6 py-4 text-sm">NOT NULL</td><td className="px-6 py-4 text-sm">Actual achieved value</td></tr>
               <tr><td className="px-6 py-4 text-sm font-mono">unit</td><td className="px-6 py-4 text-sm">VARCHAR(50)</td><td className="px-6 py-4 text-sm">NULL</td><td className="px-6 py-4 text-sm">Unit of measurement (%, count, INR)</td></tr>
               <tr><td className="px-6 py-4 text-sm font-mono">weight</td><td className="px-6 py-4 text-sm">NUMERIC(5,2)</td><td className="px-6 py-4 text-sm">DEFAULT 1.0</td><td className="px-6 py-4 text-sm">KPI weight in overall rating</td></tr>
-              <tr><td className="px-6 py-4 text-sm font-mono">rating</td><td className="px-6 py-4 text-sm">NUMERIC(3,2)</td><td className="px-6 py-4 text-sm">CHECK (rating >= 1 AND rating <= 5)</td><td className="px-6 py-4 text-sm">Individual KPI rating</td></tr>
+              <tr><td className="px-6 py-4 text-sm font-mono">rating</td><td className="px-6 py-4 text-sm">NUMERIC(3,2)</td><td className="px-6 py-4 text-sm">CHECK (rating &gt;= 1 AND rating &lt;= 5)</td><td className="px-6 py-4 text-sm">Individual KPI rating</td></tr>
             </tbody>
           </table>
         </div>
@@ -100,6 +100,7 @@ CREATE TABLE performance_goals (
     target_date DATE,
     status goal_status DEFAULT 'not-started',
     progress INTEGER DEFAULT 0 CHECK (progress >= 0 AND progress <= 100),
+    progress INTEGER DEFAULT 0 CHECK (progress &gt;= 0 AND progress &lt;= 100),
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
@@ -133,7 +134,7 @@ CREATE TABLE feedback_360 (
     review_id UUID NOT NULL REFERENCES performance_reviews(id) ON DELETE CASCADE,
     feedback_provider_id UUID NOT NULL REFERENCES employees(id),
     feedback_type feedback_type NOT NULL,
-    rating NUMERIC(3,2) CHECK (rating >= 1 AND rating <= 5),
+    rating NUMERIC(3,2) CHECK (rating &gt;= 1 AND rating &lt;= 5),
     comments TEXT,
     is_anonymous BOOLEAN DEFAULT FALSE,
     submitted_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
