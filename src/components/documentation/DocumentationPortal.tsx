@@ -18,12 +18,7 @@ import {
   CheckCircle,
   Clock,
 }
-import { 
-  BookOpen, 
-  Download,
-  Code,
-  Database,
-  Server,
+import {
   Globe,
   Shield,
   Zap,
@@ -33,7 +28,8 @@ import {
   Home,
   Layers,
   Settings,
-  GitBranch
+  GitBranch,
+  Clock
 } from 'lucide-react';
 import { documentationSections } from '../../data/mockData';
 
