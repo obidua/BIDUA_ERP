@@ -37,7 +37,7 @@ const UserManagementEndpoints: React.FC = () => {
               </tr>
               <tr>
                 <td className="px-4 py-3"><span className="bg-blue-100 text-blue-800 px-2 py-1 rounded text-xs">GET</span></td>
-                <td className="px-4 py-3 font-mono text-sm">/users/{user_id}</td>
+                <td className="px-4 py-3 font-mono text-sm">/users/&#123;user_id&#125;</td>
                 <td className="px-4 py-3 text-sm">Get user details by ID</td>
                 <td className="px-4 py-3 text-sm">Admin, Self</td>
               </tr>
@@ -49,13 +49,13 @@ const UserManagementEndpoints: React.FC = () => {
               </tr>
               <tr>
                 <td className="px-4 py-3"><span className="bg-yellow-100 text-yellow-800 px-2 py-1 rounded text-xs">PUT</span></td>
-                <td className="px-4 py-3 font-mono text-sm">/users/{user_id}</td>
+                <td className="px-4 py-3 font-mono text-sm">/users/&#123;user_id&#125;</td>
                 <td className="px-4 py-3 text-sm">Update user information</td>
                 <td className="px-4 py-3 text-sm">Admin, Self (limited)</td>
               </tr>
               <tr>
                 <td className="px-4 py-3"><span className="bg-red-100 text-red-800 px-2 py-1 rounded text-xs">DELETE</span></td>
-                <td className="px-4 py-3 font-mono text-sm">/users/{user_id}</td>
+                <td className="px-4 py-3 font-mono text-sm">/users/&#123;user_id&#125;</td>
                 <td className="px-4 py-3 text-sm">Deactivate user account</td>
                 <td className="px-4 py-3 text-sm">Admin</td>
               </tr>
