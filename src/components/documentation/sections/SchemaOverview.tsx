@@ -125,7 +125,7 @@ const SchemaOverview: React.FC = () => {
               </div>
               <div className="bg-purple-50 p-3 rounded-lg">
                 <h5 className="font-semibold text-purple-900 text-sm">Check Constraints</h5>
-                <p className="text-xs text-purple-800">Business rule enforcement at database level (e.g., salary > 0)</p>
+                <p className="text-xs text-purple-800">Business rule enforcement at database level (e.g., salary &gt; 0)</p>
               </div>
               <div className="bg-indigo-50 p-3 rounded-lg">
                 <h5 className="font-semibold text-indigo-900 text-sm">Unique Constraints</h5>
