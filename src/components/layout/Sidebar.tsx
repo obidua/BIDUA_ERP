@@ -52,17 +52,17 @@ const Sidebar: React.FC<SidebarProps> = ({
   ];
 
   // Filter menu items based on user role
-  const filteredMenuItems = menuItems.filter(item => {
-    if (currentUser.role === 'employee') {
-      return ['dashboard'].includes(item.id);
+  const filteredMenuItems = (() => {
+    if (currentUser.role === 'documentation') {
+      // Only show documentation menu for documentation role
+      return [{ id: 'documentation-portal', name: 'Documentation', icon: BookOpen }];
+    } else if (currentUser.role === 'employee') {
+      return [{ id: 'dashboard', name: 'Dashboard', icon: LayoutDashboard }];
+    } else {
+      // Admin and Manager roles see all menu items
+      return menuItems;
     }
-    return true;
-  });
-
-  // Add documentation menu item only for documentation role
-  if (currentUser.role === 'documentation') {
-    filteredMenuItems.push({ id: 'documentation-portal', name: 'Documentation', icon: BookOpen });
-  }
+  })();
 
   const getIconComponent = (iconName: string) => {
     const iconMap: { [key: string]: React.ComponentType<any> } = {
