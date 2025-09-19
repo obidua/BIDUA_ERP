@@ -94,7 +94,7 @@ const APIDocumentationOverview: React.FC = () => {
                 </div>
                 <div className="flex items-center space-x-2">
                   <span className="bg-yellow-100 text-yellow-800 px-2 py-1 rounded">PUT</span>
-                  <code>/leads/{id}</code>
+                  <code>/leads/&#123;id&#125;</code>
                   <span className="text-gray-500">- Update lead</span>
                 </div>
                 <div className="flex items-center space-x-2">
@@ -129,7 +129,7 @@ const APIDocumentationOverview: React.FC = () => {
                 </div>
                 <div className="flex items-center space-x-2">
                   <span className="bg-yellow-100 text-yellow-800 px-2 py-1 rounded">PUT</span>
-                  <code>/leave-requests/{id}</code>
+                  <code>/leave-requests/&#123;id&#125;</code>
                   <span className="text-gray-500">- Update leave</span>
                 </div>
               </div>
@@ -379,7 +379,7 @@ Response (201 Created):
                 </tr>
                 <tr>
                   <td className="px-4 py-3"><span className="bg-blue-100 text-blue-800 px-2 py-1 rounded text-xs">GET</span></td>
-                  <td className="px-4 py-3 font-mono text-sm">/users/{user_id}</td>
+                  <td className="px-4 py-3 font-mono text-sm">/users/&#123;user_id&#125;</td>
                   <td className="px-4 py-3 text-sm">Get user by ID</td>
                   <td className="px-4 py-3 text-sm">Admin</td>
                 </tr>
@@ -391,13 +391,13 @@ Response (201 Created):
                 </tr>
                 <tr>
                   <td className="px-4 py-3"><span className="bg-yellow-100 text-yellow-800 px-2 py-1 rounded text-xs">PUT</span></td>
-                  <td className="px-4 py-3 font-mono text-sm">/users/{user_id}</td>
+                  <td className="px-4 py-3 font-mono text-sm">/users/&#123;user_id&#125;</td>
                   <td className="px-4 py-3 text-sm">Update user details</td>
                   <td className="px-4 py-3 text-sm">Admin</td>
                 </tr>
                 <tr>
                   <td className="px-4 py-3"><span className="bg-red-100 text-red-800 px-2 py-1 rounded text-xs">DELETE</span></td>
-                  <td className="px-4 py-3 font-mono text-sm">/users/{user_id}</td>
+                  <td className="px-4 py-3 font-mono text-sm">/users/&#123;user_id&#125;</td>
                   <td className="px-4 py-3 text-sm">Deactivate user account</td>
                   <td className="px-4 py-3 text-sm">Admin</td>
                 </tr>
@@ -431,7 +431,7 @@ Response (201 Created):
                 </tr>
                 <tr>
                   <td className="px-4 py-3"><span className="bg-blue-100 text-blue-800 px-2 py-1 rounded text-xs">GET</span></td>
-                  <td className="px-4 py-3 font-mono text-sm">/employees/{employee_id}</td>
+                  <td className="px-4 py-3 font-mono text-sm">/employees/&#123;employee_id&#125;</td>
                   <td className="px-4 py-3 text-sm">Get employee by ID</td>
                   <td className="px-4 py-3 text-sm">Admin, Manager, Self</td>
                 </tr>
@@ -443,19 +443,19 @@ Response (201 Created):
                 </tr>
                 <tr>
                   <td className="px-4 py-3"><span className="bg-yellow-100 text-yellow-800 px-2 py-1 rounded text-xs">PUT</span></td>
-                  <td className="px-4 py-3 font-mono text-sm">/employees/{employee_id}</td>
+                  <td className="px-4 py-3 font-mono text-sm">/employees/&#123;employee_id&#125;</td>
                   <td className="px-4 py-3 text-sm">Update employee details</td>
                   <td className="px-4 py-3 text-sm">Admin, Manager</td>
                 </tr>
                 <tr>
                   <td className="px-4 py-3"><span className="bg-blue-100 text-blue-800 px-2 py-1 rounded text-xs">GET</span></td>
-                  <td className="px-4 py-3 font-mono text-sm">/employees/{employee_id}/bank_account</td>
+                  <td className="px-4 py-3 font-mono text-sm">/employees/&#123;employee_id&#125;/bank_account</td>
                   <td className="px-4 py-3 text-sm">Get employee's bank account</td>
                   <td className="px-4 py-3 text-sm">Admin, Self</td>
                 </tr>
                 <tr>
                   <td className="px-4 py-3"><span className="bg-yellow-100 text-yellow-800 px-2 py-1 rounded text-xs">PUT</span></td>
-                  <td className="px-4 py-3 font-mono text-sm">/employees/{employee_id}/bank_account</td>
+                  <td className="px-4 py-3 font-mono text-sm">/employees/&#123;employee_id&#125;/bank_account</td>
                   <td className="px-4 py-3 text-sm">Update bank account details</td>
                   <td className="px-4 py-3 text-sm">Admin, Self</td>
                 </tr>
