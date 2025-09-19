@@ -33,6 +33,7 @@ import CompleteEndpoints from './sections/CompleteEndpoints';
 import ReactComponents from './sections/ReactComponents';
 import ReactRouting from './sections/ReactRouting';
 import StateManagement from './sections/StateManagement';
+import APIIntegration from './sections/APIIntegration';
 import DeploymentOverview from './sections/DeploymentOverview';
 import Monitoring from './sections/Monitoring';
 import PerformanceOptimization from './sections/PerformanceOptimization';
@@ -218,35 +219,7 @@ const DocumentationPortal: React.FC<DocumentationPortalProps> = ({
       case 'state-management':
         return <StateManagement />;
       case 'api-integration':
-        return (
-          <UnderDevelopmentSection
-            title="API Integration"
-            description="Comprehensive guide for integrating React frontend with FastAPI backend, including error handling, caching, and real-time updates."
-            estimatedCompletion="March 2025"
-            plannedFeatures={[
-              'API service layer architecture and implementation',
-              'Error handling and retry logic with exponential backoff',
-              'Loading states and user feedback patterns',
-              'Data caching strategies and cache invalidation',
-              'Real-time updates with WebSockets and Server-Sent Events',
-              'Offline functionality and data synchronization',
-              'API response transformation and normalization',
-              'Request interceptors and middleware',
-              'Authentication token management and refresh',
-              'API mocking and testing strategies',
-              'Performance optimization and request batching',
-              'Error boundary integration for API failures',
-              'Progressive data loading and pagination'
-            ]}
-            relatedSections={[
-              'API Overview',
-              'Frontend Setup (React)',
-              'Backend Setup (FastAPI)',
-              'Authentication Endpoints'
-            ]}
-            currentProgress="Building comprehensive API integration guide with advanced error handling, caching strategies, real-time update mechanisms, and performance optimization techniques."
-          />
-        );
+        return <APIIntegration />;
       case 'monitoring':
         return <Monitoring />;
       case 'performance':
