@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { 
   BookOpen, Download, Code, Database, Server, Globe, Shield, Zap, Smartphone, Target,
-  AlertTriangle, Home, Layers, Settings, GitBranch, Clock, CheckCircle, Users, ArrowRight, FileText
+  AlertTriangle, Home, Layers, Settings, GitBranch, Clock, CheckCircle, Users, ArrowRight, FileText, ChevronLeft, ChevronRight
 } from 'lucide-react';
 import { documentationSections } from '../../data/mockData';
 
@@ -16,6 +16,17 @@ const DocumentationPortal: React.FC<DocumentationPortalProps> = ({
   activeSection,
   onLogout
 }) => {
+  // Get all sections in order for navigation
+  const allSections = documentationSections.flatMap(section => section.items);
+  const currentIndex = allSections.findIndex(item => item.id === activeSection);
+  const previousSection = currentIndex > 0 ? allSections[currentIndex - 1] : null;
+  const nextSection = currentIndex < allSections.length - 1 ? allSections[currentIndex + 1] : null;
+
+  const handleNavigation = (sectionId: string) => {
+    // This would typically be handled by the parent component
+    // For now, we'll just scroll to top
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
 
   const renderContent = () => {
     switch (activeSection) {
@@ -1329,7 +1340,7 @@ docker-compose logs -f api`}
         return (
           <div className="text-center py-12">
             <BookOpen className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-            <h2 className="text-xl font-semibold text-gray-900 mb-2">Documentation Section</h2>
+            <h2 className="text-2xl font-bold text-gray-900 mb-2">Documentation Section</h2>
             <p className="text-gray-600">Select a section from the sidebar to view documentation.</p>
           </div>
         );
@@ -1338,15 +1349,73 @@ docker-compose logs -f api`}
 
   return (
     <div className="min-h-screen bg-gray-50">
+      {/* Main Content */}
       <div className="max-w-6xl mx-auto p-6">
-        {renderContent()}
-        
-        <div className="mt-8 pt-6 border-t border-gray-200 text-center">
-          <button className="flex items-center space-x-2 bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition-colors mx-auto">
-            <Download className="w-4 h-4" />
-            <span>Download PDF</span>
-          </button>
-          <p className="text-sm text-gray-500 mt-4">© 2025 BIDUA ERP System. All rights reserved.</p>
+        {/* Header */}
+        <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-6 mb-6">
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-2xl font-bold text-gray-900">BIDUA ERP Documentation</h1>
+              <p className="text-gray-600">Complete development and technical documentation</p>
+            </div>
+            <button className="flex items-center space-x-2 bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition-colors">
+              <Download className="w-4 h-4" />
+              <span>Download PDF</span>
+            </button>
+          </div>
+        </div>
+
+        {/* Content */}
+        <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-6 mb-6">
+          {renderContent()}
+        </div>
+
+        {/* Navigation Footer */}
+        <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-6">
+          <div className="flex items-center justify-between">
+            <div className="flex-1">
+              {previousSection && (
+                <button
+                  onClick={() => handleNavigation(previousSection.id)}
+                  className="flex items-center space-x-2 text-indigo-600 hover:text-indigo-800 transition-colors"
+                >
+                  <ChevronLeft className="w-4 h-4" />
+                  <div className="text-left">
+                    <div className="text-xs text-gray-500">Previous</div>
+                    <div className="text-sm font-medium">{previousSection.name}</div>
+                  </div>
+                </button>
+              )}
+            </div>
+            
+            <div className="text-center">
+              <div className="text-xs text-gray-500">
+                {currentIndex + 1} of {allSections.length}
+              </div>
+            </div>
+            
+            <div className="flex-1 flex justify-end">
+              {nextSection && (
+                <button
+                  onClick={() => handleNavigation(nextSection.id)}
+                  className="flex items-center space-x-2 text-indigo-600 hover:text-indigo-800 transition-colors"
+                >
+                  <div className="text-right">
+                    <div className="text-xs text-gray-500">Next</div>
+                    <div className="text-sm font-medium">{nextSection.name}</div>
+                  </div>
+                  <ChevronRight className="w-4 h-4" />
+                </button>
+              )}
+            </div>
+          </div>
+        </div>
+
+        {/* Footer */}
+        <div className="text-center py-6">
+          <p className="text-sm text-gray-500">
+            © 2025 BIDUA ERP System. All rights reserved.
+          </p>
         </div>
       </div>
     </div>
