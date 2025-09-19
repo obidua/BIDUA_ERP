@@ -17,11 +17,23 @@ import {
   Target,
   CheckCircle,
   Clock,
+import { 
+  BookOpen, 
+  Download,
+  Code,
+  Database,
+  Server,
+  Globe,
+  Shield,
+  Zap,
+  Smartphone,
+  Target,
   AlertTriangle,
-  ArrowRight,
-  Download
+  Home,
+  Layers,
+  Settings,
+  GitBranch
 } from 'lucide-react';
-import { BookOpen, Download, Code, Database, Server, Globe, Shield, Zap, Smartphone, Target, AlertTriangle, Home, Layers, Settings, GitBranch } from 'lucide-react';
 import { documentationSections } from '../../data/mockData';
 
 interface DocumentationPortalProps {
