@@ -235,7 +235,71 @@ function App() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col md:flex-row">
+    <Router>
+      <Routes>
+        <Route path="/documentation" element={<DocumentationPage />} />
+        <Route path="/" element={
+          <div className="min-h-screen bg-gray-50 flex flex-col md:flex-row">
+            {!currentUser ? (
+              <LoginForm onLogin={handleLogin} />
+            ) : (
+              <>
+                {/* Mobile Header */}
+                <div className="md:hidden bg-white shadow-sm border-b px-4 py-3 flex items-center justify-between">
+                  <div className="flex items-center space-x-3">
+                    <button
+                      onClick={toggleSidebar}
+                      className="p-2 rounded-lg hover:bg-gray-100 transition-colors"
+                    >
+                      {isSidebarOpen ? <X size={20} /> : <Menu size={20} />}
+                    </button>
+                    <h1 className="text-lg font-bold text-indigo-600">BIDUA ERP</h1>
+                  </div>
+                  <div className="text-sm text-gray-600">
+                    {currentUser.username}
+                  </div>
+                </div>
+
+                {/* Mobile Overlay */}
+                {isSidebarOpen && (
+                  <div 
+                    className="fixed inset-0 bg-black bg-opacity-50 z-40 md:hidden"
+                    onClick={() => setIsSidebarOpen(false)}
+                  />
+                )}
+
+                {/* Sidebar */}
+                <div className={`
+                  ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'}
+                  md:translate-x-0 fixed md:relative z-50 md:z-auto
+                  w-full md:w-72 h-full md:h-auto
+                  transition-transform duration-300 ease-in-out
+                `}>
+                  <Sidebar
+                    currentUser={currentUser}
+                    activeModule={activeModule}
+                    onModuleChange={(module) => {
+                      setActiveModule(module);
+                      setIsSidebarOpen(false);
+                    }}
+                    onLogout={handleLogout}
+                  />
+                </div>
+
+                {/* Main Content */}
+                <main className="flex-1 p-4 md:p-8 overflow-auto">
+                  {renderModule()}
+                </main>
+              </>
+            )}
+          </div>
+        } />
+      </Routes>
+    </Router>
+  );
+};
+
+export default App;
       {/* Mobile Header */}
       <div className="md:hidden bg-white shadow-sm border-b px-4 py-3 flex items-center justify-between">
         <div className="flex items-center space-x-3">
