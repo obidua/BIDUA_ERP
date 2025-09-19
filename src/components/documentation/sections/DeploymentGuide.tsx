@@ -101,7 +101,6 @@ services:
       - "8000:8000"
     environment:
       - DATABASE_URL=postgresql://bidua_user:${DB_PASSWORD}@db:5432/bidua_erp
-      - DATABASE_URL=postgresql://bidua_user:{'${'}DB_PASSWORD}@db:5432/bidua_erp
       - SECRET_KEY={'${'}SECRET_KEY}
     depends_on:
       - db
