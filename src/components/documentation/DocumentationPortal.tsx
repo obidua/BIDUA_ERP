@@ -139,15 +139,19 @@ const DocumentationPortal: React.FC<DocumentationPortalProps> = ({
         return (
           <UnderDevelopmentSection
             title="Development Setup"
-            description="Quick start guide for setting up the development environment."
-            estimatedCompletion="Coming soon"
+            description="Complete development environment setup guide for BIDUA ERP system including all prerequisites, tools, and configuration."
+            estimatedCompletion="February 2025"
             plannedFeatures={[
-              'Step-by-step installation guide',
-              'Environment configuration templates',
-              'Docker setup instructions',
-              'IDE configuration recommendations',
+              'Prerequisites installation guide (Node.js, Python, PostgreSQL)',
+              'IDE setup and recommended extensions',
+              'Environment variable configuration templates',
+              'Docker development environment setup',
+              'Git workflow and branching strategies',
+              'Code quality tools configuration (ESLint, Prettier)',
+              'Database initialization scripts',
+              'Local development server setup',
               'Troubleshooting common setup issues',
-              'Development workflow best practices'
+              'Team collaboration guidelines'
             ]}
             relatedSections={[
               'Frontend Setup (React)',
@@ -155,7 +159,7 @@ const DocumentationPortal: React.FC<DocumentationPortalProps> = ({
               'Database Setup (PostgreSQL)',
               'Technology Stack'
             ]}
-            currentProgress="Gathering requirements and creating comprehensive setup guides for all development environments."
+            currentProgress="Creating comprehensive setup guides for Windows, macOS, and Linux environments with automated setup scripts."
           />
         );
       case 'frontend-setup':
@@ -166,16 +170,20 @@ const DocumentationPortal: React.FC<DocumentationPortalProps> = ({
         return (
           <UnderDevelopmentSection
             title="Database Setup (PostgreSQL)"
-            description="PostgreSQL database setup and configuration."
-            estimatedCompletion="Coming soon"
+            description="Complete PostgreSQL database setup, configuration, and optimization guide for BIDUA ERP system."
+            estimatedCompletion="February 2025"
             plannedFeatures={[
-              'PostgreSQL installation guide',
-              'Database configuration best practices',
-              'Connection pooling setup',
-              'Backup and recovery procedures',
-              'Performance tuning guidelines',
-              'Security configuration',
-              'Migration management with Alembic'
+              'PostgreSQL 14+ installation on different operating systems',
+              'Database server configuration and tuning',
+              'User and role management setup',
+              'Connection pooling configuration (pgBouncer)',
+              'SSL/TLS encryption setup',
+              'Backup and recovery strategies',
+              'Performance monitoring and optimization',
+              'Database security hardening',
+              'Replication setup for high availability',
+              'Migration from development to production',
+              'Troubleshooting common database issues'
             ]}
             relatedSections={[
               'Database Schema sections',
@@ -183,7 +191,7 @@ const DocumentationPortal: React.FC<DocumentationPortalProps> = ({
               'Table Relationships',
               'User & Authentication Schema'
             ]}
-            currentProgress="Creating comprehensive PostgreSQL setup guide with security best practices and performance optimization."
+            currentProgress="Developing comprehensive PostgreSQL setup guide with security best practices, performance optimization, and production deployment strategies."
           />
         );
       case 'deployment-guide':
@@ -237,24 +245,32 @@ const DocumentationPortal: React.FC<DocumentationPortalProps> = ({
         return (
           <UnderDevelopmentSection
             title="Testing Strategy"
-            description="Testing approaches for React frontend and FastAPI backend."
-            estimatedCompletion="Coming soon"
+            description="Comprehensive testing framework covering frontend, backend, and integration testing for the BIDUA ERP system."
+            estimatedCompletion="March 2025"
             plannedFeatures={[
               'Unit testing with Jest and React Testing Library',
+              'Component testing strategies and best practices',
               'API testing with pytest and httpx',
-              'Integration testing strategies',
+              'Database testing with test fixtures',
+              'Integration testing between frontend and backend',
               'End-to-end testing with Playwright',
-              'Test data management',
-              'Continuous testing in CI/CD',
-              'Performance testing guidelines'
+              'Performance testing and load testing',
+              'Security testing and vulnerability assessment',
+              'Test data management and factories',
+              'Continuous testing in CI/CD pipelines',
+              'Code coverage reporting and analysis',
+              'Mock data and service stubbing',
+              'Testing role-based access control',
+              'Mobile responsiveness testing'
             ]}
             relatedSections={[
               'Frontend Setup (React)',
               'Backend Setup (FastAPI)',
               'API Overview',
-              'Components'
+              'Components',
+              'Development Setup'
             ]}
-            currentProgress="Developing comprehensive testing framework covering frontend, backend, and integration testing strategies."
+            currentProgress="Developing comprehensive testing framework with automated test suites for all system components, including role-based testing scenarios and performance benchmarks."
           />
         );
       case 'schema':
@@ -264,16 +280,21 @@ const DocumentationPortal: React.FC<DocumentationPortalProps> = ({
         return (
           <UnderDevelopmentSection
             title="Database Schema Overview"
-            description="High-level overview of the complete PostgreSQL database schema."
-            estimatedCompletion="Coming soon"
+            description="Comprehensive overview of the complete PostgreSQL database schema with visual diagrams and design rationale."
+            estimatedCompletion="February 2025"
             plannedFeatures={[
-              'Complete database schema diagram',
+              'Complete database schema diagram (ERD)',
               'Table relationship visualization',
-              'Data flow documentation',
-              'Schema design principles',
-              'Normalization strategies',
-              'Index optimization guide',
-              'Schema migration best practices'
+              'Data flow documentation across modules',
+              'Schema design principles and patterns',
+              'Normalization strategies and trade-offs',
+              'Index optimization strategies',
+              'Schema migration best practices',
+              'Data integrity constraints explanation',
+              'Performance considerations for each table',
+              'Scalability planning and partitioning',
+              'Security considerations in schema design',
+              'Audit trail implementation patterns'
             ]}
             relatedSections={[
               'Table Relationships',
@@ -282,7 +303,7 @@ const DocumentationPortal: React.FC<DocumentationPortalProps> = ({
               'HRMS Employee Schema',
               'Database Setup (PostgreSQL)'
             ]}
-            currentProgress="Creating comprehensive schema overview with visual diagrams and detailed explanations of design decisions."
+            currentProgress="Creating comprehensive schema overview with interactive diagrams, detailed explanations of design decisions, and visual representation of all table relationships."
           />
         );
       case 'user-auth-schema':
@@ -297,72 +318,89 @@ const DocumentationPortal: React.FC<DocumentationPortalProps> = ({
         return (
           <UnderDevelopmentSection
             title="HRMS Leave Schema"
-            description="Leave management database schema and workflow."
-            estimatedCompletion="Coming soon"
+            description="Comprehensive leave management database schema with flexible policy configuration and approval workflows."
+            estimatedCompletion="February 2025"
             plannedFeatures={[
-              'Leave request table structure',
-              'Leave balance tracking',
-              'Leave policy configuration',
-              'Approval workflow schema',
-              'Leave calendar integration',
-              'Holiday management',
-              'Leave reporting queries'
+              'Leave request table with detailed tracking',
+              'Leave balance management and calculation',
+              'Leave policy configuration and rules engine',
+              'Multi-level approval workflow schema',
+              'Leave calendar integration and conflict detection',
+              'Holiday and company calendar management',
+              'Leave encashment and carry-forward rules',
+              'Department-specific leave policies',
+              'Leave reporting and analytics tables',
+              'Integration with attendance and payroll systems',
+              'Leave notification and reminder system',
+              'Audit trail for all leave transactions'
             ]}
             relatedSections={[
               'HRMS Employee Schema',
+              'HRMS Attendance Schema',
               'Table Relationships',
-              'HRMS Endpoints',
-              'User & Authentication Schema'
+              'HRMS Endpoints'
             ]}
-            currentProgress="Designing comprehensive leave management schema with flexible policy configuration and approval workflows."
+            currentProgress="Designing flexible leave management schema with configurable policies, multi-level approvals, and comprehensive tracking for various leave types and business rules."
           />
         );
       case 'hrms-task-schema':
         return (
           <UnderDevelopmentSection
             title="HRMS Task Schema"
-            description="Task management database schema and relationships."
-            estimatedCompletion="Coming soon"
+            description="Advanced task management database schema with collaboration features, project tracking, and performance analytics."
+            estimatedCompletion="February 2025"
             plannedFeatures={[
-              'Task assignment and tracking tables',
+              'Task assignment and tracking with detailed metadata',
               'Task comment and collaboration system',
-              'Project and milestone management',
-              'Task priority and status workflows',
-              'Time tracking integration',
-              'Task dependency management',
-              'Performance metrics tracking'
+              'Project and milestone management tables',
+              'Task priority and status workflow engine',
+              'Time tracking and effort estimation',
+              'Task dependency and prerequisite management',
+              'Recurring task and template system',
+              'Task performance metrics and analytics',
+              'Integration with employee performance reviews',
+              'Task notification and reminder system',
+              'File attachment and document linking',
+              'Task history and audit trail',
+              'Workload balancing and capacity planning'
             ]}
             relatedSections={[
               'HRMS Employee Schema',
+              'HRMS Performance Schema',
               'Table Relationships',
-              'HRMS Endpoints',
               'CRM Schema'
             ]}
-            currentProgress="Developing task management schema with collaboration features and performance tracking capabilities."
+            currentProgress="Developing comprehensive task management schema with advanced collaboration features, performance tracking, and integration with employee evaluation systems."
           />
         );
       case 'hrms-performance-schema':
         return (
           <UnderDevelopmentSection
             title="HRMS Performance Schema"
-            description="Performance evaluation database schema and KPI tracking."
-            estimatedCompletion="Coming soon"
+            description="Comprehensive performance evaluation database schema with KPI tracking, 360-degree feedback, and career development planning."
+            estimatedCompletion="March 2025"
             plannedFeatures={[
-              'Performance review cycle management',
-              'KPI definition and tracking',
-              'Goal setting and achievement tracking',
-              '360-degree feedback system',
-              'Performance rating scales',
-              'Career development planning',
-              'Performance analytics and reporting'
+              'Performance review cycle management and scheduling',
+              'KPI definition, tracking, and measurement tables',
+              'Goal setting and achievement tracking system',
+              '360-degree feedback collection and analysis',
+              'Performance rating scales and calibration',
+              'Career development planning and progression tracking',
+              'Competency framework and skill assessment',
+              'Performance improvement plan (PIP) management',
+              'Peer review and team feedback systems',
+              'Performance analytics and trend analysis',
+              'Integration with compensation and promotion decisions',
+              'Performance dashboard and reporting',
+              'Automated performance alerts and notifications'
             ]}
             relatedSections={[
               'HRMS Employee Schema',
               'HRMS Task Schema',
-              'Table Relationships',
-              'HRMS Endpoints'
+              'HRMS Payroll Schema',
+              'Table Relationships'
             ]}
-            currentProgress="Creating performance management schema with comprehensive KPI tracking and multi-source feedback capabilities."
+            currentProgress="Creating comprehensive performance management schema with multi-source feedback capabilities, KPI tracking, and integration with career development and compensation systems."
           />
         );
       case 'hrms-payroll-schema':
@@ -371,16 +409,22 @@ const DocumentationPortal: React.FC<DocumentationPortalProps> = ({
         return (
           <UnderDevelopmentSection
             title="HRMS Document & Geofence Schema"
-            description="Document management and geofence location database schema."
-            estimatedCompletion="Coming soon"
+            description="Advanced document management and GPS-based geofence location database schema for secure attendance tracking and file management."
+            estimatedCompletion="March 2025"
             plannedFeatures={[
-              'Document storage and metadata management',
-              'File versioning and access control',
-              'Geofence location configuration',
-              'GPS-based attendance verification',
-              'Document approval workflows',
-              'Digital signature integration',
-              'Audit trail for document access'
+              'Document storage and metadata management system',
+              'File versioning and revision control',
+              'Document access control and permissions',
+              'Digital signature and approval workflows',
+              'Geofence location configuration and management',
+              'GPS-based attendance verification system',
+              'Location accuracy and validation algorithms',
+              'Multi-location support for distributed teams',
+              'Document audit trail and access logging',
+              'File encryption and security measures',
+              'Document search and indexing capabilities',
+              'Integration with employee onboarding processes',
+              'Automated document expiry and renewal alerts'
             ]}
             relatedSections={[
               'HRMS Employee Schema',
@@ -388,7 +432,7 @@ const DocumentationPortal: React.FC<DocumentationPortalProps> = ({
               'User & Authentication Schema',
               'File Management Endpoints'
             ]}
-            currentProgress="Designing document management system with geofence integration for secure attendance tracking."
+            currentProgress="Designing secure document management system with advanced geofence integration for accurate location-based attendance tracking and comprehensive file lifecycle management."
           />
         );
       case 'relationships':
@@ -399,16 +443,22 @@ const DocumentationPortal: React.FC<DocumentationPortalProps> = ({
         return (
           <UnderDevelopmentSection
             title="Authentication Endpoints"
-            description="FastAPI authentication endpoints with JWT implementation."
-            estimatedCompletion="Coming soon"
+            description="Comprehensive FastAPI authentication system with JWT implementation, session management, and security features."
+            estimatedCompletion="February 2025"
             plannedFeatures={[
-              'JWT token generation and validation',
-              'Login/logout endpoint documentation',
-              'Password reset functionality',
-              'Session management endpoints',
-              'Role-based access control',
-              'Token refresh mechanisms',
-              'Security best practices'
+              'JWT token generation and validation endpoints',
+              'Login/logout with session management',
+              'Password reset and change functionality',
+              'Multi-factor authentication (MFA) support',
+              'Session management and concurrent login handling',
+              'Token refresh and rotation mechanisms',
+              'Account lockout and security policies',
+              'OAuth2 integration for third-party login',
+              'API key management for service accounts',
+              'Audit logging for authentication events',
+              'Rate limiting for authentication attempts',
+              'Device registration and management',
+              'Single Sign-On (SSO) integration'
             ]}
             relatedSections={[
               'API Overview',
@@ -416,23 +466,29 @@ const DocumentationPortal: React.FC<DocumentationPortalProps> = ({
               'Backend Setup (FastAPI)',
               'User Management Endpoints'
             ]}
-            currentProgress="Documenting authentication flow with JWT implementation and security considerations."
+            currentProgress="Implementing robust authentication system with JWT tokens, comprehensive security features, and detailed API documentation with code examples."
           />
         );
       case 'user-endpoints':
         return (
           <UnderDevelopmentSection
             title="User Management Endpoints"
-            description="FastAPI endpoints for user management operations."
-            estimatedCompletion="Coming soon"
+            description="Complete FastAPI user management system with role-based access control, profile management, and administrative operations."
+            estimatedCompletion="February 2025"
             plannedFeatures={[
-              'User CRUD operations',
-              'Role assignment endpoints',
-              'User profile management',
-              'Password management',
-              'User search and filtering',
-              'Bulk user operations',
-              'User activity tracking'
+              'User CRUD operations with validation',
+              'Role assignment and permission management',
+              'User profile management and updates',
+              'Password management and security policies',
+              'User search, filtering, and pagination',
+              'Bulk user operations and CSV import/export',
+              'User activity tracking and audit logs',
+              'Department-based user management',
+              'User status management (active/inactive)',
+              'User preference and settings management',
+              'User notification preferences',
+              'Account recovery and verification',
+              'User analytics and reporting'
             ]}
             relatedSections={[
               'Authentication Endpoints',
@@ -440,23 +496,29 @@ const DocumentationPortal: React.FC<DocumentationPortalProps> = ({
               'API Overview',
               'HRMS Endpoints'
             ]}
-            currentProgress="Creating comprehensive user management API with role-based access control and profile management."
+            currentProgress="Building comprehensive user management API with advanced role-based access control, profile management capabilities, and administrative tools for user lifecycle management."
           />
         );
       case 'crm-endpoints':
         return (
           <UnderDevelopmentSection
             title="CRM Endpoints"
-            description="FastAPI endpoints for CRM operations including leads and support tickets."
-            estimatedCompletion="Coming soon"
+            description="Advanced FastAPI CRM system with lead management, sales pipeline tracking, customer support, and analytics capabilities."
+            estimatedCompletion="March 2025"
             plannedFeatures={[
-              'Lead management CRUD operations',
-              'Sales pipeline tracking endpoints',
-              'Support ticket management',
-              'Customer communication history',
-              'Lead scoring and analytics',
-              'Sales forecasting APIs',
-              'Customer segmentation endpoints'
+              'Lead management CRUD operations with validation',
+              'Sales pipeline tracking and stage management',
+              'Support ticket creation and resolution workflow',
+              'Customer communication history and timeline',
+              'Lead scoring and qualification algorithms',
+              'Sales forecasting and pipeline analytics',
+              'Customer segmentation and targeting',
+              'Email integration and campaign management',
+              'Activity tracking and follow-up scheduling',
+              'Deal and opportunity management',
+              'Customer feedback and satisfaction tracking',
+              'Sales team performance analytics',
+              'Integration with marketing automation tools'
             ]}
             relatedSections={[
               'CRM Schema',
@@ -464,48 +526,60 @@ const DocumentationPortal: React.FC<DocumentationPortalProps> = ({
               'Authentication Endpoints',
               'HRMS Endpoints'
             ]}
-            currentProgress="Developing CRM API endpoints with comprehensive lead management and customer support capabilities."
+            currentProgress="Developing comprehensive CRM API with advanced lead management, sales pipeline automation, and customer support capabilities integrated with analytics and reporting."
           />
         );
       case 'hrms-endpoints':
         return (
           <UnderDevelopmentSection
             title="HRMS Endpoints"
-            description="FastAPI endpoints for HRMS operations including employees, attendance, and payroll."
-            estimatedCompletion="Coming soon"
+            description="Comprehensive FastAPI HRMS system covering complete employee lifecycle management, attendance tracking, payroll processing, and performance management."
+            estimatedCompletion="March 2025"
             plannedFeatures={[
-              'Employee management CRUD operations',
-              'Attendance tracking and reporting',
-              'Leave request management',
-              'Payroll processing endpoints',
-              'Performance review APIs',
-              'Task assignment and tracking',
-              'Document management endpoints'
+              'Employee management CRUD with detailed profiles',
+              'Attendance tracking with geofence verification',
+              'Leave request management and approval workflows',
+              'Payroll processing and salary slip generation',
+              'Performance review and KPI tracking APIs',
+              'Task assignment and progress monitoring',
+              'Document management and file operations',
+              'Employee onboarding and offboarding workflows',
+              'Training and certification tracking',
+              'Employee self-service portal APIs',
+              'Manager dashboard and team analytics',
+              'Compliance reporting and audit trails',
+              'Integration with external HR systems'
             ]}
             relatedSections={[
               'HRMS Employee Schema',
               'HRMS Attendance Schema',
               'HRMS Payroll Schema',
-              'API Overview',
-              'Authentication Endpoints'
+              'HRMS Performance Schema',
+              'API Overview'
             ]}
-            currentProgress="Building comprehensive HRMS API covering all employee lifecycle management and operational workflows."
+            currentProgress="Building comprehensive HRMS API covering all employee lifecycle management, operational workflows, and integration capabilities with external systems and compliance requirements."
           />
         );
       case 'file-endpoints':
         return (
           <UnderDevelopmentSection
             title="File Management Endpoints"
-            description="FastAPI endpoints for document upload, download, and management."
-            estimatedCompletion="Coming soon"
+            description="Secure FastAPI file management system with advanced access control, versioning, and metadata tracking capabilities."
+            estimatedCompletion="March 2025"
             plannedFeatures={[
-              'File upload with validation',
-              'Secure file download endpoints',
-              'File metadata management',
-              'Access control and permissions',
-              'File versioning system',
-              'Bulk file operations',
-              'File search and filtering'
+              'Secure file upload with validation and virus scanning',
+              'Protected file download with access control',
+              'File metadata management and search capabilities',
+              'Role-based file access permissions',
+              'File versioning and revision history',
+              'Bulk file operations and batch processing',
+              'File sharing and collaboration features',
+              'Document approval and digital signature workflows',
+              'File encryption and secure storage',
+              'Automated file archiving and cleanup',
+              'File analytics and usage tracking',
+              'Integration with cloud storage providers',
+              'Document template management'
             ]}
             relatedSections={[
               'HRMS Document & Geofence Schema',
@@ -513,23 +587,29 @@ const DocumentationPortal: React.FC<DocumentationPortalProps> = ({
               'API Overview',
               'Backend Setup (FastAPI)'
             ]}
-            currentProgress="Implementing secure file management system with access control and metadata tracking."
+            currentProgress="Implementing secure file management system with comprehensive access control, encryption, and metadata tracking for enterprise document management needs."
           />
         );
       case 'endpoints':
         return (
           <UnderDevelopmentSection
             title="Complete Endpoint Reference"
-            description="Comprehensive FastAPI endpoint documentation with examples."
-            estimatedCompletion="Coming soon"
+            description="Comprehensive FastAPI endpoint documentation with interactive examples, code samples, and integration guides."
+            estimatedCompletion="April 2025"
             plannedFeatures={[
-              'Complete API reference guide',
-              'Request/response examples',
-              'Error handling documentation',
-              'Rate limiting information',
-              'Authentication requirements',
-              'Postman collection export',
-              'SDK and client library guides'
+              'Complete API reference with all endpoints',
+              'Interactive request/response examples',
+              'Comprehensive error handling documentation',
+              'Rate limiting and throttling information',
+              'Authentication requirements for each endpoint',
+              'Postman collection and environment setup',
+              'SDK and client library integration guides',
+              'API versioning and backward compatibility',
+              'Performance benchmarks and optimization tips',
+              'Real-world usage scenarios and examples',
+              'Testing strategies for each endpoint',
+              'Webhook and callback documentation',
+              'API monitoring and analytics setup'
             ]}
             relatedSections={[
               'API Overview',
@@ -538,23 +618,29 @@ const DocumentationPortal: React.FC<DocumentationPortalProps> = ({
               'HRMS Endpoints',
               'File Management Endpoints'
             ]}
-            currentProgress="Compiling complete API reference with interactive examples and comprehensive error handling documentation."
+            currentProgress="Compiling comprehensive API reference with interactive examples, detailed error handling documentation, and practical integration guides for developers."
           />
         );
       case 'components':
         return (
           <UnderDevelopmentSection
             title="React Components"
-            description="Component architecture and reusable UI components."
-            estimatedCompletion="Coming soon"
+            description="Comprehensive React component library documentation with reusable patterns, best practices, and integration examples for the BIDUA ERP system."
+            estimatedCompletion="March 2025"
             plannedFeatures={[
-              'Component library documentation',
-              'Reusable component patterns',
-              'Props and interface definitions',
-              'Component composition strategies',
-              'Custom hooks documentation',
-              'Styling and theming guidelines',
-              'Component testing examples'
+              'Complete component library documentation',
+              'Reusable component patterns and templates',
+              'Props and interface definitions with examples',
+              'Component composition strategies and patterns',
+              'Custom hooks documentation and usage',
+              'Styling and theming guidelines with Tailwind CSS',
+              'Component testing examples and best practices',
+              'Accessibility (a11y) implementation guide',
+              'Performance optimization for components',
+              'Component lifecycle and state management',
+              'Form components and validation patterns',
+              'Data visualization components',
+              'Mobile-responsive component design'
             ]}
             relatedSections={[
               'Frontend Setup (React)',
@@ -562,23 +648,29 @@ const DocumentationPortal: React.FC<DocumentationPortalProps> = ({
               'API Integration',
               'Technology Stack'
             ]}
-            currentProgress="Documenting React component architecture with reusable patterns and best practices for the ERP system."
+            currentProgress="Documenting comprehensive React component architecture with reusable patterns, accessibility features, and performance optimization techniques for enterprise-grade applications."
           />
         );
       case 'routing':
         return (
           <UnderDevelopmentSection
             title="React Routing"
-            description="Client-side routing implementation with React Router."
-            estimatedCompletion="Coming soon"
+            description="Advanced client-side routing implementation with React Router, including protected routes, role-based access, and navigation patterns."
+            estimatedCompletion="March 2025"
             plannedFeatures={[
-              'Route configuration and setup',
-              'Protected route implementation',
-              'Role-based route access',
-              'Dynamic routing patterns',
-              'Route parameter handling',
-              'Navigation guards',
-              'Lazy loading and code splitting'
+              'Route configuration and nested routing setup',
+              'Protected route implementation with authentication',
+              'Role-based route access and permission guards',
+              'Dynamic routing patterns and parameters',
+              'Route parameter handling and validation',
+              'Navigation guards and middleware',
+              'Lazy loading and code splitting strategies',
+              'Route-based data fetching patterns',
+              'Browser history management',
+              'Deep linking and URL state management',
+              'Route transition animations',
+              'Error boundaries for route components',
+              'SEO considerations for SPA routing'
             ]}
             relatedSections={[
               'Frontend Setup (React)',
@@ -586,23 +678,29 @@ const DocumentationPortal: React.FC<DocumentationPortalProps> = ({
               'State Management',
               'Authentication Endpoints'
             ]}
-            currentProgress="Creating routing documentation with role-based access control and navigation best practices."
+            currentProgress="Creating comprehensive routing documentation with role-based access control, navigation best practices, and advanced routing patterns for enterprise applications."
           />
         );
       case 'state-management':
         return (
           <UnderDevelopmentSection
             title="State Management"
-            description="React state management patterns and best practices."
-            estimatedCompletion="Coming soon"
+            description="Advanced React state management patterns, performance optimization, and scalable architecture for complex enterprise applications."
+            estimatedCompletion="March 2025"
             plannedFeatures={[
-              'React hooks usage patterns',
-              'Context API implementation',
-              'Local vs global state strategies',
-              'State persistence techniques',
-              'Performance optimization',
-              'Error boundary implementation',
-              'State debugging techniques'
+              'React hooks usage patterns and best practices',
+              'Context API implementation for global state',
+              'Local vs global state management strategies',
+              'State persistence and hydration techniques',
+              'Performance optimization and memoization',
+              'Error boundary implementation and error handling',
+              'State debugging and development tools',
+              'Async state management patterns',
+              'Form state management and validation',
+              'Real-time state updates with WebSockets',
+              'State normalization and data structures',
+              'Testing state management logic',
+              'State migration and versioning'
             ]}
             relatedSections={[
               'Frontend Setup (React)',
@@ -610,23 +708,29 @@ const DocumentationPortal: React.FC<DocumentationPortalProps> = ({
               'API Integration',
               'Technology Stack'
             ]}
-            currentProgress="Documenting state management patterns with React hooks and Context API for scalable application architecture."
+            currentProgress="Documenting advanced state management patterns with React hooks, Context API, and performance optimization techniques for scalable enterprise application architecture."
           />
         );
       case 'api-integration':
         return (
           <UnderDevelopmentSection
             title="API Integration"
-            description="Integrating React frontend with FastAPI backend."
-            estimatedCompletion="Coming soon"
+            description="Comprehensive guide for integrating React frontend with FastAPI backend, including error handling, caching, and real-time updates."
+            estimatedCompletion="March 2025"
             plannedFeatures={[
-              'API service layer implementation',
-              'Error handling and retry logic',
-              'Loading states and user feedback',
-              'Data caching strategies',
-              'Real-time updates with WebSockets',
-              'Offline functionality',
-              'API response transformation'
+              'API service layer architecture and implementation',
+              'Error handling and retry logic with exponential backoff',
+              'Loading states and user feedback patterns',
+              'Data caching strategies and cache invalidation',
+              'Real-time updates with WebSockets and Server-Sent Events',
+              'Offline functionality and data synchronization',
+              'API response transformation and normalization',
+              'Request interceptors and middleware',
+              'Authentication token management and refresh',
+              'API mocking and testing strategies',
+              'Performance optimization and request batching',
+              'Error boundary integration for API failures',
+              'Progressive data loading and pagination'
             ]}
             relatedSections={[
               'API Overview',
@@ -634,23 +738,29 @@ const DocumentationPortal: React.FC<DocumentationPortalProps> = ({
               'Backend Setup (FastAPI)',
               'Authentication Endpoints'
             ]}
-            currentProgress="Building comprehensive API integration guide with error handling, caching, and real-time update strategies."
+            currentProgress="Building comprehensive API integration guide with advanced error handling, caching strategies, real-time update mechanisms, and performance optimization techniques."
           />
         );
       case 'monitoring':
         return (
           <UnderDevelopmentSection
-            title="Monitoring"
-            description="Application monitoring and performance tracking."
-            estimatedCompletion="Coming soon"
+            title="Monitoring & Observability"
+            description="Comprehensive application monitoring, performance tracking, and observability setup for production BIDUA ERP deployment."
+            estimatedCompletion="April 2025"
             plannedFeatures={[
-              'Application performance monitoring',
-              'Error tracking and alerting',
-              'Database performance monitoring',
-              'User activity analytics',
-              'System health checks',
-              'Log aggregation and analysis',
-              'Custom metrics and dashboards'
+              'Application performance monitoring (APM) setup',
+              'Error tracking and alerting with Sentry integration',
+              'Database performance monitoring and query analysis',
+              'User activity analytics and behavior tracking',
+              'System health checks and uptime monitoring',
+              'Log aggregation and centralized logging',
+              'Custom metrics and business KPI dashboards',
+              'Real-time alerting and notification systems',
+              'Performance bottleneck identification',
+              'Resource utilization monitoring (CPU, memory, disk)',
+              'API endpoint performance tracking',
+              'Security monitoring and threat detection',
+              'Compliance monitoring and audit reporting'
             ]}
             relatedSections={[
               'Deployment Overview',
@@ -658,31 +768,37 @@ const DocumentationPortal: React.FC<DocumentationPortalProps> = ({
               'Backend Setup (FastAPI)',
               'Database Setup (PostgreSQL)'
             ]}
-            currentProgress="Setting up comprehensive monitoring stack with performance tracking and alerting capabilities."
+            currentProgress="Setting up comprehensive monitoring stack with performance tracking, alerting capabilities, and business intelligence dashboards for production operations."
           />
         );
       case 'performance':
         return (
           <UnderDevelopmentSection
             title="Performance Optimization"
-            description="Performance optimization techniques for React and FastAPI."
-            estimatedCompletion="Coming soon"
+            description="Advanced performance optimization techniques for React frontend, FastAPI backend, and PostgreSQL database to ensure optimal system performance."
+            estimatedCompletion="April 2025"
             plannedFeatures={[
-              'Frontend performance optimization',
-              'Backend API optimization',
-              'Database query optimization',
-              'Caching strategies',
-              'Bundle size optimization',
-              'Memory usage optimization',
-              'Load testing and benchmarking'
+              'Frontend performance optimization with React best practices',
+              'Backend API optimization and async programming',
+              'Database query optimization and indexing strategies',
+              'Caching strategies at multiple levels (browser, CDN, application, database)',
+              'Bundle size optimization and code splitting',
+              'Memory usage optimization and garbage collection',
+              'Load testing and performance benchmarking',
+              'Image and asset optimization techniques',
+              'Network performance and request optimization',
+              'Database connection pooling and optimization',
+              'CDN setup and static asset delivery',
+              'Progressive loading and lazy loading strategies',
+              'Performance monitoring and profiling tools'
             ]}
             relatedSections={[
               'Frontend Setup (React)',
               'Backend Setup (FastAPI)',
               'Database Setup (PostgreSQL)',
-              'Monitoring'
+              'Monitoring & Observability'
             ]}
-            currentProgress="Developing performance optimization guide covering frontend, backend, and database optimization techniques."
+            currentProgress="Developing comprehensive performance optimization guide covering frontend, backend, and database optimization techniques with real-world benchmarks and monitoring strategies."
           />
         );
       default:
