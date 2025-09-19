@@ -308,16 +308,7 @@ echo "Deployment completed successfully!"`}
           <div>
             <h4 className="font-semibold text-gray-900 mb-3">Let's Encrypt SSL</h4>
             <pre className="bg-gray-900 text-green-400 p-4 rounded-lg overflow-x-auto text-sm">
-{\`# Install Certbot
-sudo apt install certbot python3-certbot-nginx
-
-# Obtain SSL certificate
-sudo certbot --nginx -d yourdomain.com -d www.yourdomain.com
-
-# Auto-renewal setup
-sudo crontab -e
-# Add line:
-0 12 * * * /usr/bin/certbot renew --quiet`}
+{"# Install Certbot\nsudo apt install certbot python3-certbot-nginx\n\n# Obtain SSL certificate\nsudo certbot --nginx -d yourdomain.com -d www.yourdomain.com\n\n# Auto-renewal setup\nsudo crontab -e\n# Add line:\n0 12 * * * /usr/bin/certbot renew --quiet"}
             </pre>
           </div>
           
