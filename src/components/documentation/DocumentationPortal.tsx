@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { 
-  BookOpen, Download, Code, Database, Server, Globe, Shield, Zap, Smartphone, Target,
-  AlertTriangle, Home, Layers, Settings, GitBranch, Clock,
-} from 'lucide-react';
+  BookOpen, 
+  Download,
+  Code,
+  Database,
   Server,
   Globe,
   Shield,
@@ -14,7 +15,11 @@ import {
   Layers,
   Settings,
   GitBranch,
-  Clock
+  Clock,
+  CheckCircle,
+  Users,
+  ArrowRight,
+  FileText
 } from 'lucide-react';
 import { documentationSections } from '../../data/mockData';
 
