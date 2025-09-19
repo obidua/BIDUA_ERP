@@ -6,11 +6,6 @@ import {
   Database, 
   Settings, 
   Users,
-  Building2,
-  Menu,
-  X,
-  LogOut,
-  Search,
   Home,
   Layers,
   GitBranch,
@@ -24,65 +19,20 @@ import {
   Clock,
   AlertTriangle,
   ArrowRight,
-  Download,
-  ExternalLink
+  Download
 } from 'lucide-react';
 
 interface DocumentationPortalProps {
   currentUser: any;
+  activeSection: string;
   onLogout: () => void;
 }
 
 const DocumentationPortal: React.FC<DocumentationPortalProps> = ({
   currentUser,
+  activeSection,
   onLogout
 }) => {
-  const [activeSection, setActiveSection] = useState('overview');
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const [searchTerm, setSearchTerm] = useState('');
-
-  const navigationSections = [
-    {
-      title: 'Getting Started',
-      items: [
-        { id: 'overview', name: 'Project Overview', icon: Home },
-        { id: 'architecture', name: 'System Architecture', icon: Layers },
-        { id: 'tech-stack', name: 'Technology Stack', icon: Code },
-        { id: 'setup', name: 'Development Setup', icon: Settings },
-      ]
-    },
-    {
-      title: 'Database Design',
-      items: [
-        { id: 'schema', name: 'Database Schema', icon: Database },
-        { id: 'relationships', name: 'Table Relationships', icon: GitBranch },
-        { id: 'migrations', name: 'Migrations', icon: Server },
-      ]
-    },
-    {
-      title: 'API Documentation',
-      items: [
-        { id: 'api-overview', name: 'API Overview', icon: Globe },
-        { id: 'authentication', name: 'Authentication', icon: Shield },
-        { id: 'endpoints', name: 'Endpoints', icon: Zap },
-      ]
-    },
-    {
-      title: 'Frontend Guide',
-      items: [
-        { id: 'components', name: 'Components', icon: Smartphone },
-        { id: 'routing', name: 'Routing', icon: GitBranch },
-        { id: 'state-management', name: 'State Management', icon: Target },
-      ]
-    },
-    {
-      title: 'Deployment',
-      items: [
-        { id: 'deployment', name: 'Deployment Guide', icon: Server },
-        { id: 'monitoring', name: 'Monitoring', icon: AlertTriangle },
-      ]
-    }
-  ];
 
   const renderContent = () => {
     switch (activeSection) {
@@ -594,9 +544,9 @@ const DocumentationPortal: React.FC<DocumentationPortalProps> = ({
         return (
           <div className="space-y-8">
             <div>
-              <h1 className="text-3xl font-bold text-gray-900 mb-4">API Documentation</h1>
+              <h1 className="text-3xl font-bold text-gray-900 mb-4">FastAPI Documentation</h1>
               <p className="text-lg text-gray-600 mb-6">
-                RESTful API endpoints for the BIDUA ERP system.
+                RESTful API endpoints for the BIDUA ERP system built with FastAPI.
               </p>
             </div>
 
@@ -711,6 +661,30 @@ const DocumentationPortal: React.FC<DocumentationPortalProps> = ({
                 </div>
               </div>
             </div>
+
+            <div className="bg-white border border-gray-200 rounded-lg p-6">
+              <h2 className="text-xl font-semibold text-gray-900 mb-4">FastAPI Features</h2>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <h4 className="font-semibold text-gray-900 mb-3">Automatic Documentation</h4>
+                  <ul className="space-y-2 text-sm text-gray-600">
+                    <li>• Interactive API docs at /docs</li>
+                    <li>• ReDoc documentation at /redoc</li>
+                    <li>• OpenAPI 3.0 specification</li>
+                    <li>• Automatic request/response validation</li>
+                  </ul>
+                </div>
+                <div>
+                  <h4 className="font-semibold text-gray-900 mb-3">Performance Features</h4>
+                  <ul className="space-y-2 text-sm text-gray-600">
+                    <li>• Async/await support</li>
+                    <li>• High performance with Starlette</li>
+                    <li>• Built-in data validation</li>
+                    <li>• Dependency injection system</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
           </div>
         );
 
@@ -772,7 +746,7 @@ npm run build`}
               </div>
 
               <div className="bg-white border border-gray-200 rounded-lg p-6">
-                <h2 className="text-xl font-semibold text-gray-900 mb-4">Backend Setup</h2>
+                <h2 className="text-xl font-semibold text-gray-900 mb-4">FastAPI Backend Setup</h2>
                 <div className="bg-gray-50 p-4 rounded-lg">
                   <pre className="text-sm text-gray-800 overflow-x-auto">
 {`# Navigate to backend directory
@@ -792,7 +766,7 @@ cp .env.example .env
 # Run database migrations
 alembic upgrade head
 
-# Start development server
+# Start FastAPI development server
 uvicorn main:app --reload --host 0.0.0.0 --port 8000`}
                   </pre>
                 </div>
@@ -822,6 +796,360 @@ psql -h localhost -U bidua_user -d bidua_erp`}
           </div>
         );
 
+      case 'relationships':
+        return (
+          <div className="space-y-8">
+            <div>
+              <h1 className="text-3xl font-bold text-gray-900 mb-4">Table Relationships</h1>
+              <p className="text-lg text-gray-600 mb-6">
+                Database relationships and foreign key constraints in the BIDUA ERP system.
+              </p>
+            </div>
+
+            <div className="bg-white border border-gray-200 rounded-lg p-6">
+              <h2 className="text-xl font-semibold text-gray-900 mb-4">Entity Relationship Diagram</h2>
+              <div className="bg-gray-50 p-6 rounded-lg">
+                <div className="text-center text-gray-600">
+                  <Database className="w-16 h-16 mx-auto mb-4" />
+                  <p>ERD visualization would be displayed here</p>
+                </div>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <div className="bg-white border border-gray-200 rounded-lg p-6">
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">Primary Relationships</h3>
+                <div className="space-y-3">
+                  <div className="p-3 bg-blue-50 rounded border border-blue-200">
+                    <h4 className="font-medium text-gray-900">users → employees</h4>
+                    <p className="text-sm text-gray-600">One-to-One relationship via user_id</p>
+                  </div>
+                  <div className="p-3 bg-green-50 rounded border border-green-200">
+                    <h4 className="font-medium text-gray-900">employees → attendance</h4>
+                    <p className="text-sm text-gray-600">One-to-Many via employee_id</p>
+                  </div>
+                  <div className="p-3 bg-purple-50 rounded border border-purple-200">
+                    <h4 className="font-medium text-gray-900">employees → tasks</h4>
+                    <p className="text-sm text-gray-600">One-to-Many via assigned_to</p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="bg-white border border-gray-200 rounded-lg p-6">
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">Foreign Key Constraints</h3>
+                <div className="space-y-3">
+                  <div className="p-3 bg-yellow-50 rounded border border-yellow-200">
+                    <h4 className="font-medium text-gray-900">leads.assigned_to</h4>
+                    <p className="text-sm text-gray-600">References employees.employee_id</p>
+                  </div>
+                  <div className="p-3 bg-red-50 rounded border border-red-200">
+                    <h4 className="font-medium text-gray-900">leave_requests.employee_id</h4>
+                    <p className="text-sm text-gray-600">References employees.employee_id</p>
+                  </div>
+                  <div className="p-3 bg-indigo-50 rounded border border-indigo-200">
+                    <h4 className="font-medium text-gray-900">payroll.employee_id</h4>
+                    <p className="text-sm text-gray-600">References employees.employee_id</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        );
+
+      case 'migrations':
+        return (
+          <div className="space-y-8">
+            <div>
+              <h1 className="text-3xl font-bold text-gray-900 mb-4">Database Migrations</h1>
+              <p className="text-lg text-gray-600 mb-6">
+                Database migration strategy and version control using Alembic.
+              </p>
+            </div>
+
+            <div className="bg-white border border-gray-200 rounded-lg p-6">
+              <h2 className="text-xl font-semibold text-gray-900 mb-4">Migration Commands</h2>
+              <div className="space-y-4">
+                <div className="bg-gray-50 p-4 rounded-lg">
+                  <h4 className="font-medium text-gray-900 mb-2">Create Migration</h4>
+                  <code className="text-sm text-gray-800">alembic revision --autogenerate -m "description"</code>
+                </div>
+                <div className="bg-gray-50 p-4 rounded-lg">
+                  <h4 className="font-medium text-gray-900 mb-2">Apply Migrations</h4>
+                  <code className="text-sm text-gray-800">alembic upgrade head</code>
+                </div>
+                <div className="bg-gray-50 p-4 rounded-lg">
+                  <h4 className="font-medium text-gray-900 mb-2">Rollback Migration</h4>
+                  <code className="text-sm text-gray-800">alembic downgrade -1</code>
+                </div>
+              </div>
+            </div>
+          </div>
+        );
+
+      case 'authentication':
+        return (
+          <div className="space-y-8">
+            <div>
+              <h1 className="text-3xl font-bold text-gray-900 mb-4">Authentication System</h1>
+              <p className="text-lg text-gray-600 mb-6">
+                JWT-based authentication implementation with FastAPI.
+              </p>
+            </div>
+
+            <div className="bg-white border border-gray-200 rounded-lg p-6">
+              <h2 className="text-xl font-semibold text-gray-900 mb-4">Authentication Flow</h2>
+              <div className="space-y-4">
+                <div className="flex items-center space-x-4 p-4 bg-blue-50 rounded-lg">
+                  <div className="bg-blue-600 text-white p-2 rounded">1</div>
+                  <div>
+                    <h4 className="font-semibold text-gray-900">Login Request</h4>
+                    <p className="text-sm text-gray-600">User submits credentials to /auth/login</p>
+                  </div>
+                </div>
+                <div className="flex items-center space-x-4 p-4 bg-green-50 rounded-lg">
+                  <div className="bg-green-600 text-white p-2 rounded">2</div>
+                  <div>
+                    <h4 className="font-semibold text-gray-900">Token Generation</h4>
+                    <p className="text-sm text-gray-600">Server validates and returns JWT token</p>
+                  </div>
+                </div>
+                <div className="flex items-center space-x-4 p-4 bg-purple-50 rounded-lg">
+                  <div className="bg-purple-600 text-white p-2 rounded">3</div>
+                  <div>
+                    <h4 className="font-semibold text-gray-900">Protected Requests</h4>
+                    <p className="text-sm text-gray-600">Client includes token in Authorization header</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        );
+
+      case 'endpoints':
+        return (
+          <div className="space-y-8">
+            <div>
+              <h1 className="text-3xl font-bold text-gray-900 mb-4">API Endpoints Reference</h1>
+              <p className="text-lg text-gray-600 mb-6">
+                Complete reference for all FastAPI endpoints in the BIDUA ERP system.
+              </p>
+            </div>
+
+            <div className="space-y-6">
+              <div className="bg-white border border-gray-200 rounded-lg p-6">
+                <h2 className="text-xl font-semibold text-gray-900 mb-4">CRM Module Endpoints</h2>
+                <div className="space-y-4">
+                  <div className="border border-gray-200 rounded p-4">
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="font-mono text-sm">GET /api/v1/crm/leads</span>
+                      <span className="bg-blue-100 text-blue-800 px-2 py-1 rounded text-xs">GET</span>
+                    </div>
+                    <p className="text-sm text-gray-600 mb-2">Retrieve all leads with optional filtering</p>
+                    <div className="text-xs text-gray-500">
+                      <strong>Query Parameters:</strong> status, stage, assigned_to, limit, offset
+                    </div>
+                  </div>
+                  <div className="border border-gray-200 rounded p-4">
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="font-mono text-sm">POST /api/v1/crm/leads</span>
+                      <span className="bg-green-100 text-green-800 px-2 py-1 rounded text-xs">POST</span>
+                    </div>
+                    <p className="text-sm text-gray-600 mb-2">Create a new lead</p>
+                    <div className="text-xs text-gray-500">
+                      <strong>Required Fields:</strong> name, email, company, status, stage
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="bg-white border border-gray-200 rounded-lg p-6">
+                <h2 className="text-xl font-semibold text-gray-900 mb-4">HRMS Module Endpoints</h2>
+                <div className="space-y-4">
+                  <div className="border border-gray-200 rounded p-4">
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="font-mono text-sm">GET /api/v1/hrms/employees</span>
+                      <span className="bg-blue-100 text-blue-800 px-2 py-1 rounded text-xs">GET</span>
+                    </div>
+                    <p className="text-sm text-gray-600 mb-2">Get employee list with pagination</p>
+                    <div className="text-xs text-gray-500">
+                      <strong>Query Parameters:</strong> department, status, limit, offset
+                    </div>
+                  </div>
+                  <div className="border border-gray-200 rounded p-4">
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="font-mono text-sm">POST /api/v1/hrms/attendance</span>
+                      <span className="bg-green-100 text-green-800 px-2 py-1 rounded text-xs">POST</span>
+                    </div>
+                    <p className="text-sm text-gray-600 mb-2">Mark employee attendance</p>
+                    <div className="text-xs text-gray-500">
+                      <strong>Required Fields:</strong> employee_id, date, clock_in, status
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        );
+
+      case 'components':
+        return (
+          <div className="space-y-8">
+            <div>
+              <h1 className="text-3xl font-bold text-gray-900 mb-4">React Components Guide</h1>
+              <p className="text-lg text-gray-600 mb-6">
+                Component architecture and usage patterns in the BIDUA ERP frontend.
+              </p>
+            </div>
+
+            <div className="bg-white border border-gray-200 rounded-lg p-6">
+              <h2 className="text-xl font-semibold text-gray-900 mb-4">Component Structure</h2>
+              <div className="bg-gray-50 p-4 rounded-lg">
+                <pre className="text-sm text-gray-800 overflow-x-auto">
+{`src/components/
+├── auth/
+│   └── LoginForm.tsx
+├── layout/
+│   └── Sidebar.tsx
+├── dashboard/
+│   └── Dashboard.tsx
+├── crm/
+│   ├── CRMModule.tsx
+│   ├── LeadsManagement.tsx
+│   └── SalesPipeline.tsx
+├── hrms/
+│   ├── HRMSModule.tsx
+│   ├── EmployeeManagement.tsx
+│   └── AttendanceManagement.tsx
+└── employee/
+    ├── EmployeePortal.tsx
+    └── EmployeeDashboard.tsx`}
+                </pre>
+              </div>
+            </div>
+          </div>
+        );
+
+      case 'routing':
+        return (
+          <div className="space-y-8">
+            <div>
+              <h1 className="text-3xl font-bold text-gray-900 mb-4">Routing System</h1>
+              <p className="text-lg text-gray-600 mb-6">
+                React Router implementation and navigation patterns.
+              </p>
+            </div>
+
+            <div className="bg-white border border-gray-200 rounded-lg p-6">
+              <h2 className="text-xl font-semibold text-gray-900 mb-4">Route Structure</h2>
+              <div className="bg-gray-50 p-4 rounded-lg">
+                <pre className="text-sm text-gray-800 overflow-x-auto">
+{`Routes:
+/ - Main application (protected)
+  ├── dashboard - Executive dashboard
+  ├── crm - Customer relationship management
+  ├── hrms - Human resource management
+  ├── reports - Analytics and reporting
+  ├── employee-portal - Employee self-service
+  ├── documentation-portal - Technical docs
+  └── settings - System configuration`}
+                </pre>
+              </div>
+            </div>
+          </div>
+        );
+
+      case 'state-management':
+        return (
+          <div className="space-y-8">
+            <div>
+              <h1 className="text-3xl font-bold text-gray-900 mb-4">State Management</h1>
+              <p className="text-lg text-gray-600 mb-6">
+                How application state is managed across components.
+              </p>
+            </div>
+
+            <div className="bg-white border border-gray-200 rounded-lg p-6">
+              <h2 className="text-xl font-semibold text-gray-900 mb-4">State Architecture</h2>
+              <p className="text-gray-600 mb-4">
+                The application uses React's built-in state management with useState hooks for local state and prop drilling for shared state.
+              </p>
+              <div className="bg-gray-50 p-4 rounded-lg">
+                <pre className="text-sm text-gray-800 overflow-x-auto">
+{`// Main App State
+const [currentUser, setCurrentUser] = useState<User | null>(null);
+const [leads, setLeads] = useState(mockLeads);
+const [employees, setEmployees] = useState(mockEmployees);
+const [tasks, setTasks] = useState(mockTasks);`}
+                </pre>
+              </div>
+            </div>
+          </div>
+        );
+
+      case 'deployment':
+        return (
+          <div className="space-y-8">
+            <div>
+              <h1 className="text-3xl font-bold text-gray-900 mb-4">Deployment Guide</h1>
+              <p className="text-lg text-gray-600 mb-6">
+                Production deployment instructions for the BIDUA ERP system.
+              </p>
+            </div>
+
+            <div className="bg-white border border-gray-200 rounded-lg p-6">
+              <h2 className="text-xl font-semibold text-gray-900 mb-4">Docker Deployment</h2>
+              <div className="bg-gray-50 p-4 rounded-lg">
+                <pre className="text-sm text-gray-800 overflow-x-auto">
+{`# Build and run with Docker Compose
+docker-compose up -d
+
+# Scale services
+docker-compose up -d --scale api=3
+
+# View logs
+docker-compose logs -f api`}
+                </pre>
+              </div>
+            </div>
+          </div>
+        );
+
+      case 'monitoring':
+        return (
+          <div className="space-y-8">
+            <div>
+              <h1 className="text-3xl font-bold text-gray-900 mb-4">Monitoring & Logging</h1>
+              <p className="text-lg text-gray-600 mb-6">
+                System monitoring, logging, and performance tracking.
+              </p>
+            </div>
+
+            <div className="bg-white border border-gray-200 rounded-lg p-6">
+              <h2 className="text-xl font-semibold text-gray-900 mb-4">Monitoring Stack</h2>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <h4 className="font-semibold text-gray-900 mb-3">Application Monitoring</h4>
+                  <ul className="space-y-2 text-sm text-gray-600">
+                    <li>• FastAPI built-in metrics</li>
+                    <li>• Prometheus for metrics collection</li>
+                    <li>• Grafana for visualization</li>
+                    <li>• Health check endpoints</li>
+                  </ul>
+                </div>
+                <div>
+                  <h4 className="font-semibold text-gray-900 mb-3">Logging</h4>
+                  <ul className="space-y-2 text-sm text-gray-600">
+                    <li>• Structured JSON logging</li>
+                    <li>• Log aggregation with ELK stack</li>
+                    <li>• Error tracking with Sentry</li>
+                    <li>• Audit trail for sensitive operations</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        );
+
       default:
         return (
           <div className="text-center py-12">
@@ -833,165 +1161,26 @@ psql -h localhost -U bidua_user -d bidua_erp`}
     }
   };
 
-  const filteredSections = navigationSections.map(section => ({
-    ...section,
-    items: section.items.filter(item => 
-      item.name.toLowerCase().includes(searchTerm.toLowerCase())
-    )
-  })).filter(section => section.items.length > 0);
-
   return (
-    <div className="min-h-screen bg-gray-50 flex">
-      {/* Mobile Header */}
-      <div className="md:hidden fixed top-0 left-0 right-0 bg-white border-b border-gray-200 px-4 py-3 flex items-center justify-between z-30">
-        <div className="flex items-center space-x-3">
-          <div className="bg-indigo-600 p-2 rounded-lg">
-            <BookOpen className="w-6 h-6 text-white" />
-          </div>
-          <div>
-            <h1 className="text-lg font-bold text-gray-900">BIDUA Docs</h1>
-            <p className="text-xs text-gray-500">Technical Documentation</p>
-          </div>
-        </div>
-        <button
-          onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-          className="p-2 rounded-lg text-gray-600 hover:bg-gray-100 transition-colors"
-        >
-          {isSidebarOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-        </button>
+    <div className="space-y-6">
+      <div className="max-w-4xl mx-auto">
+        {renderContent()}
       </div>
 
-      {/* Mobile Overlay */}
-      {isSidebarOpen && (
-        <div 
-          className="fixed inset-0 bg-black bg-opacity-50 z-40 md:hidden"
-          onClick={() => setIsSidebarOpen(false)}
-        />
-      )}
-
-      {/* Sidebar */}
-      <div className={`
-        fixed md:static inset-y-0 left-0 z-50 w-80 bg-white border-r border-gray-200 transform transition-transform duration-300 ease-in-out
-        ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}
-      `}>
-        <div className="flex flex-col h-full">
-          {/* Desktop Header */}
-          <div className="hidden md:flex items-center space-x-3 p-6 border-b border-gray-200">
-            <div className="bg-indigo-600 p-3 rounded-xl">
-              <BookOpen className="w-8 h-8 text-white" />
-            </div>
-            <div>
-              <h1 className="text-xl font-bold text-gray-900">BIDUA Documentation</h1>
-              <p className="text-sm text-gray-500">Technical Reference</p>
-            </div>
+      {/* Footer */}
+      <footer className="border-t border-gray-200 bg-white p-6 mt-12">
+        <div className="max-w-4xl mx-auto flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+          <div className="text-sm text-gray-600">
+            © 2025 BIDUA ERP System. All rights reserved.
           </div>
-
-          {/* User Info */}
-          <div className="p-4 md:p-6 border-b border-gray-200 mt-16 md:mt-0">
-            <div className="flex items-center space-x-3">
-              <div className="w-10 h-10 bg-indigo-100 rounded-full flex items-center justify-center">
-                <span className="text-indigo-600 font-semibold text-sm">
-                  {currentUser.username.charAt(0).toUpperCase()}
-                </span>
-              </div>
-              <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium text-gray-900 truncate">
-                  {currentUser.username}
-                </p>
-                <p className="text-xs text-gray-500 capitalize truncate">
-                  {currentUser.role} • {currentUser.department}
-                </p>
-              </div>
-            </div>
-          </div>
-
-          {/* Search */}
-          <div className="p-4 md:p-6 border-b border-gray-200">
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-              <input
-                type="text"
-                placeholder="Search documentation..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm"
-              />
-            </div>
-          </div>
-
-          {/* Navigation */}
-          <nav className="flex-1 p-4 md:p-6 space-y-6 overflow-y-auto">
-            {filteredSections.map((section, sectionIndex) => (
-              <div key={sectionIndex}>
-                <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">
-                  {section.title}
-                </h3>
-                <div className="space-y-1">
-                  {section.items.map((item) => {
-                    const Icon = item.icon;
-                    return (
-                      <button
-                        key={item.id}
-                        onClick={() => {
-                          setActiveSection(item.id);
-                          if (window.innerWidth < 768) setIsSidebarOpen(false);
-                        }}
-                        className={`w-full flex items-center space-x-3 px-3 py-2 rounded-lg text-left transition-all duration-200 text-sm ${
-                          activeSection === item.id
-                            ? 'bg-indigo-50 text-indigo-700 border border-indigo-200'
-                            : 'text-gray-700 hover:bg-gray-50 hover:text-gray-900'
-                        }`}
-                      >
-                        <Icon className="w-4 h-4" />
-                        <span className="font-medium">{item.name}</span>
-                      </button>
-                    );
-                  })}
-                </div>
-              </div>
-            ))}
-          </nav>
-
-          {/* Logout */}
-          <div className="p-4 md:p-6 border-t border-gray-200">
-            <button
-              onClick={onLogout}
-              className="w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-700 hover:bg-red-50 hover:text-red-700 transition-all duration-200"
-            >
-              <LogOut className="w-5 h-5" />
-              <span className="font-medium">Logout</span>
+          <div className="flex items-center space-x-4 text-sm">
+            <button className="text-gray-600 hover:text-indigo-600 transition-colors">
+              <Download className="w-4 h-4 inline mr-1" />
+              Download PDF
             </button>
           </div>
         </div>
-      </div>
-
-      {/* Main Content */}
-      <div className="flex-1 flex flex-col min-w-0">
-        <main className="flex-1 p-6 md:p-8 mt-16 md:mt-0 overflow-y-auto">
-          <div className="max-w-4xl mx-auto">
-            {renderContent()}
-          </div>
-        </main>
-
-        {/* Footer */}
-        <footer className="border-t border-gray-200 bg-white p-4 md:p-6">
-          <div className="max-w-4xl mx-auto flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-            <div className="text-sm text-gray-600">
-              © 2025 BIDUA ERP System. All rights reserved.
-            </div>
-            <div className="flex items-center space-x-4 text-sm">
-              <button className="text-gray-600 hover:text-indigo-600 transition-colors">
-                <Download className="w-4 h-4 inline mr-1" />
-                Download PDF
-              </button>
-              <button className="text-gray-600 hover:text-indigo-600 transition-colors">
-                <ExternalLink className="w-4 h-4 inline mr-1" />
-                GitHub
-              </button>
-            </div>
-          </div>
-        </footer>
-      </div>
+      </footer>
     </div>
   );
 };
