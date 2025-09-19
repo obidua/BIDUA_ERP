@@ -327,318 +327,388 @@ const DocumentationPortal: React.FC<DocumentationPortalProps> = ({
 
       case 'schema':
         return (
-          <div className="space-y-6">
-            <h1 className="text-2xl font-bold text-gray-900">Database Schema</h1>
-            
-            <div className="bg-white p-6 rounded-lg shadow-sm border">
-              <h3 className="text-lg font-semibold text-gray-900 mb-4">Authentication & Users</h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                <div className="border border-gray-200 rounded-lg p-4">
-                  <h4 className="font-semibold text-gray-900 mb-2">users</h4>
-                  <ul className="text-sm text-gray-600 space-y-1">
-                    <li>• id (uuid, primary key)</li>
-                    <li>• username (text)</li>
-                    <li>• email (text)</li>
-                    <li>• role (enum)</li>
-                    <li>• department (text)</li>
-                    <li>• is_active (boolean)</li>
-                    <li>• created_at (timestamp)</li>
-                  </ul>
-                </div>
-                <div className="border border-gray-200 rounded-lg p-4">
-                  <h4 className="font-semibold text-gray-900 mb-2">sessions</h4>
-                  <ul className="text-sm text-gray-600 space-y-1">
-                    <li>• id (uuid, primary key)</li>
-                    <li>• user_id (uuid, foreign key)</li>
-                    <li>• token (text)</li>
-                    <li>• expires_at (timestamp)</li>
-                    <li>• created_at (timestamp)</li>
-                  </ul>
-                </div>
-                <div className="border border-gray-200 rounded-lg p-4">
-                  <h4 className="font-semibold text-gray-900 mb-2">audit_logs</h4>
-                  <ul className="text-sm text-gray-600 space-y-1">
-                    <li>• id (uuid, primary key)</li>
-                    <li>• user_id (uuid, foreign key)</li>
-                    <li>• action (text)</li>
-                    <li>• table_name (text)</li>
-                    <li>• record_id (text)</li>
-                    <li>• old_values (jsonb)</li>
-                    <li>• new_values (jsonb)</li>
-                    <li>• created_at (timestamp)</li>
-                  </ul>
-                </div>
-              </div>
+          <div className="space-y-8">
+            <div>
+              <h1 className="text-3xl font-bold text-gray-900 mb-4">Database Schema</h1>
+              <p className="text-lg text-gray-600 mb-6">
+                Complete PostgreSQL database schema for all modules.
+              </p>
             </div>
-            
-            <div className="bg-white p-6 rounded-lg shadow-sm border">
-              <h3 className="text-lg font-semibold text-gray-900 mb-4">CRM Tables</h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                <div className="border border-gray-200 rounded-lg p-4">
-                  <h4 className="font-semibold text-gray-900 mb-2">leads</h4>
-                  <ul className="text-sm text-gray-600 space-y-1">
-                    <li>• id (uuid, primary key)</li>
-                    <li>• name (text)</li>
-                    <li>• email (text)</li>
-                    <li>• phone (text)</li>
-                    <li>• company (text)</li>
-                    <li>• status (enum: hot/warm/cold)</li>
-                    <li>• stage (enum: lead/proposal/negotiation/closed-won/closed-lost)</li>
-                    <li>• value (numeric)</li>
-                    <li>• source (text)</li>
-                    <li>• assigned_to (text)</li>
-                    <li>• last_contact (date)</li>
-                    <li>• next_follow_up (date)</li>
-                    <li>• notes (text)</li>
-                    <li>• created_at (timestamp)</li>
-                  </ul>
-                </div>
-                <div className="border border-gray-200 rounded-lg p-4">
-                  <h4 className="font-semibold text-gray-900 mb-2">customers</h4>
-                  <ul className="text-sm text-gray-600 space-y-1">
-                    <li>• id (uuid, primary key)</li>
-                    <li>• name (text)</li>
-                    <li>• email (text)</li>
-                    <li>• phone (text)</li>
-                    <li>• company (text)</li>
-                    <li>• address (text)</li>
-                    <li>• status (enum: active/inactive)</li>
-                    <li>• customer_type (enum: individual/business)</li>
-                    <li>• created_at (timestamp)</li>
-                  </ul>
-                </div>
-                <div className="border border-gray-200 rounded-lg p-4">
-                  <h4 className="font-semibold text-gray-900 mb-2">deals</h4>
-                  <ul className="text-sm text-gray-600 space-y-1">
-                    <li>• id (uuid, primary key)</li>
-                    <li>• customer_id (uuid, foreign key)</li>
-                    <li>• title (text)</li>
-                    <li>• value (numeric)</li>
-                    <li>• stage (enum)</li>
-                    <li>• probability (integer)</li>
-                    <li>• expected_close_date (date)</li>
-                    <li>• assigned_to (text)</li>
-                    <li>• created_at (timestamp)</li>
-                  </ul>
-                </div>
-                <div className="border border-gray-200 rounded-lg p-4">
-                  <h4 className="font-semibold text-gray-900 mb-2">activities</h4>
-                  <ul className="text-sm text-gray-600 space-y-1">
-                    <li>• id (uuid, primary key)</li>
-                    <li>• customer_id (uuid, foreign key)</li>
-                    <li>• deal_id (uuid, foreign key)</li>
-                    <li>• type (enum: call/meeting/email/task)</li>
-                    <li>• subject (text)</li>
-                    <li>• description (text)</li>
-                    <li>• scheduled_at (timestamp)</li>
-                    <li>• completed_at (timestamp)</li>
-                    <li>• assigned_to (text)</li>
-                    <li>• created_at (timestamp)</li>
-                  </ul>
-                </div>
-                <div className="border border-gray-200 rounded-lg p-4">
-                  <h4 className="font-semibold text-gray-900 mb-2">tickets</h4>
-                  <ul className="text-sm text-gray-600 space-y-1">
-                    <li>• id (uuid, primary key)</li>
-                    <li>• customer_id (uuid, foreign key)</li>
-                    <li>• title (text)</li>
-                    <li>• description (text)</li>
-                    <li>• priority (enum: low/medium/high/urgent)</li>
-                    <li>• status (enum: open/in-progress/resolved/closed)</li>
-                    <li>• category (text)</li>
-                    <li>• assigned_to (text)</li>
-                    <li>• created_at (timestamp)</li>
-                    <li>• resolved_at (timestamp)</li>
-                  </ul>
-                </div>
+
+            <div className="bg-white border border-gray-200 rounded-lg p-6">
+              <h2 className="text-xl font-semibold text-gray-900 mb-4">Complete Database Schema</h2>
+              
+              <div className="bg-gray-50 p-4 rounded-lg">
+                <pre className="text-sm text-gray-800 overflow-x-auto">
+                  {`-- Users table for authentication
+CREATE TABLE users (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  username VARCHAR(50) UNIQUE NOT NULL,
+  email VARCHAR(255) UNIQUE NOT NULL,
+  password_hash VARCHAR(255) NOT NULL,
+  role VARCHAR(20) NOT NULL CHECK (role IN ('admin', 'manager', 'employee', 'documentation')),
+  department VARCHAR(100) NOT NULL,
+  is_active BOOLEAN DEFAULT true,
+  created_at TIMESTAMPTZ DEFAULT now(),
+  updated_at TIMESTAMPTZ DEFAULT now()
+);
+
+-- Employees table for HRMS
+CREATE TABLE employees (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  employee_id VARCHAR(20) UNIQUE NOT NULL,
+  user_id UUID REFERENCES users(id),
+  name VARCHAR(255) NOT NULL,
+  email VARCHAR(255) UNIQUE NOT NULL,
+  phone VARCHAR(20),
+  department_id UUID REFERENCES departments(id),
+  designation VARCHAR(100) NOT NULL,
+  manager_id UUID REFERENCES employees(id),
+  joining_date DATE NOT NULL,
+  salary DECIMAL(12,2) NOT NULL,
+  status VARCHAR(20) DEFAULT 'active' CHECK (status IN ('active', 'inactive', 'terminated')),
+  address TEXT,
+  emergency_contact VARCHAR(20),
+  bank_account JSONB,
+  personal_details JSONB,
+  documents TEXT[],
+  created_at TIMESTAMPTZ DEFAULT now(),
+  updated_at TIMESTAMPTZ DEFAULT now()
+);
+
+-- Departments table
+CREATE TABLE departments (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  name VARCHAR(100) UNIQUE NOT NULL,
+  description TEXT,
+  head_id UUID REFERENCES employees(id),
+  budget DECIMAL(15,2),
+  is_active BOOLEAN DEFAULT true,
+  created_at TIMESTAMPTZ DEFAULT now()
+);
+
+-- Leads table for CRM
+CREATE TABLE leads (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  name VARCHAR(255) NOT NULL,
+  email VARCHAR(255),
+  phone VARCHAR(20),
+  company VARCHAR(255) NOT NULL,
+  status VARCHAR(20) DEFAULT 'warm' CHECK (status IN ('hot', 'warm', 'cold')),
+  stage VARCHAR(20) DEFAULT 'lead' CHECK (stage IN ('lead', 'qualified', 'proposal', 'negotiation', 'closed-won', 'closed-lost')),
+  value DECIMAL(12,2) DEFAULT 0,
+  source VARCHAR(100),
+  assigned_to UUID REFERENCES employees(id),
+  last_contact DATE,
+  next_follow_up DATE,
+  notes TEXT,
+  created_at TIMESTAMPTZ DEFAULT now(),
+  updated_at TIMESTAMPTZ DEFAULT now()
+);
+
+-- Customers table for CRM
+CREATE TABLE customers (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  name VARCHAR(255) NOT NULL,
+  email VARCHAR(255) UNIQUE,
+  phone VARCHAR(20),
+  company VARCHAR(255),
+  status VARCHAR(20) DEFAULT 'active' CHECK (status IN ('active', 'inactive', 'potential')),
+  address TEXT,
+  billing_address TEXT,
+  tax_id VARCHAR(50),
+  assigned_to UUID REFERENCES employees(id),
+  source VARCHAR(100),
+  notes TEXT,
+  created_at TIMESTAMPTZ DEFAULT now(),
+  updated_at TIMESTAMPTZ DEFAULT now()
+);
+
+-- Deals table for CRM
+CREATE TABLE deals (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  title VARCHAR(255) NOT NULL,
+  customer_id UUID REFERENCES customers(id),
+  lead_id UUID REFERENCES leads(id),
+  value DECIMAL(12,2) NOT NULL,
+  stage VARCHAR(20) DEFAULT 'proposal' CHECK (stage IN ('proposal', 'negotiation', 'closed-won', 'closed-lost')),
+  probability INTEGER DEFAULT 50 CHECK (probability >= 0 AND probability <= 100),
+  expected_close_date DATE,
+  actual_close_date DATE,
+  assigned_to UUID REFERENCES employees(id),
+  description TEXT,
+  created_at TIMESTAMPTZ DEFAULT now(),
+  updated_at TIMESTAMPTZ DEFAULT now()
+);
+
+-- Activities table for CRM (calls, meetings, tasks)
+CREATE TABLE activities (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  type VARCHAR(20) NOT NULL CHECK (type IN ('call', 'meeting', 'email', 'task', 'note')),
+  title VARCHAR(255) NOT NULL,
+  description TEXT,
+  customer_id UUID REFERENCES customers(id),
+  lead_id UUID REFERENCES leads(id),
+  deal_id UUID REFERENCES deals(id),
+  assigned_to UUID REFERENCES employees(id),
+  created_by UUID REFERENCES employees(id),
+  scheduled_at TIMESTAMPTZ,
+  completed_at TIMESTAMPTZ,
+  status VARCHAR(20) DEFAULT 'pending' CHECK (status IN ('pending', 'completed', 'cancelled')),
+  outcome TEXT,
+  created_at TIMESTAMPTZ DEFAULT now()
+);
+
+-- Support Tickets table
+CREATE TABLE tickets (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  title VARCHAR(255) NOT NULL,
+  description TEXT NOT NULL,
+  customer_id UUID REFERENCES customers(id),
+  priority VARCHAR(20) DEFAULT 'medium' CHECK (priority IN ('low', 'medium', 'high', 'urgent')),
+  status VARCHAR(20) DEFAULT 'open' CHECK (status IN ('open', 'in-progress', 'resolved', 'closed')),
+  category VARCHAR(100),
+  assigned_to UUID REFERENCES employees(id),
+  created_by UUID REFERENCES employees(id),
+  resolved_at TIMESTAMPTZ,
+  created_at TIMESTAMPTZ DEFAULT now(),
+  updated_at TIMESTAMPTZ DEFAULT now()
+);
+
+-- Attendance table for HRMS
+CREATE TABLE attendance (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  employee_id UUID REFERENCES employees(id),
+  date DATE NOT NULL,
+  clock_in TIME,
+  clock_out TIME,
+  total_hours DECIMAL(4,2) DEFAULT 0,
+  status VARCHAR(20) DEFAULT 'present' CHECK (status IN ('present', 'absent', 'late', 'half-day')),
+  location VARCHAR(255),
+  coordinates JSONB,
+  is_within_geofence BOOLEAN DEFAULT true,
+  created_at TIMESTAMPTZ DEFAULT now(),
+  UNIQUE(employee_id, date)
+);
+
+-- Leave Requests table for HRMS
+CREATE TABLE leave_requests (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  employee_id UUID REFERENCES employees(id),
+  leave_type VARCHAR(20) NOT NULL CHECK (leave_type IN ('casual', 'sick', 'annual', 'maternity', 'emergency')),
+  start_date DATE NOT NULL,
+  end_date DATE NOT NULL,
+  days INTEGER NOT NULL,
+  reason TEXT NOT NULL,
+  status VARCHAR(20) DEFAULT 'pending' CHECK (status IN ('pending', 'approved', 'rejected')),
+  approved_by UUID REFERENCES employees(id),
+  approved_at TIMESTAMPTZ,
+  comments TEXT,
+  applied_at TIMESTAMPTZ DEFAULT now()
+);
+
+-- Payroll table for HRMS
+CREATE TABLE payroll (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  employee_id UUID REFERENCES employees(id),
+  month VARCHAR(20) NOT NULL,
+  year INTEGER NOT NULL,
+  basic_salary DECIMAL(12,2) NOT NULL,
+  allowances DECIMAL(12,2) DEFAULT 0,
+  deductions DECIMAL(12,2) DEFAULT 0,
+  overtime DECIMAL(12,2) DEFAULT 0,
+  gross_salary DECIMAL(12,2) NOT NULL,
+  net_salary DECIMAL(12,2) NOT NULL,
+  status VARCHAR(20) DEFAULT 'draft' CHECK (status IN ('draft', 'processed', 'paid')),
+  pay_date DATE,
+  created_at TIMESTAMPTZ DEFAULT now(),
+  UNIQUE(employee_id, month, year)
+);
+
+-- Products table for BRPP
+CREATE TABLE products (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  name VARCHAR(255) NOT NULL,
+  description TEXT,
+  sku VARCHAR(100) UNIQUE NOT NULL,
+  category VARCHAR(100),
+  price DECIMAL(10,2) NOT NULL,
+  cost DECIMAL(10,2),
+  stock_quantity INTEGER DEFAULT 0,
+  min_stock_level INTEGER DEFAULT 0,
+  is_active BOOLEAN DEFAULT true,
+  created_at TIMESTAMPTZ DEFAULT now(),
+  updated_at TIMESTAMPTZ DEFAULT now()
+);
+
+-- Subscriptions table for BRPP
+CREATE TABLE subscriptions (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  customer_id UUID REFERENCES customers(id),
+  product_id UUID REFERENCES products(id),
+  plan_name VARCHAR(100) NOT NULL,
+  billing_cycle VARCHAR(20) DEFAULT 'monthly' CHECK (billing_cycle IN ('monthly', 'quarterly', 'yearly')),
+  amount DECIMAL(10,2) NOT NULL,
+  status VARCHAR(20) DEFAULT 'active' CHECK (status IN ('active', 'paused', 'cancelled', 'expired')),
+  start_date DATE NOT NULL,
+  end_date DATE,
+  next_billing_date DATE,
+  auto_renew BOOLEAN DEFAULT true,
+  created_at TIMESTAMPTZ DEFAULT now(),
+  updated_at TIMESTAMPTZ DEFAULT now()
+);
+
+-- Orders table for BRPP
+CREATE TABLE orders (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  order_number VARCHAR(50) UNIQUE NOT NULL,
+  customer_id UUID REFERENCES customers(id),
+  subscription_id UUID REFERENCES subscriptions(id),
+  status VARCHAR(20) DEFAULT 'pending' CHECK (status IN ('pending', 'confirmed', 'processing', 'shipped', 'delivered', 'cancelled')),
+  total_amount DECIMAL(12,2) NOT NULL,
+  tax_amount DECIMAL(10,2) DEFAULT 0,
+  shipping_amount DECIMAL(10,2) DEFAULT 0,
+  discount_amount DECIMAL(10,2) DEFAULT 0,
+  payment_status VARCHAR(20) DEFAULT 'pending' CHECK (payment_status IN ('pending', 'paid', 'failed', 'refunded')),
+  payment_method VARCHAR(50),
+  shipping_address TEXT,
+  billing_address TEXT,
+  notes TEXT,
+  created_at TIMESTAMPTZ DEFAULT now(),
+  updated_at TIMESTAMPTZ DEFAULT now()
+);
+
+-- Order Items table for BRPP
+CREATE TABLE order_items (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  order_id UUID REFERENCES orders(id) ON DELETE CASCADE,
+  product_id UUID REFERENCES products(id),
+  quantity INTEGER NOT NULL CHECK (quantity > 0),
+  unit_price DECIMAL(10,2) NOT NULL,
+  total_price DECIMAL(12,2) NOT NULL,
+  created_at TIMESTAMPTZ DEFAULT now()
+);
+
+-- Sessions table for authentication
+CREATE TABLE sessions (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id UUID REFERENCES users(id) ON DELETE CASCADE,
+  token VARCHAR(255) UNIQUE NOT NULL,
+  expires_at TIMESTAMPTZ NOT NULL,
+  ip_address INET,
+  user_agent TEXT,
+  is_active BOOLEAN DEFAULT true,
+  created_at TIMESTAMPTZ DEFAULT now()
+);
+
+-- Audit Logs table for monitoring
+CREATE TABLE audit_logs (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id UUID REFERENCES users(id),
+  action VARCHAR(100) NOT NULL,
+  table_name VARCHAR(100),
+  record_id UUID,
+  old_values JSONB,
+  new_values JSONB,
+  ip_address INET,
+  user_agent TEXT,
+  created_at TIMESTAMPTZ DEFAULT now()
+);
+
+-- Tasks table for project management
+CREATE TABLE tasks (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  title VARCHAR(255) NOT NULL,
+  description TEXT,
+  assigned_to UUID REFERENCES employees(id),
+  assigned_by UUID REFERENCES employees(id),
+  customer_id UUID REFERENCES customers(id),
+  deal_id UUID REFERENCES deals(id),
+  priority VARCHAR(20) DEFAULT 'medium' CHECK (priority IN ('low', 'medium', 'high', 'urgent')),
+  status VARCHAR(20) DEFAULT 'pending' CHECK (status IN ('pending', 'in-progress', 'completed', 'cancelled')),
+  progress INTEGER DEFAULT 0 CHECK (progress >= 0 AND progress <= 100),
+  start_date DATE,
+  due_date DATE NOT NULL,
+  completed_at TIMESTAMPTZ,
+  project VARCHAR(255),
+  tags TEXT[],
+  created_at TIMESTAMPTZ DEFAULT now(),
+  updated_at TIMESTAMPTZ DEFAULT now()
+);`}
+                </pre>
               </div>
-            </div>
-            
-            <div className="bg-white p-6 rounded-lg shadow-sm border">
-              <h3 className="text-lg font-semibold text-gray-900 mb-4">HRMS Tables</h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                <div className="border border-gray-200 rounded-lg p-4">
-                  <h4 className="font-semibold text-gray-900 mb-2">employees</h4>
-                  <ul className="text-sm text-gray-600 space-y-1">
-                    <li>• id (uuid, primary key)</li>
-                    <li>• employee_id (text)</li>
-                    <li>• name (text)</li>
-                    <li>• email (text)</li>
-                    <li>• phone (text)</li>
-                    <li>• department (text)</li>
-                    <li>• designation (text)</li>
-                    <li>• manager (text)</li>
-                    <li>• joining_date (date)</li>
-                    <li>• salary (numeric)</li>
-                    <li>• status (enum: active/inactive/terminated)</li>
-                    <li>• address (text)</li>
-                    <li>• emergency_contact (text)</li>
-                    <li>• created_at (timestamp)</li>
-                  </ul>
-                </div>
-                <div className="border border-gray-200 rounded-lg p-4">
-                  <h4 className="font-semibold text-gray-900 mb-2">departments</h4>
-                  <ul className="text-sm text-gray-600 space-y-1">
-                    <li>• id (uuid, primary key)</li>
-                    <li>• name (text)</li>
-                    <li>• description (text)</li>
-                    <li>• head_of_department (text)</li>
-                    <li>• budget (numeric)</li>
-                    <li>• is_active (boolean)</li>
-                    <li>• created_at (timestamp)</li>
-                  </ul>
-                </div>
-                <div className="border border-gray-200 rounded-lg p-4">
-                  <h4 className="font-semibold text-gray-900 mb-2">attendance</h4>
-                  <ul className="text-sm text-gray-600 space-y-1">
-                    <li>• id (uuid, primary key)</li>
-                    <li>• employee_id (uuid, foreign key)</li>
-                    <li>• date (date)</li>
-                    <li>• clock_in (time)</li>
-                    <li>• clock_out (time)</li>
-                    <li>• total_hours (numeric)</li>
-                    <li>• status (enum: present/absent/late/half-day)</li>
-                    <li>• location (text)</li>
-                    <li>• coordinates (point)</li>
-                    <li>• created_at (timestamp)</li>
-                  </ul>
-                </div>
-                <div className="border border-gray-200 rounded-lg p-4">
-                  <h4 className="font-semibold text-gray-900 mb-2">payroll</h4>
-                  <ul className="text-sm text-gray-600 space-y-1">
-                    <li>• id (uuid, primary key)</li>
-                    <li>• employee_id (uuid, foreign key)</li>
-                    <li>• month (text)</li>
-                    <li>• year (integer)</li>
-                    <li>• basic_salary (numeric)</li>
-                    <li>• allowances (numeric)</li>
-                    <li>• deductions (numeric)</li>
-                    <li>• overtime (numeric)</li>
-                    <li>• net_salary (numeric)</li>
-                    <li>• status (enum: draft/processed/paid)</li>
-                    <li>• pay_date (date)</li>
-                    <li>• created_at (timestamp)</li>
-                  </ul>
-                </div>
-                <div className="border border-gray-200 rounded-lg p-4">
-                  <h4 className="font-semibold text-gray-900 mb-2">leave_requests</h4>
-                  <ul className="text-sm text-gray-600 space-y-1">
-                    <li>• id (uuid, primary key)</li>
-                    <li>• employee_id (uuid, foreign key)</li>
-                    <li>• leave_type (enum: casual/sick/annual/maternity/emergency)</li>
-                    <li>• start_date (date)</li>
-                    <li>• end_date (date)</li>
-                    <li>• days (integer)</li>
-                    <li>• reason (text)</li>
-                    <li>• status (enum: pending/approved/rejected)</li>
-                    <li>• applied_at (timestamp)</li>
-                    <li>• approved_by (text)</li>
-                    <li>• approved_at (timestamp)</li>
-                    <li>• comments (text)</li>
-                  </ul>
-                </div>
+
+              <div className="mt-6">
+                <h4 className="text-lg font-semibold text-gray-900 mb-3">Key Design Principles</h4>
+                <ul className="space-y-2 text-gray-700">
+                  <li className="flex items-start space-x-2">
+                    <span className="w-2 h-2 bg-indigo-500 rounded-full mt-2"></span>
+                    <span><strong>UUID Primary Keys:</strong> All tables use UUID primary keys for better scalability and security</span>
+                  </li>
+                  <li className="flex items-start space-x-2">
+                    <span className="w-2 h-2 bg-indigo-500 rounded-full mt-2"></span>
+                    <span><strong>Foreign Key Constraints:</strong> Proper relationships maintain data integrity across modules</span>
+                  </li>
+                  <li className="flex items-start space-x-2">
+                    <span className="w-2 h-2 bg-indigo-500 rounded-full mt-2"></span>
+                    <span><strong>Audit Trail:</strong> Created/updated timestamps and audit logs track all changes</span>
+                  </li>
+                  <li className="flex items-start space-x-2">
+                    <span className="w-2 h-2 bg-indigo-500 rounded-full mt-2"></span>
+                    <span><strong>Data Validation:</strong> CHECK constraints ensure data quality and business rules</span>
+                  </li>
+                  <li className="flex items-start space-x-2">
+                    <span className="w-2 h-2 bg-indigo-500 rounded-full mt-2"></span>
+                    <span><strong>JSONB Fields:</strong> Flexible storage for complex data like bank details and coordinates</span>
+                  </li>
+                  <li className="flex items-start space-x-2">
+                    <span className="w-2 h-2 bg-indigo-500 rounded-full mt-2"></span>
+                    <span><strong>Unique Constraints:</strong> Prevent duplicate records for critical business data</span>
+                  </li>
+                </ul>
               </div>
-            </div>
-            
-            <div className="bg-white p-6 rounded-lg shadow-sm border">
-              <h3 className="text-lg font-semibold text-gray-900 mb-4">Business & Orders (BRPP)</h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                <div className="border border-gray-200 rounded-lg p-4">
-                  <h4 className="font-semibold text-gray-900 mb-2">products</h4>
-                  <ul className="text-sm text-gray-600 space-y-1">
-                    <li>• id (uuid, primary key)</li>
-                    <li>• name (text)</li>
-                    <li>• description (text)</li>
-                    <li>• sku (text, unique)</li>
-                    <li>• category (text)</li>
-                    <li>• price (numeric)</li>
-                    <li>• cost (numeric)</li>
-                    <li>• stock_quantity (integer)</li>
-                    <li>• is_active (boolean)</li>
-                    <li>• created_at (timestamp)</li>
-                  </ul>
-                </div>
-                <div className="border border-gray-200 rounded-lg p-4">
-                  <h4 className="font-semibold text-gray-900 mb-2">orders</h4>
-                  <ul className="text-sm text-gray-600 space-y-1">
-                    <li>• id (uuid, primary key)</li>
-                    <li>• customer_id (uuid, foreign key)</li>
-                    <li>• order_number (text, unique)</li>
-                    <li>• status (enum: pending/confirmed/shipped/delivered/cancelled)</li>
-                    <li>• total_amount (numeric)</li>
-                    <li>• discount (numeric)</li>
-                    <li>• tax (numeric)</li>
-                    <li>• shipping_address (text)</li>
-                    <li>• billing_address (text)</li>
-                    <li>• order_date (timestamp)</li>
-                    <li>• delivery_date (timestamp)</li>
-                  </ul>
-                </div>
-                <div className="border border-gray-200 rounded-lg p-4">
-                  <h4 className="font-semibold text-gray-900 mb-2">order_items</h4>
-                  <ul className="text-sm text-gray-600 space-y-1">
-                    <li>• id (uuid, primary key)</li>
-                    <li>• order_id (uuid, foreign key)</li>
-                    <li>• product_id (uuid, foreign key)</li>
-                    <li>• quantity (integer)</li>
-                    <li>• unit_price (numeric)</li>
-                    <li>• total_price (numeric)</li>
-                    <li>• discount (numeric)</li>
-                  </ul>
-                </div>
-                <div className="border border-gray-200 rounded-lg p-4">
-                  <h4 className="font-semibold text-gray-900 mb-2">subscriptions</h4>
-                  <ul className="text-sm text-gray-600 space-y-1">
-                    <li>• id (uuid, primary key)</li>
-                    <li>• customer_id (uuid, foreign key)</li>
-                    <li>• plan_name (text)</li>
-                    <li>• status (enum: active/paused/cancelled/expired)</li>
-                    <li>• start_date (date)</li>
-                    <li>• end_date (date)</li>
-                    <li>• billing_cycle (enum: monthly/quarterly/yearly)</li>
-                    <li>• amount (numeric)</li>
-                    <li>• next_billing_date (date)</li>
-                    <li>• created_at (timestamp)</li>
-                  </ul>
-                </div>
-              </div>
-            </div>
-            
-            <div className="bg-white p-6 rounded-lg shadow-sm border">
-              <h3 className="text-lg font-semibold text-gray-900 mb-4">Task & Project Management</h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="border border-gray-200 rounded-lg p-4">
-                  <h4 className="font-semibold text-gray-900 mb-2">tasks</h4>
-                  <ul className="text-sm text-gray-600 space-y-1">
-                    <li>• id (uuid, primary key)</li>
-                    <li>• title (text)</li>
-                    <li>• description (text)</li>
-                    <li>• assigned_to (text)</li>
-                    <li>• assigned_by (text)</li>
-                    <li>• priority (enum: low/medium/high/urgent)</li>
-                    <li>• status (enum: pending/in-progress/completed/cancelled)</li>
-                    <li>• progress (integer)</li>
-                    <li>• start_date (date)</li>
-                    <li>• due_date (date)</li>
-                    <li>• completed_at (timestamp)</li>
-                    <li>• project (text)</li>
-                    <li>• tags (text[])</li>
-                    <li>• created_at (timestamp)</li>
-                    <li>• updated_at (timestamp)</li>
-                  </ul>
-                </div>
-                <div className="border border-gray-200 rounded-lg p-4">
-                  <h4 className="font-semibold text-gray-900 mb-2">task_comments</h4>
-                  <ul className="text-sm text-gray-600 space-y-1">
-                    <li>• id (uuid, primary key)</li>
-                    <li>• task_id (uuid, foreign key)</li>
-                    <li>• author_id (uuid, foreign key)</li>
-                    <li>• author_name (text)</li>
-                    <li>• content (text)</li>
-                    <li>• type (enum: comment/status-change/progress-update/work-report)</li>
-                    <li>• metadata (jsonb)</li>
-                    <li>• created_at (timestamp)</li>
-                  </ul>
+
+              <div className="mt-6">
+                <h4 className="text-lg font-semibold text-gray-900 mb-3">Module Coverage</h4>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                  <div className="bg-blue-50 p-4 rounded-lg">
+                    <h5 className="font-semibold text-blue-900 mb-2">CRM Module</h5>
+                    <ul className="text-sm text-blue-800 space-y-1">
+                      <li>• leads</li>
+                      <li>• customers</li>
+                      <li>• deals</li>
+                      <li>• activities</li>
+                      <li>• tickets</li>
+                    </ul>
+                  </div>
+                  <div className="bg-green-50 p-4 rounded-lg">
+                    <h5 className="font-semibold text-green-900 mb-2">HRMS Module</h5>
+                    <ul className="text-sm text-green-800 space-y-1">
+                      <li>• employees</li>
+                      <li>• departments</li>
+                      <li>• attendance</li>
+                      <li>• leave_requests</li>
+                      <li>• payroll</li>
+                      <li>• tasks</li>
+                    </ul>
+                  </div>
+                  <div className="bg-purple-50 p-4 rounded-lg">
+                    <h5 className="font-semibold text-purple-900 mb-2">BRPP Module</h5>
+                    <ul className="text-sm text-purple-800 space-y-1">
+                      <li>• products</li>
+                      <li>• subscriptions</li>
+                      <li>• orders</li>
+                      <li>• order_items</li>
+                    </ul>
+                  </div>
+                  <div className="bg-orange-50 p-4 rounded-lg">
+                    <h5 className="font-semibold text-orange-900 mb-2">System Tables</h5>
+                    <ul className="text-sm text-orange-800 space-y-1">
+                      <li>• users</li>
+                      <li>• sessions</li>
+                      <li>• audit_logs</li>
+                    </ul>
+                  </div>
                 </div>
               </div>
             </div>
