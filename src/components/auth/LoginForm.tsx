@@ -100,6 +100,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLogin, error }) => {
                 <p><span className="font-medium">Admin:</span> admin / bidua123</p>
                 <p><span className="font-medium">Manager:</span> manager / bidua123</p>
                 <p><span className="font-medium">Employee:</span> employee / bidua123</p>
+                <p><span className="font-medium">Documentation:</span> doc / bidua123</p>
               </div>
             </div>
           </div>

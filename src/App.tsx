@@ -57,6 +57,8 @@ function App() {
       // Set default module based on role
       if (user.role === 'employee') {
         setActiveModule('employee-portal');
+      } else if (user.role === 'documentation') {
+        setActiveModule('documentation-portal');
       } else {
         setActiveModule('dashboard');
       }
