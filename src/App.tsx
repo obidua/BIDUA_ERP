@@ -45,7 +45,17 @@ function App() {
   useEffect(() => {
     const savedUser = localStorage.getItem('currentUser');
     if (savedUser) {
-      setCurrentUser(JSON.parse(savedUser));
+      const user = JSON.parse(savedUser);
+      setCurrentUser(user);
+      
+      // Set default module based on role
+      if (user.role === 'employee') {
+        setActiveModule('employee-portal');
+      } else if (user.role === 'documentation') {
+        setActiveModule('documentation-portal');
+      } else {
+        setActiveModule('dashboard');
+      }
     }
   }, []);
 
