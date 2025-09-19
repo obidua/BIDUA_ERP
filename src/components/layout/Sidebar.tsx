@@ -10,6 +10,7 @@ import {
   Menu,
   X,
   BookOpen,
+  Search,
   Home,
   Layers,
   Code,
