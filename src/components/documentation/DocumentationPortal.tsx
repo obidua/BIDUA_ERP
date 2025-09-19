@@ -4,15 +4,15 @@ import { Book, Search, ChevronRight, ChevronDown, LogOut, ArrowLeft } from 'luci
 interface DocumentationPortalProps {
   currentUser: any;
   activeSection: string;
-  onSectionChange: (section: string) => void;
   onLogout: () => void;
+  onSectionChange: (sectionId: string) => void;
 }
 
 const DocumentationPortal: React.FC<DocumentationPortalProps> = ({
   currentUser,
   activeSection,
-  onSectionChange,
-  onLogout
+  onLogout,
+  onSectionChange
 }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [expandedSections, setExpandedSections] = useState<string[]>([
@@ -849,7 +849,10 @@ const DocumentationPortal: React.FC<DocumentationPortalProps> = ({
                       {section.children.map((child) => (
                         <button
                           key={child.id}
-                          onClick={() => setActiveSection(child.id)}
+                          onClick={() => {
+                            onSectionChange(child.id);
+                            if (window.innerWidth < 768) setIsSidebarOpen(false);
+                          }}
                           className={`w-full text-left px-3 py-2 text-sm rounded-lg transition-colors ${
                             activeSection === child.id
                               ? 'bg-indigo-50 text-indigo-700 border-l-2 border-indigo-500'
