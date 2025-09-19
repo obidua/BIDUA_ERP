@@ -327,196 +327,318 @@ const DocumentationPortal: React.FC<DocumentationPortalProps> = ({
 
       case 'schema':
         return (
-          <div className="space-y-8">
-            <div>
-              <h1 className="text-3xl font-bold text-gray-900 mb-4">Database Schema</h1>
-              <p className="text-lg text-gray-600 mb-6">
-                Complete PostgreSQL database schema for all modules.
-              </p>
+          <div className="space-y-6">
+            <h1 className="text-2xl font-bold text-gray-900">Database Schema</h1>
+            
+            <div className="bg-white p-6 rounded-lg shadow-sm border">
+              <h3 className="text-lg font-semibold text-gray-900 mb-4">Authentication & Users</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <div className="border border-gray-200 rounded-lg p-4">
+                  <h4 className="font-semibold text-gray-900 mb-2">users</h4>
+                  <ul className="text-sm text-gray-600 space-y-1">
+                    <li>• id (uuid, primary key)</li>
+                    <li>• username (text)</li>
+                    <li>• email (text)</li>
+                    <li>• role (enum)</li>
+                    <li>• department (text)</li>
+                    <li>• is_active (boolean)</li>
+                    <li>• created_at (timestamp)</li>
+                  </ul>
+                </div>
+                <div className="border border-gray-200 rounded-lg p-4">
+                  <h4 className="font-semibold text-gray-900 mb-2">sessions</h4>
+                  <ul className="text-sm text-gray-600 space-y-1">
+                    <li>• id (uuid, primary key)</li>
+                    <li>• user_id (uuid, foreign key)</li>
+                    <li>• token (text)</li>
+                    <li>• expires_at (timestamp)</li>
+                    <li>• created_at (timestamp)</li>
+                  </ul>
+                </div>
+                <div className="border border-gray-200 rounded-lg p-4">
+                  <h4 className="font-semibold text-gray-900 mb-2">audit_logs</h4>
+                  <ul className="text-sm text-gray-600 space-y-1">
+                    <li>• id (uuid, primary key)</li>
+                    <li>• user_id (uuid, foreign key)</li>
+                    <li>• action (text)</li>
+                    <li>• table_name (text)</li>
+                    <li>• record_id (text)</li>
+                    <li>• old_values (jsonb)</li>
+                    <li>• new_values (jsonb)</li>
+                    <li>• created_at (timestamp)</li>
+                  </ul>
+                </div>
+              </div>
             </div>
-
-            <div className="bg-white border border-gray-200 rounded-lg p-6">
-              <h2 className="text-xl font-semibold text-gray-900 mb-4">Core Tables</h2>
-              
-              <div className="space-y-6">
+            
+            <div className="bg-white p-6 rounded-lg shadow-sm border">
+              <h3 className="text-lg font-semibold text-gray-900 mb-4">CRM Tables</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 <div className="border border-gray-200 rounded-lg p-4">
-                  <h3 className="text-lg font-semibold text-gray-900 mb-3">users</h3>
-                  <div className="overflow-x-auto">
-                    <table className="min-w-full text-sm">
-                      <thead>
-                        <tr className="border-b border-gray-200">
-                          <th className="text-left py-2 px-3 font-medium text-gray-900">Column</th>
-                          <th className="text-left py-2 px-3 font-medium text-gray-900">Type</th>
-                          <th className="text-left py-2 px-3 font-medium text-gray-900">Constraints</th>
-                          <th className="text-left py-2 px-3 font-medium text-gray-900">Description</th>
-                        </tr>
-                      </thead>
-                      <tbody className="text-gray-600">
-                        <tr className="border-b border-gray-100">
-                          <td className="py-2 px-3 font-mono">id</td>
-                          <td className="py-2 px-3">UUID</td>
-                          <td className="py-2 px-3">PRIMARY KEY</td>
-                          <td className="py-2 px-3">Unique user identifier</td>
-                        </tr>
-                        <tr className="border-b border-gray-100">
-                          <td className="py-2 px-3 font-mono">username</td>
-                          <td className="py-2 px-3">VARCHAR(50)</td>
-                          <td className="py-2 px-3">UNIQUE, NOT NULL</td>
-                          <td className="py-2 px-3">Login username</td>
-                        </tr>
-                        <tr className="border-b border-gray-100">
-                          <td className="py-2 px-3 font-mono">email</td>
-                          <td className="py-2 px-3">VARCHAR(255)</td>
-                          <td className="py-2 px-3">UNIQUE, NOT NULL</td>
-                          <td className="py-2 px-3">User email address</td>
-                        </tr>
-                        <tr className="border-b border-gray-100">
-                          <td className="py-2 px-3 font-mono">password_hash</td>
-                          <td className="py-2 px-3">VARCHAR(255)</td>
-                          <td className="py-2 px-3">NOT NULL</td>
-                          <td className="py-2 px-3">Hashed password</td>
-                        </tr>
-                        <tr className="border-b border-gray-100">
-                          <td className="py-2 px-3 font-mono">role</td>
-                          <td className="py-2 px-3">ENUM</td>
-                          <td className="py-2 px-3">NOT NULL</td>
-                          <td className="py-2 px-3">admin, manager, employee, documentation</td>
-                        </tr>
-                        <tr className="border-b border-gray-100">
-                          <td className="py-2 px-3 font-mono">department</td>
-                          <td className="py-2 px-3">VARCHAR(100)</td>
-                          <td className="py-2 px-3">NOT NULL</td>
-                          <td className="py-2 px-3">User department</td>
-                        </tr>
-                        <tr className="border-b border-gray-100">
-                          <td className="py-2 px-3 font-mono">is_active</td>
-                          <td className="py-2 px-3">BOOLEAN</td>
-                          <td className="py-2 px-3">DEFAULT TRUE</td>
-                          <td className="py-2 px-3">Account status</td>
-                        </tr>
-                        <tr>
-                          <td className="py-2 px-3 font-mono">created_at</td>
-                          <td className="py-2 px-3">TIMESTAMP</td>
-                          <td className="py-2 px-3">DEFAULT NOW()</td>
-                          <td className="py-2 px-3">Account creation time</td>
-                        </tr>
-                      </tbody>
-                    </table>
-                  </div>
+                  <h4 className="font-semibold text-gray-900 mb-2">leads</h4>
+                  <ul className="text-sm text-gray-600 space-y-1">
+                    <li>• id (uuid, primary key)</li>
+                    <li>• name (text)</li>
+                    <li>• email (text)</li>
+                    <li>• phone (text)</li>
+                    <li>• company (text)</li>
+                    <li>• status (enum: hot/warm/cold)</li>
+                    <li>• stage (enum: lead/proposal/negotiation/closed-won/closed-lost)</li>
+                    <li>• value (numeric)</li>
+                    <li>• source (text)</li>
+                    <li>• assigned_to (text)</li>
+                    <li>• last_contact (date)</li>
+                    <li>• next_follow_up (date)</li>
+                    <li>• notes (text)</li>
+                    <li>• created_at (timestamp)</li>
+                  </ul>
                 </div>
-
                 <div className="border border-gray-200 rounded-lg p-4">
-                  <h3 className="text-lg font-semibold text-gray-900 mb-3">employees</h3>
-                  <div className="overflow-x-auto">
-                    <table className="min-w-full text-sm">
-                      <thead>
-                        <tr className="border-b border-gray-200">
-                          <th className="text-left py-2 px-3 font-medium text-gray-900">Column</th>
-                          <th className="text-left py-2 px-3 font-medium text-gray-900">Type</th>
-                          <th className="text-left py-2 px-3 font-medium text-gray-900">Constraints</th>
-                          <th className="text-left py-2 px-3 font-medium text-gray-900">Description</th>
-                        </tr>
-                      </thead>
-                      <tbody className="text-gray-600">
-                        <tr className="border-b border-gray-100">
-                          <td className="py-2 px-3 font-mono">id</td>
-                          <td className="py-2 px-3">UUID</td>
-                          <td className="py-2 px-3">PRIMARY KEY</td>
-                          <td className="py-2 px-3">Unique employee identifier</td>
-                        </tr>
-                        <tr className="border-b border-gray-100">
-                          <td className="py-2 px-3 font-mono">employee_id</td>
-                          <td className="py-2 px-3">VARCHAR(20)</td>
-                          <td className="py-2 px-3">UNIQUE, NOT NULL</td>
-                          <td className="py-2 px-3">Company employee ID</td>
-                        </tr>
-                        <tr className="border-b border-gray-100">
-                          <td className="py-2 px-3 font-mono">user_id</td>
-                          <td className="py-2 px-3">UUID</td>
-                          <td className="py-2 px-3">FOREIGN KEY</td>
-                          <td className="py-2 px-3">Reference to users table</td>
-                        </tr>
-                        <tr className="border-b border-gray-100">
-                          <td className="py-2 px-3 font-mono">name</td>
-                          <td className="py-2 px-3">VARCHAR(255)</td>
-                          <td className="py-2 px-3">NOT NULL</td>
-                          <td className="py-2 px-3">Full name</td>
-                        </tr>
-                        <tr className="border-b border-gray-100">
-                          <td className="py-2 px-3 font-mono">designation</td>
-                          <td className="py-2 px-3">VARCHAR(100)</td>
-                          <td className="py-2 px-3">NOT NULL</td>
-                          <td className="py-2 px-3">Job title</td>
-                        </tr>
-                        <tr className="border-b border-gray-100">
-                          <td className="py-2 px-3 font-mono">salary</td>
-                          <td className="py-2 px-3">DECIMAL(10,2)</td>
-                          <td className="py-2 px-3">NOT NULL</td>
-                          <td className="py-2 px-3">Annual salary</td>
-                        </tr>
-                        <tr>
-                          <td className="py-2 px-3 font-mono">joining_date</td>
-                          <td className="py-2 px-3">DATE</td>
-                          <td className="py-2 px-3">NOT NULL</td>
-                          <td className="py-2 px-3">Date of joining</td>
-                        </tr>
-                      </tbody>
-                    </table>
-                  </div>
+                  <h4 className="font-semibold text-gray-900 mb-2">customers</h4>
+                  <ul className="text-sm text-gray-600 space-y-1">
+                    <li>• id (uuid, primary key)</li>
+                    <li>• name (text)</li>
+                    <li>• email (text)</li>
+                    <li>• phone (text)</li>
+                    <li>• company (text)</li>
+                    <li>• address (text)</li>
+                    <li>• status (enum: active/inactive)</li>
+                    <li>• customer_type (enum: individual/business)</li>
+                    <li>• created_at (timestamp)</li>
+                  </ul>
                 </div>
-
                 <div className="border border-gray-200 rounded-lg p-4">
-                  <h3 className="text-lg font-semibold text-gray-900 mb-3">leads</h3>
-                  <div className="overflow-x-auto">
-                    <table className="min-w-full text-sm">
-                      <thead>
-                        <tr className="border-b border-gray-200">
-                          <th className="text-left py-2 px-3 font-medium text-gray-900">Column</th>
-                          <th className="text-left py-2 px-3 font-medium text-gray-900">Type</th>
-                          <th className="text-left py-2 px-3 font-medium text-gray-900">Constraints</th>
-                          <th className="text-left py-2 px-3 font-medium text-gray-900">Description</th>
-                        </tr>
-                      </thead>
-                      <tbody className="text-gray-600">
-                        <tr className="border-b border-gray-100">
-                          <td className="py-2 px-3 font-mono">id</td>
-                          <td className="py-2 px-3">UUID</td>
-                          <td className="py-2 px-3">PRIMARY KEY</td>
-                          <td className="py-2 px-3">Unique lead identifier</td>
-                        </tr>
-                        <tr className="border-b border-gray-100">
-                          <td className="py-2 px-3 font-mono">name</td>
-                          <td className="py-2 px-3">VARCHAR(255)</td>
-                          <td className="py-2 px-3">NOT NULL</td>
-                          <td className="py-2 px-3">Lead contact name</td>
-                        </tr>
-                        <tr className="border-b border-gray-100">
-                          <td className="py-2 px-3 font-mono">company</td>
-                          <td className="py-2 px-3">VARCHAR(255)</td>
-                          <td className="py-2 px-3">NOT NULL</td>
-                          <td className="py-2 px-3">Company name</td>
-                        </tr>
-                        <tr className="border-b border-gray-100">
-                          <td className="py-2 px-3 font-mono">status</td>
-                          <td className="py-2 px-3">ENUM</td>
-                          <td className="py-2 px-3">NOT NULL</td>
-                          <td className="py-2 px-3">hot, warm, cold</td>
-                        </tr>
-                        <tr className="border-b border-gray-100">
-                          <td className="py-2 px-3 font-mono">stage</td>
-                          <td className="py-2 px-3">ENUM</td>
-                          <td className="py-2 px-3">NOT NULL</td>
-                          <td className="py-2 px-3">Sales pipeline stage</td>
-                        </tr>
-                        <tr>
-                          <td className="py-2 px-3 font-mono">value</td>
-                          <td className="py-2 px-3">DECIMAL(12,2)</td>
-                          <td className="py-2 px-3">DEFAULT 0</td>
-                          <td className="py-2 px-3">Potential deal value</td>
-                        </tr>
-                      </tbody>
-                    </table>
-                  </div>
+                  <h4 className="font-semibold text-gray-900 mb-2">deals</h4>
+                  <ul className="text-sm text-gray-600 space-y-1">
+                    <li>• id (uuid, primary key)</li>
+                    <li>• customer_id (uuid, foreign key)</li>
+                    <li>• title (text)</li>
+                    <li>• value (numeric)</li>
+                    <li>• stage (enum)</li>
+                    <li>• probability (integer)</li>
+                    <li>• expected_close_date (date)</li>
+                    <li>• assigned_to (text)</li>
+                    <li>• created_at (timestamp)</li>
+                  </ul>
+                </div>
+                <div className="border border-gray-200 rounded-lg p-4">
+                  <h4 className="font-semibold text-gray-900 mb-2">activities</h4>
+                  <ul className="text-sm text-gray-600 space-y-1">
+                    <li>• id (uuid, primary key)</li>
+                    <li>• customer_id (uuid, foreign key)</li>
+                    <li>• deal_id (uuid, foreign key)</li>
+                    <li>• type (enum: call/meeting/email/task)</li>
+                    <li>• subject (text)</li>
+                    <li>• description (text)</li>
+                    <li>• scheduled_at (timestamp)</li>
+                    <li>• completed_at (timestamp)</li>
+                    <li>• assigned_to (text)</li>
+                    <li>• created_at (timestamp)</li>
+                  </ul>
+                </div>
+                <div className="border border-gray-200 rounded-lg p-4">
+                  <h4 className="font-semibold text-gray-900 mb-2">tickets</h4>
+                  <ul className="text-sm text-gray-600 space-y-1">
+                    <li>• id (uuid, primary key)</li>
+                    <li>• customer_id (uuid, foreign key)</li>
+                    <li>• title (text)</li>
+                    <li>• description (text)</li>
+                    <li>• priority (enum: low/medium/high/urgent)</li>
+                    <li>• status (enum: open/in-progress/resolved/closed)</li>
+                    <li>• category (text)</li>
+                    <li>• assigned_to (text)</li>
+                    <li>• created_at (timestamp)</li>
+                    <li>• resolved_at (timestamp)</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            
+            <div className="bg-white p-6 rounded-lg shadow-sm border">
+              <h3 className="text-lg font-semibold text-gray-900 mb-4">HRMS Tables</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <div className="border border-gray-200 rounded-lg p-4">
+                  <h4 className="font-semibold text-gray-900 mb-2">employees</h4>
+                  <ul className="text-sm text-gray-600 space-y-1">
+                    <li>• id (uuid, primary key)</li>
+                    <li>• employee_id (text)</li>
+                    <li>• name (text)</li>
+                    <li>• email (text)</li>
+                    <li>• phone (text)</li>
+                    <li>• department (text)</li>
+                    <li>• designation (text)</li>
+                    <li>• manager (text)</li>
+                    <li>• joining_date (date)</li>
+                    <li>• salary (numeric)</li>
+                    <li>• status (enum: active/inactive/terminated)</li>
+                    <li>• address (text)</li>
+                    <li>• emergency_contact (text)</li>
+                    <li>• created_at (timestamp)</li>
+                  </ul>
+                </div>
+                <div className="border border-gray-200 rounded-lg p-4">
+                  <h4 className="font-semibold text-gray-900 mb-2">departments</h4>
+                  <ul className="text-sm text-gray-600 space-y-1">
+                    <li>• id (uuid, primary key)</li>
+                    <li>• name (text)</li>
+                    <li>• description (text)</li>
+                    <li>• head_of_department (text)</li>
+                    <li>• budget (numeric)</li>
+                    <li>• is_active (boolean)</li>
+                    <li>• created_at (timestamp)</li>
+                  </ul>
+                </div>
+                <div className="border border-gray-200 rounded-lg p-4">
+                  <h4 className="font-semibold text-gray-900 mb-2">attendance</h4>
+                  <ul className="text-sm text-gray-600 space-y-1">
+                    <li>• id (uuid, primary key)</li>
+                    <li>• employee_id (uuid, foreign key)</li>
+                    <li>• date (date)</li>
+                    <li>• clock_in (time)</li>
+                    <li>• clock_out (time)</li>
+                    <li>• total_hours (numeric)</li>
+                    <li>• status (enum: present/absent/late/half-day)</li>
+                    <li>• location (text)</li>
+                    <li>• coordinates (point)</li>
+                    <li>• created_at (timestamp)</li>
+                  </ul>
+                </div>
+                <div className="border border-gray-200 rounded-lg p-4">
+                  <h4 className="font-semibold text-gray-900 mb-2">payroll</h4>
+                  <ul className="text-sm text-gray-600 space-y-1">
+                    <li>• id (uuid, primary key)</li>
+                    <li>• employee_id (uuid, foreign key)</li>
+                    <li>• month (text)</li>
+                    <li>• year (integer)</li>
+                    <li>• basic_salary (numeric)</li>
+                    <li>• allowances (numeric)</li>
+                    <li>• deductions (numeric)</li>
+                    <li>• overtime (numeric)</li>
+                    <li>• net_salary (numeric)</li>
+                    <li>• status (enum: draft/processed/paid)</li>
+                    <li>• pay_date (date)</li>
+                    <li>• created_at (timestamp)</li>
+                  </ul>
+                </div>
+                <div className="border border-gray-200 rounded-lg p-4">
+                  <h4 className="font-semibold text-gray-900 mb-2">leave_requests</h4>
+                  <ul className="text-sm text-gray-600 space-y-1">
+                    <li>• id (uuid, primary key)</li>
+                    <li>• employee_id (uuid, foreign key)</li>
+                    <li>• leave_type (enum: casual/sick/annual/maternity/emergency)</li>
+                    <li>• start_date (date)</li>
+                    <li>• end_date (date)</li>
+                    <li>• days (integer)</li>
+                    <li>• reason (text)</li>
+                    <li>• status (enum: pending/approved/rejected)</li>
+                    <li>• applied_at (timestamp)</li>
+                    <li>• approved_by (text)</li>
+                    <li>• approved_at (timestamp)</li>
+                    <li>• comments (text)</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            
+            <div className="bg-white p-6 rounded-lg shadow-sm border">
+              <h3 className="text-lg font-semibold text-gray-900 mb-4">Business & Orders (BRPP)</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <div className="border border-gray-200 rounded-lg p-4">
+                  <h4 className="font-semibold text-gray-900 mb-2">products</h4>
+                  <ul className="text-sm text-gray-600 space-y-1">
+                    <li>• id (uuid, primary key)</li>
+                    <li>• name (text)</li>
+                    <li>• description (text)</li>
+                    <li>• sku (text, unique)</li>
+                    <li>• category (text)</li>
+                    <li>• price (numeric)</li>
+                    <li>• cost (numeric)</li>
+                    <li>• stock_quantity (integer)</li>
+                    <li>• is_active (boolean)</li>
+                    <li>• created_at (timestamp)</li>
+                  </ul>
+                </div>
+                <div className="border border-gray-200 rounded-lg p-4">
+                  <h4 className="font-semibold text-gray-900 mb-2">orders</h4>
+                  <ul className="text-sm text-gray-600 space-y-1">
+                    <li>• id (uuid, primary key)</li>
+                    <li>• customer_id (uuid, foreign key)</li>
+                    <li>• order_number (text, unique)</li>
+                    <li>• status (enum: pending/confirmed/shipped/delivered/cancelled)</li>
+                    <li>• total_amount (numeric)</li>
+                    <li>• discount (numeric)</li>
+                    <li>• tax (numeric)</li>
+                    <li>• shipping_address (text)</li>
+                    <li>• billing_address (text)</li>
+                    <li>• order_date (timestamp)</li>
+                    <li>• delivery_date (timestamp)</li>
+                  </ul>
+                </div>
+                <div className="border border-gray-200 rounded-lg p-4">
+                  <h4 className="font-semibold text-gray-900 mb-2">order_items</h4>
+                  <ul className="text-sm text-gray-600 space-y-1">
+                    <li>• id (uuid, primary key)</li>
+                    <li>• order_id (uuid, foreign key)</li>
+                    <li>• product_id (uuid, foreign key)</li>
+                    <li>• quantity (integer)</li>
+                    <li>• unit_price (numeric)</li>
+                    <li>• total_price (numeric)</li>
+                    <li>• discount (numeric)</li>
+                  </ul>
+                </div>
+                <div className="border border-gray-200 rounded-lg p-4">
+                  <h4 className="font-semibold text-gray-900 mb-2">subscriptions</h4>
+                  <ul className="text-sm text-gray-600 space-y-1">
+                    <li>• id (uuid, primary key)</li>
+                    <li>• customer_id (uuid, foreign key)</li>
+                    <li>• plan_name (text)</li>
+                    <li>• status (enum: active/paused/cancelled/expired)</li>
+                    <li>• start_date (date)</li>
+                    <li>• end_date (date)</li>
+                    <li>• billing_cycle (enum: monthly/quarterly/yearly)</li>
+                    <li>• amount (numeric)</li>
+                    <li>• next_billing_date (date)</li>
+                    <li>• created_at (timestamp)</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            
+            <div className="bg-white p-6 rounded-lg shadow-sm border">
+              <h3 className="text-lg font-semibold text-gray-900 mb-4">Task & Project Management</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="border border-gray-200 rounded-lg p-4">
+                  <h4 className="font-semibold text-gray-900 mb-2">tasks</h4>
+                  <ul className="text-sm text-gray-600 space-y-1">
+                    <li>• id (uuid, primary key)</li>
+                    <li>• title (text)</li>
+                    <li>• description (text)</li>
+                    <li>• assigned_to (text)</li>
+                    <li>• assigned_by (text)</li>
+                    <li>• priority (enum: low/medium/high/urgent)</li>
+                    <li>• status (enum: pending/in-progress/completed/cancelled)</li>
+                    <li>• progress (integer)</li>
+                    <li>• start_date (date)</li>
+                    <li>• due_date (date)</li>
+                    <li>• completed_at (timestamp)</li>
+                    <li>• project (text)</li>
+                    <li>• tags (text[])</li>
+                    <li>• created_at (timestamp)</li>
+                    <li>• updated_at (timestamp)</li>
+                  </ul>
+                </div>
+                <div className="border border-gray-200 rounded-lg p-4">
+                  <h4 className="font-semibold text-gray-900 mb-2">task_comments</h4>
+                  <ul className="text-sm text-gray-600 space-y-1">
+                    <li>• id (uuid, primary key)</li>
+                    <li>• task_id (uuid, foreign key)</li>
+                    <li>• author_id (uuid, foreign key)</li>
+                    <li>• author_name (text)</li>
+                    <li>• content (text)</li>
+                    <li>• type (enum: comment/status-change/progress-update/work-report)</li>
+                    <li>• metadata (jsonb)</li>
+                    <li>• created_at (timestamp)</li>
+                  </ul>
                 </div>
               </div>
             </div>
