@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Plus, Search, Phone, Video, Mail, CheckSquare, Calendar, Clock, Filter, Eye, Edit, Trash2, User } from 'lucide-react';
+import { Plus, Search, Phone, Video, Mail, CheckSquare, Calendar, Clock, Filter, Eye, Edit, Trash2, User, X } from 'lucide-react';
 
 interface Activity {
   id: string;
@@ -43,6 +43,7 @@ const ActivitiesManagement: React.FC<ActivitiesManagementProps> = ({
   const [typeFilter, setTypeFilter] = useState('all');
   const [statusFilter, setStatusFilter] = useState('all');
   const [priorityFilter, setPriorityFilter] = useState('all');
+  const [viewingActivity, setViewingActivity] = useState<any>(null);
 
   const filteredActivities = activities.filter(activity => {
     const matchesSearch = activity.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -285,7 +286,7 @@ const ActivitiesManagement: React.FC<ActivitiesManagementProps> = ({
 
                 <div className="flex flex-col gap-2 flex-shrink-0">
                   <button
-                    onClick={() => {}}
+                    onClick={() => setViewingActivity(activity)}
                     className="p-2 text-blue-600 hover:bg-blue-50 rounded transition-colors"
                     title="View Details"
                   >
@@ -317,6 +318,141 @@ const ActivitiesManagement: React.FC<ActivitiesManagementProps> = ({
           <Calendar className="w-16 h-16 text-gray-300 mx-auto mb-4" />
           <h3 className="text-lg font-semibold text-gray-900 mb-2">No activities found</h3>
           <p className="text-gray-600">Try adjusting your filters or log a new activity</p>
+        </div>
+      )}
+
+      {/* View Activity Modal */}
+      {viewingActivity && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-xl shadow-xl max-w-3xl w-full max-h-[90vh] overflow-y-auto">
+            <div className="flex items-center justify-between p-6 border-b border-gray-200">
+              <h3 className="text-xl font-semibold text-gray-900">Activity Details</h3>
+              <button
+                onClick={() => setViewingActivity(null)}
+                className="p-1 text-gray-400 hover:text-gray-600 transition-colors"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <div className="p-6 space-y-6">
+              <div className="flex items-start space-x-4">
+                {(() => {
+                  const Icon = getActivityIcon(viewingActivity.type);
+                  return (
+                    <div className={`w-16 h-16 rounded-lg flex items-center justify-center ${getTypeColor(viewingActivity.type)}`}>
+                      <Icon className="w-8 h-8" />
+                    </div>
+                  );
+                })()}
+                <div>
+                  <h4 className="text-xl font-semibold text-gray-900 mb-1">{viewingActivity.title}</h4>
+                  <p className="text-gray-600">{viewingActivity.description}</p>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <h4 className="text-sm font-medium text-gray-500 mb-1">Type</h4>
+                  <span className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${getTypeColor(viewingActivity.type)}`}>
+                    {viewingActivity.type}
+                  </span>
+                </div>
+                <div>
+                  <h4 className="text-sm font-medium text-gray-500 mb-1">Status</h4>
+                  <span className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${getStatusColor(viewingActivity.status)}`}>
+                    {viewingActivity.status}
+                  </span>
+                </div>
+                <div>
+                  <h4 className="text-sm font-medium text-gray-500 mb-1">Priority</h4>
+                  <span className={`text-base font-semibold ${getPriorityColor(viewingActivity.priority)}`}>
+                    {viewingActivity.priority}
+                  </span>
+                </div>
+                <div>
+                  <h4 className="text-sm font-medium text-gray-500 mb-1">Related To</h4>
+                  <p className="text-base text-gray-900">{viewingActivity.relatedName} ({viewingActivity.relatedTo})</p>
+                </div>
+                <div>
+                  <h4 className="text-sm font-medium text-gray-500 mb-1">Assigned To</h4>
+                  <p className="text-base text-gray-900">{viewingActivity.assignedTo}</p>
+                </div>
+                <div>
+                  <h4 className="text-sm font-medium text-gray-500 mb-1">Date</h4>
+                  <p className="text-base text-gray-900">{formatDate(viewingActivity.date)}</p>
+                </div>
+                {viewingActivity.startTime && (
+                  <div>
+                    <h4 className="text-sm font-medium text-gray-500 mb-1">Start Time</h4>
+                    <p className="text-base text-gray-900">{viewingActivity.startTime}</p>
+                  </div>
+                )}
+                {viewingActivity.endTime && (
+                  <div>
+                    <h4 className="text-sm font-medium text-gray-500 mb-1">End Time</h4>
+                    <p className="text-base text-gray-900">{viewingActivity.endTime}</p>
+                  </div>
+                )}
+                {viewingActivity.duration && (
+                  <div>
+                    <h4 className="text-sm font-medium text-gray-500 mb-1">Duration</h4>
+                    <p className="text-base text-gray-900">{viewingActivity.duration} minutes</p>
+                  </div>
+                )}
+                {viewingActivity.location && (
+                  <div>
+                    <h4 className="text-sm font-medium text-gray-500 mb-1">Location</h4>
+                    <p className="text-base text-gray-900">{viewingActivity.location}</p>
+                  </div>
+                )}
+                <div>
+                  <h4 className="text-sm font-medium text-gray-500 mb-1">Created At</h4>
+                  <p className="text-base text-gray-900">{formatDate(viewingActivity.createdAt)}</p>
+                </div>
+              </div>
+
+              {viewingActivity.outcome && (
+                <div className="p-4 bg-green-50 border border-green-200 rounded-lg">
+                  <h4 className="text-sm font-medium text-green-800 mb-2">Outcome</h4>
+                  <p className="text-base text-gray-900">{viewingActivity.outcome}</p>
+                </div>
+              )}
+
+              {viewingActivity.emailTracking && (
+                <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                  <h4 className="text-sm font-medium text-blue-800 mb-2">Email Tracking</h4>
+                  <div className="grid grid-cols-3 gap-4">
+                    <div>
+                      <p className="text-xs text-gray-600">Opened</p>
+                      <p className={`text-base font-semibold ${viewingActivity.emailTracking.opened ? 'text-green-600' : 'text-gray-400'}`}>
+                        {viewingActivity.emailTracking.opened ? 'Yes' : 'No'}
+                      </p>
+                    </div>
+                    <div>
+                      <p className="text-xs text-gray-600">Open Count</p>
+                      <p className="text-base font-semibold text-gray-900">{viewingActivity.emailTracking.openCount}</p>
+                    </div>
+                    <div>
+                      <p className="text-xs text-gray-600">Clicked</p>
+                      <p className={`text-base font-semibold ${viewingActivity.emailTracking.clicked ? 'text-blue-600' : 'text-gray-400'}`}>
+                        {viewingActivity.emailTracking.clicked ? 'Yes' : 'No'}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            <div className="flex items-center justify-end space-x-3 p-6 border-t border-gray-200">
+              <button
+                onClick={() => setViewingActivity(null)}
+                className="px-4 py-2 text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+              >
+                Close
+              </button>
+            </div>
+          </div>
         </div>
       )}
     </div>

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Plus, Search, Building2, Globe, MapPin, TrendingUp, Users, DollarSign, Eye, Edit, Trash2, Filter, Star, Phone, Mail } from 'lucide-react';
+import { Plus, Search, Building2, Globe, MapPin, TrendingUp, Users, DollarSign, Eye, Edit, Trash2, Filter, Star, Phone, Mail, X } from 'lucide-react';
 
 interface Company {
   id: string;
@@ -36,6 +36,7 @@ const CompaniesManagement: React.FC<CompaniesManagementProps> = ({
   const [typeFilter, setTypeFilter] = useState('all');
   const [industryFilter, setIndustryFilter] = useState('all');
   const [sortBy, setSortBy] = useState<'name' | 'revenue' | 'health'>('name');
+  const [viewingCompany, setViewingCompany] = useState<any>(null);
 
   const filteredCompanies = companies.filter(company => {
     const matchesSearch = company.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -227,7 +228,7 @@ const CompaniesManagement: React.FC<CompaniesManagementProps> = ({
 
             <div className="flex items-center space-x-2 pt-3 border-t border-gray-100">
               <button
-                onClick={() => {}}
+                onClick={() => setViewingCompany(company)}
                 className="flex-1 flex items-center justify-center space-x-1 px-3 py-2 text-sm text-blue-600 hover:bg-blue-50 rounded transition-colors"
               >
                 <Eye className="w-4 h-4" />
@@ -256,6 +257,108 @@ const CompaniesManagement: React.FC<CompaniesManagementProps> = ({
           <Building2 className="w-16 h-16 text-gray-300 mx-auto mb-4" />
           <h3 className="text-lg font-semibold text-gray-900 mb-2">No companies found</h3>
           <p className="text-gray-600">Try adjusting your filters or add a new company</p>
+        </div>
+      )}
+
+      {/* View Company Modal */}
+      {viewingCompany && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-xl shadow-xl max-w-3xl w-full max-h-[90vh] overflow-y-auto">
+            <div className="flex items-center justify-between p-6 border-b border-gray-200">
+              <h3 className="text-xl font-semibold text-gray-900">Company Details</h3>
+              <button
+                onClick={() => setViewingCompany(null)}
+                className="p-1 text-gray-400 hover:text-gray-600 transition-colors"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <div className="p-6 space-y-6">
+              <div className="flex items-center space-x-4">
+                <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg flex items-center justify-center">
+                  <Building2 className="w-8 h-8 text-white" />
+                </div>
+                <div>
+                  <h4 className="text-xl font-semibold text-gray-900">{viewingCompany.name}</h4>
+                  <p className="text-gray-600">{viewingCompany.industry}</p>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <h4 className="text-sm font-medium text-gray-500 mb-1">Type</h4>
+                  <span className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${getTypeColor(viewingCompany.type)}`}>
+                    {viewingCompany.type}
+                  </span>
+                </div>
+                <div>
+                  <h4 className="text-sm font-medium text-gray-500 mb-1">Size</h4>
+                  <p className="text-base text-gray-900">{viewingCompany.size} employees</p>
+                </div>
+                <div>
+                  <h4 className="text-sm font-medium text-gray-500 mb-1">Revenue</h4>
+                  <p className="text-base text-gray-900">{formatCurrency(viewingCompany.revenue)}</p>
+                </div>
+                <div>
+                  <h4 className="text-sm font-medium text-gray-500 mb-1">Deal Value</h4>
+                  <p className="text-base text-gray-900">{formatCurrency(viewingCompany.dealValue)}</p>
+                </div>
+                <div>
+                  <h4 className="text-sm font-medium text-gray-500 mb-1">Health Score</h4>
+                  <div className={`inline-flex text-base font-semibold px-3 py-1 rounded ${getHealthScoreColor(viewingCompany.healthScore)}`}>
+                    {viewingCompany.healthScore}%
+                  </div>
+                </div>
+                <div>
+                  <h4 className="text-sm font-medium text-gray-500 mb-1">Website</h4>
+                  <a href={viewingCompany.website} target="_blank" rel="noopener noreferrer" className="text-base text-blue-600 hover:underline truncate block">
+                    {viewingCompany.website}
+                  </a>
+                </div>
+                <div className="md:col-span-2">
+                  <h4 className="text-sm font-medium text-gray-500 mb-1">Address</h4>
+                  <p className="text-base text-gray-900">{viewingCompany.address}, {viewingCompany.country}</p>
+                </div>
+              </div>
+
+              {viewingCompany.technologyStack && viewingCompany.technologyStack.length > 0 && (
+                <div>
+                  <h4 className="text-sm font-medium text-gray-500 mb-2">Technology Stack</h4>
+                  <div className="flex flex-wrap gap-2">
+                    {viewingCompany.technologyStack.map((tech: string, index: number) => (
+                      <span
+                        key={index}
+                        className="inline-flex items-center px-3 py-1 rounded-md text-sm bg-gray-100 text-gray-700"
+                      >
+                        {tech}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {viewingCompany.keyContacts && viewingCompany.keyContacts.length > 0 && (
+                <div>
+                  <h4 className="text-sm font-medium text-gray-500 mb-2">Key Contacts</h4>
+                  <div className="space-y-2">
+                    {viewingCompany.keyContacts.map((contact: string, index: number) => (
+                      <p key={index} className="text-base text-gray-900">{contact}</p>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+
+            <div className="flex items-center justify-end space-x-3 p-6 border-t border-gray-200">
+              <button
+                onClick={() => setViewingCompany(null)}
+                className="px-4 py-2 text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+              >
+                Close
+              </button>
+            </div>
+          </div>
         </div>
       )}
     </div>

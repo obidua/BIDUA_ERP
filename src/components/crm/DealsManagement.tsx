@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Plus, Search, Target, DollarSign, Calendar, TrendingUp, Eye, Edit, Trash2, Award, Clock, ChevronRight } from 'lucide-react';
+import { Plus, Search, Target, DollarSign, Calendar, TrendingUp, Eye, Edit, Trash2, Award, Clock, ChevronRight, X } from 'lucide-react';
 
 interface Deal {
   id: string;
@@ -36,6 +36,7 @@ const DealsManagement: React.FC<DealsManagementProps> = ({
   const [stageFilter, setStageFilter] = useState('all');
   const [statusFilter, setStatusFilter] = useState('open');
   const [sortBy, setSortBy] = useState<'value' | 'probability' | 'closeDate'>('value');
+  const [viewingDeal, setViewingDeal] = useState<any>(null);
 
   const filteredDeals = deals.filter(deal => {
     const matchesSearch = deal.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -242,7 +243,7 @@ const DealsManagement: React.FC<DealsManagementProps> = ({
 
               <div className="flex lg:flex-col items-center lg:items-end gap-2">
                 <button
-                  onClick={() => {}}
+                  onClick={() => setViewingDeal(deal)}
                   className="flex items-center space-x-1 px-3 py-2 text-sm text-blue-600 hover:bg-blue-50 rounded transition-colors"
                 >
                   <Eye className="w-4 h-4" />
@@ -272,6 +273,117 @@ const DealsManagement: React.FC<DealsManagementProps> = ({
           <Target className="w-16 h-16 text-gray-300 mx-auto mb-4" />
           <h3 className="text-lg font-semibold text-gray-900 mb-2">No deals found</h3>
           <p className="text-gray-600">Try adjusting your filters or add a new deal</p>
+        </div>
+      )}
+
+      {/* View Deal Modal */}
+      {viewingDeal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-xl shadow-xl max-w-3xl w-full max-h-[90vh] overflow-y-auto">
+            <div className="flex items-center justify-between p-6 border-b border-gray-200">
+              <h3 className="text-xl font-semibold text-gray-900">Deal Details</h3>
+              <button
+                onClick={() => setViewingDeal(null)}
+                className="p-1 text-gray-400 hover:text-gray-600 transition-colors"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <div className="p-6 space-y-6">
+              <div>
+                <h4 className="text-2xl font-semibold text-gray-900 mb-1">{viewingDeal.name}</h4>
+                <p className="text-gray-600">{viewingDeal.companyName}</p>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <h4 className="text-sm font-medium text-gray-500 mb-1">Stage</h4>
+                  <span className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${getStageColor(viewingDeal.stage)}`}>
+                    {viewingDeal.stage}
+                  </span>
+                </div>
+                <div>
+                  <h4 className="text-sm font-medium text-gray-500 mb-1">Status</h4>
+                  <p className="text-base text-gray-900 capitalize">{viewingDeal.status}</p>
+                </div>
+                <div>
+                  <h4 className="text-sm font-medium text-gray-500 mb-1">Deal Value</h4>
+                  <p className="text-base font-semibold text-gray-900">{formatCurrency(viewingDeal.value)}</p>
+                </div>
+                <div>
+                  <h4 className="text-sm font-medium text-gray-500 mb-1">Probability</h4>
+                  <p className={`text-base font-semibold ${getProbabilityColor(viewingDeal.probability)}`}>
+                    {viewingDeal.probability}%
+                  </p>
+                </div>
+                <div>
+                  <h4 className="text-sm font-medium text-gray-500 mb-1">Expected Close Date</h4>
+                  <p className="text-base text-gray-900">{formatDate(viewingDeal.expectedCloseDate)}</p>
+                </div>
+                <div>
+                  <h4 className="text-sm font-medium text-gray-500 mb-1">Owner</h4>
+                  <p className="text-base text-gray-900">{viewingDeal.owner}</p>
+                </div>
+                <div>
+                  <h4 className="text-sm font-medium text-gray-500 mb-1">Created Date</h4>
+                  <p className="text-base text-gray-900">{formatDate(viewingDeal.createdAt)}</p>
+                </div>
+                <div>
+                  <h4 className="text-sm font-medium text-gray-500 mb-1">Last Activity</h4>
+                  <p className="text-base text-gray-900">{formatDate(viewingDeal.lastActivity)}</p>
+                </div>
+              </div>
+
+              {viewingDeal.products && viewingDeal.products.length > 0 && (
+                <div>
+                  <h4 className="text-sm font-medium text-gray-500 mb-2">Products/Services</h4>
+                  <div className="flex flex-wrap gap-2">
+                    {viewingDeal.products.map((product: string, index: number) => (
+                      <span
+                        key={index}
+                        className="inline-flex items-center px-3 py-1 rounded-md text-sm bg-blue-100 text-blue-700"
+                      >
+                        {product}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {viewingDeal.competitors && viewingDeal.competitors.length > 0 && (
+                <div>
+                  <h4 className="text-sm font-medium text-gray-500 mb-2">Competitors</h4>
+                  <div className="flex flex-wrap gap-2">
+                    {viewingDeal.competitors.map((competitor: string, index: number) => (
+                      <span
+                        key={index}
+                        className="inline-flex items-center px-3 py-1 rounded-md text-sm bg-red-100 text-red-700"
+                      >
+                        {competitor}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {viewingDeal.closedDate && (
+                <div className="p-4 bg-gray-50 rounded-lg">
+                  <h4 className="text-sm font-medium text-gray-500 mb-1">Closed Date</h4>
+                  <p className="text-base text-gray-900">{formatDate(viewingDeal.closedDate)}</p>
+                </div>
+              )}
+            </div>
+
+            <div className="flex items-center justify-end space-x-3 p-6 border-t border-gray-200">
+              <button
+                onClick={() => setViewingDeal(null)}
+                className="px-4 py-2 text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+              >
+                Close
+              </button>
+            </div>
+          </div>
         </div>
       )}
     </div>

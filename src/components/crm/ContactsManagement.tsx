@@ -14,7 +14,9 @@ import {
   Linkedin,
   MapPin,
   Users,
-  Activity
+  Activity,
+  X,
+  Eye
 } from 'lucide-react';
 import { mockContacts } from '../../data/mockData';
 
@@ -22,6 +24,7 @@ const ContactsManagement: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [tagFilter, setTagFilter] = useState('all');
   const [sortBy, setSortBy] = useState('name');
+  const [viewingContact, setViewingContact] = useState<any>(null);
 
   const filteredContacts = mockContacts.filter(contact => {
     const matchesSearch =
@@ -162,8 +165,12 @@ const ContactsManagement: React.FC = () => {
                   <p className="text-sm text-gray-600">{contact.designation}</p>
                 </div>
               </div>
-              <button className="text-gray-400 hover:text-gray-600">
-                <MoreVertical className="w-5 h-5" />
+              <button
+                onClick={() => setViewingContact(contact)}
+                className="text-blue-600 hover:text-blue-700"
+                title="View Details"
+              >
+                <Eye className="w-5 h-5" />
               </button>
             </div>
 
@@ -227,6 +234,93 @@ const ContactsManagement: React.FC = () => {
           <Users className="w-16 h-16 text-gray-300 mx-auto mb-4" />
           <h3 className="text-lg font-semibold text-gray-900 mb-2">No contacts found</h3>
           <p className="text-gray-600 mb-4">Try adjusting your search or filter criteria</p>
+        </div>
+      )}
+
+      {/* View Contact Modal */}
+      {viewingContact && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-xl shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+            <div className="flex items-center justify-between p-6 border-b border-gray-200">
+              <h3 className="text-xl font-semibold text-gray-900">Contact Details</h3>
+              <button
+                onClick={() => setViewingContact(null)}
+                className="p-1 text-gray-400 hover:text-gray-600 transition-colors"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <div className="p-6 space-y-6">
+              <div className="flex items-center space-x-4">
+                <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center">
+                  <span className="text-blue-600 font-semibold text-2xl">
+                    {viewingContact.name.split(' ').map((n: string) => n[0]).join('')}
+                  </span>
+                </div>
+                <div>
+                  <h4 className="text-xl font-semibold text-gray-900">{viewingContact.name}</h4>
+                  <p className="text-gray-600">{viewingContact.designation}</p>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <h4 className="text-sm font-medium text-gray-500 mb-1">Company</h4>
+                  <p className="text-base text-gray-900">{viewingContact.company}</p>
+                </div>
+                <div>
+                  <h4 className="text-sm font-medium text-gray-500 mb-1">Email</h4>
+                  <p className="text-base text-gray-900">{viewingContact.email}</p>
+                </div>
+                <div>
+                  <h4 className="text-sm font-medium text-gray-500 mb-1">Phone</h4>
+                  <p className="text-base text-gray-900">{viewingContact.phone}</p>
+                </div>
+                <div>
+                  <h4 className="text-sm font-medium text-gray-500 mb-1">Score</h4>
+                  <span className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${getScoreColor(viewingContact.score)}`}>
+                    {viewingContact.score}
+                  </span>
+                </div>
+                <div>
+                  <h4 className="text-sm font-medium text-gray-500 mb-1">Last Contact</h4>
+                  <p className="text-base text-gray-900">{new Date(viewingContact.lastContact).toLocaleDateString()}</p>
+                </div>
+                {viewingContact.linkedinUrl && (
+                  <div>
+                    <h4 className="text-sm font-medium text-gray-500 mb-1">LinkedIn</h4>
+                    <a href={viewingContact.linkedinUrl} target="_blank" rel="noopener noreferrer" className="text-base text-blue-600 hover:underline">
+                      View Profile
+                    </a>
+                  </div>
+                )}
+              </div>
+
+              <div>
+                <h4 className="text-sm font-medium text-gray-500 mb-2">Tags</h4>
+                <div className="flex flex-wrap gap-2">
+                  {viewingContact.tags.map((tag: string, index: number) => (
+                    <span
+                      key={index}
+                      className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-slate-100 text-slate-700"
+                    >
+                      {tag}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            <div className="flex items-center justify-end space-x-3 p-6 border-t border-gray-200">
+              <button
+                onClick={() => setViewingContact(null)}
+                className="px-4 py-2 text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+              >
+                Close
+              </button>
+            </div>
+          </div>
         </div>
       )}
     </div>
