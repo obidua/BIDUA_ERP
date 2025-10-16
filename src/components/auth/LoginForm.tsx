@@ -1,50 +1,57 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
 import { Eye, EyeOff, Building2 } from 'lucide-react';
+import { useAuth } from '../../contexts/AuthContext';
 
-interface LoginFormProps {
-  onLogin: (username: string, password: string) => void;
-  error?: string;
-}
-
-const LoginForm: React.FC<LoginFormProps> = ({ onLogin, error }) => {
-  const [username, setUsername] = useState('');
+const LoginForm: React.FC = () => {
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
+  const { signIn } = useAuth();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    onLogin(username, password);
+    setError('');
+    setLoading(true);
+
+    try {
+      await signIn(email, password);
+    } catch (err: any) {
+      setError(err.message || 'Invalid credentials. Please try again.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-cyan-50 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-cyan-50 flex items-center justify-center p-4">
       <div className="max-w-md w-full space-y-8">
         <div className="text-center">
           <div className="flex justify-center mb-6">
-            <div className="bg-indigo-600 p-3 rounded-full">
+            <div className="bg-blue-600 p-3 rounded-full">
               <Building2 className="w-8 h-8 text-white" />
             </div>
           </div>
           <h2 className="text-3xl font-bold text-gray-900 mb-2">Welcome to BIDUA</h2>
-          <p className="text-gray-600">Enterprise Resource Planning System</p>
+          <p className="text-gray-600">Universal ERP/CRM/HRM System</p>
         </div>
 
         <div className="bg-white py-8 px-6 shadow-xl rounded-lg border border-gray-100">
           <form className="space-y-6" onSubmit={handleSubmit}>
             <div>
-              <label htmlFor="username" className="block text-sm font-medium text-gray-700 mb-2">
-                Username
+              <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
+                Email Address
               </label>
               <input
-                id="username"
-                name="username"
-                type="text"
+                id="email"
+                name="email"
+                type="email"
                 required
-                className="appearance-none relative block w-full px-3 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
-                placeholder="Enter your username"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
+                className="appearance-none relative block w-full px-3 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
+                placeholder="Enter your email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
               />
             </div>
 
@@ -58,7 +65,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLogin, error }) => {
                   name="password"
                   type={showPassword ? 'text' : 'password'}
                   required
-                  className="appearance-none relative block w-full px-3 py-3 pr-10 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+                  className="appearance-none relative block w-full px-3 py-3 pr-10 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
                   placeholder="Enter your password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
@@ -86,30 +93,38 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLogin, error }) => {
             <div>
               <button
                 type="submit"
-                className="group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-medium rounded-lg text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors duration-200"
+                disabled={loading}
+                className="group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-medium rounded-lg text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                Sign in
+                {loading ? (
+                  <span className="flex items-center">
+                    <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    Signing in...
+                  </span>
+                ) : (
+                  'Sign in'
+                )}
               </button>
             </div>
           </form>
 
           <div className="mt-6 border-t border-gray-200 pt-6">
             <div className="text-sm text-gray-600">
-              <p className="font-medium mb-2">Demo Credentials:</p>
-              <div className="space-y-1 text-xs">
-                <p><span className="font-medium">Admin:</span> admin / bidua123</p>
-                <p><span className="font-medium">Manager:</span> manager / bidua123</p>
-                <p><span className="font-medium">Employee:</span> employee / bidua123</p>
-                <p><span className="font-medium">Documentation:</span> doc / bidua123</p>
+              <p className="font-medium mb-2">Demo Access:</p>
+              <div className="space-y-1 text-xs bg-gray-50 p-3 rounded">
+                <p className="text-gray-700">Set up your Supabase database and create user accounts</p>
+                <p className="text-gray-700">Use the email/password from your Supabase Auth users</p>
               </div>
             </div>
           </div>
         </div>
 
-        {/* Footer */}
         <div className="mt-8 text-center">
           <p className="text-sm text-gray-500">
-            📚 Use "doc" account to access documentation portal
+            Powered by Supabase Database
           </p>
         </div>
       </div>
