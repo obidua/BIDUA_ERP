@@ -153,6 +153,8 @@ const DocumentationPortal: React.FC<DocumentationPortalProps> = ({
       case 'system-architecture':
         return <SystemArchitecture />;
       case 'tech-stack':
+      case 'system-architecture':
+        return <SystemArchitecture />;
       case 'technology-stack':
         return <TechnologyStack />;
       case 'project-blueprint':
@@ -172,6 +174,8 @@ const DocumentationPortal: React.FC<DocumentationPortalProps> = ({
       case 'testing':
         return <TestingStrategy />;
       case 'schema':
+      case 'technology-stack':
+        return <TechnologyStack />;
       case 'schema-overview':
         return <SchemaOverview />;
       case 'user-auth-schema':
