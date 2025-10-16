@@ -119,11 +119,32 @@ const CRMModule: React.FC<CRMModuleProps> = ({
       case 'contacts':
         return <Component />;
       case 'companies':
-        return <Component companies={companies} />;
+        return (
+          <Component
+            companies={companies}
+            onAddCompany={(company: any) => console.log('Add company:', company)}
+            onUpdateCompany={(id: string, company: any) => console.log('Update company:', id, company)}
+            onDeleteCompany={(id: string) => console.log('Delete company:', id)}
+          />
+        );
       case 'deals':
-        return <Component deals={deals} />;
+        return (
+          <Component
+            deals={deals}
+            onAddDeal={(deal: any) => console.log('Add deal:', deal)}
+            onUpdateDeal={(id: string, deal: any) => console.log('Update deal:', id, deal)}
+            onDeleteDeal={(id: string) => console.log('Delete deal:', id)}
+          />
+        );
       case 'activities':
-        return <Component activities={activities} />;
+        return (
+          <Component
+            activities={activities}
+            onAddActivity={(activity: any) => console.log('Add activity:', activity)}
+            onUpdateActivity={(id: string, activity: any) => console.log('Update activity:', id, activity)}
+            onDeleteActivity={(id: string) => console.log('Delete activity:', id)}
+          />
+        );
       case 'pipeline':
         return <Component leads={leads} />;
       case 'support':

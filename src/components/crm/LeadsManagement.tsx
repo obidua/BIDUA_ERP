@@ -25,6 +25,10 @@ const LeadsManagement: React.FC<LeadsManagementProps> = ({
   const [selectedLeads, setSelectedLeads] = useState<string[]>([]);
   const [viewingLead, setViewingLead] = useState<any>(null);
   const [editingLead, setEditingLead] = useState<any>(null);
+  const [showAssignModal, setShowAssignModal] = useState(false);
+  const [showStatusModal, setShowStatusModal] = useState(false);
+  const [bulkAssignTo, setBulkAssignTo] = useState('');
+  const [bulkStatus, setBulkStatus] = useState('');
 
   const filteredLeads = leads.filter(lead => {
     const matchesSearch = lead.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -206,17 +210,42 @@ const LeadsManagement: React.FC<LeadsManagementProps> = ({
                 <span className="font-semibold">{selectedLeads.length}</span> lead{selectedLeads.length > 1 ? 's' : ''} selected
               </p>
               <div className="flex items-center space-x-2">
-                <button className="px-3 py-1 text-sm text-blue-600 hover:bg-blue-100 rounded transition-colors">
+                <button
+                  onClick={() => setShowAssignModal(true)}
+                  className="px-3 py-1 text-sm text-blue-600 hover:bg-blue-100 rounded transition-colors"
+                >
                   Assign to
                 </button>
-                <button className="px-3 py-1 text-sm text-blue-600 hover:bg-blue-100 rounded transition-colors">
+                <button
+                  onClick={() => setShowStatusModal(true)}
+                  className="px-3 py-1 text-sm text-blue-600 hover:bg-blue-100 rounded transition-colors"
+                >
                   Change Status
                 </button>
-                <button className="px-3 py-1 text-sm text-blue-600 hover:bg-blue-100 rounded transition-colors">
+                <button
+                  onClick={() => {
+                    const csv = 'Name,Company,Email,Phone,Status,Stage,Value\n' +
+                      leads.filter(l => selectedLeads.includes(l.id))
+                        .map(l => `${l.name},${l.company},${l.email},${l.phone},${l.status},${l.stage},${l.value}`)
+                        .join('\n');
+                    const blob = new Blob([csv], { type: 'text/csv' });
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = 'leads_export.csv';
+                    a.click();
+                  }}
+                  className="px-3 py-1 text-sm text-blue-600 hover:bg-blue-100 rounded transition-colors"
+                >
                   Export
                 </button>
                 <button
-                  onClick={() => setSelectedLeads([])}
+                  onClick={() => {
+                    if (window.confirm(`Delete ${selectedLeads.length} lead(s)?`)) {
+                      selectedLeads.forEach(id => onDeleteLead(id));
+                      setSelectedLeads([]);
+                    }
+                  }}
                   className="px-3 py-1 text-sm text-red-600 hover:bg-red-50 rounded transition-colors"
                 >
                   Delete
@@ -619,6 +648,121 @@ const LeadsManagement: React.FC<LeadsManagementProps> = ({
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* Bulk Assign Modal */}
+      {showAssignModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-xl shadow-xl max-w-md w-full">
+            <div className="flex items-center justify-between p-6 border-b border-gray-200">
+              <h3 className="text-xl font-semibold text-gray-900">Assign Leads</h3>
+              <button
+                onClick={() => setShowAssignModal(false)}
+                className="p-1 text-gray-400 hover:text-gray-600 transition-colors"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <div className="p-6">
+              <p className="text-sm text-gray-600 mb-4">
+                Assign {selectedLeads.length} selected lead{selectedLeads.length > 1 ? 's' : ''} to:
+              </p>
+              <input
+                type="text"
+                value={bulkAssignTo}
+                onChange={(e) => setBulkAssignTo(e.target.value)}
+                placeholder="Enter employee name"
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+            </div>
+
+            <div className="flex items-center justify-end space-x-3 p-6 border-t border-gray-200">
+              <button
+                onClick={() => setShowAssignModal(false)}
+                className="px-4 py-2 text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={() => {
+                  selectedLeads.forEach(id => {
+                    const lead = leads.find(l => l.id === id);
+                    if (lead) {
+                      onUpdateLead(id, { ...lead, assignedTo: bulkAssignTo });
+                    }
+                  });
+                  setShowAssignModal(false);
+                  setBulkAssignTo('');
+                  setSelectedLeads([]);
+                }}
+                className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+              >
+                Assign
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Bulk Status Change Modal */}
+      {showStatusModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-xl shadow-xl max-w-md w-full">
+            <div className="flex items-center justify-between p-6 border-b border-gray-200">
+              <h3 className="text-xl font-semibold text-gray-900">Change Status</h3>
+              <button
+                onClick={() => setShowStatusModal(false)}
+                className="p-1 text-gray-400 hover:text-gray-600 transition-colors"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <div className="p-6">
+              <p className="text-sm text-gray-600 mb-4">
+                Change status for {selectedLeads.length} selected lead{selectedLeads.length > 1 ? 's' : ''}:
+              </p>
+              <select
+                value={bulkStatus}
+                onChange={(e) => setBulkStatus(e.target.value)}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              >
+                <option value="">Select status</option>
+                <option value="hot">Hot</option>
+                <option value="warm">Warm</option>
+                <option value="cold">Cold</option>
+              </select>
+            </div>
+
+            <div className="flex items-center justify-end space-x-3 p-6 border-t border-gray-200">
+              <button
+                onClick={() => setShowStatusModal(false)}
+                className="px-4 py-2 text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={() => {
+                  if (bulkStatus) {
+                    selectedLeads.forEach(id => {
+                      const lead = leads.find(l => l.id === id);
+                      if (lead) {
+                        onUpdateLead(id, { ...lead, status: bulkStatus });
+                      }
+                    });
+                    setShowStatusModal(false);
+                    setBulkStatus('');
+                    setSelectedLeads([]);
+                  }
+                }}
+                className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+              >
+                Update
+              </button>
+            </div>
           </div>
         </div>
       )}
