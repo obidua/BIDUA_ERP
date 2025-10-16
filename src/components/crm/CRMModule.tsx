@@ -15,8 +15,15 @@ import {
 } from 'lucide-react';
 import LeadsManagement from './LeadsManagement';
 import ContactsManagement from './ContactsManagement';
+import CompaniesManagement from './CompaniesManagement';
+import DealsManagement from './DealsManagement';
+import ActivitiesManagement from './ActivitiesManagement';
 import SalesPipeline from './SalesPipeline';
 import CustomerSupport from './CustomerSupport';
+import CustomerSuccess from './CustomerSuccess';
+import MarketingModule from './MarketingModule';
+import ProductCatalog from './ProductCatalog';
+import CRMReports from './CRMReports';
 import CRMAnalytics from './CRMAnalytics';
 
 interface CRMModuleProps {
@@ -29,6 +36,11 @@ interface CRMModuleProps {
   onDeleteTicket: (id: string) => void;
   leads: any[];
   supportTickets: any[];
+  companies: any[];
+  deals: any[];
+  activities: any[];
+  campaigns: any[];
+  products: any[];
 }
 
 const CRMModule: React.FC<CRMModuleProps> = ({
@@ -41,21 +53,26 @@ const CRMModule: React.FC<CRMModuleProps> = ({
   onDeleteTicket,
   leads,
   supportTickets,
+  companies,
+  deals,
+  activities,
+  campaigns,
+  products,
 }) => {
   const [activeView, setActiveView] = useState('leads');
 
   const views = [
     { id: 'leads', name: 'Leads', icon: Users, component: LeadsManagement },
     { id: 'contacts', name: 'Contacts', icon: Users, component: ContactsManagement },
-    { id: 'companies', name: 'Companies', icon: Building2, component: null },
-    { id: 'deals', name: 'Deals', icon: Target, component: null },
-    { id: 'activities', name: 'Activities', icon: Activity, component: null },
+    { id: 'companies', name: 'Companies', icon: Building2, component: CompaniesManagement },
+    { id: 'deals', name: 'Deals', icon: Target, component: DealsManagement },
+    { id: 'activities', name: 'Activities', icon: Activity, component: ActivitiesManagement },
     { id: 'pipeline', name: 'Pipeline', icon: TrendingUp, component: SalesPipeline },
     { id: 'support', name: 'Support', icon: Headphones, component: CustomerSupport },
-    { id: 'success', name: 'Success', icon: Heart, component: null },
-    { id: 'marketing', name: 'Marketing', icon: Megaphone, component: null },
-    { id: 'products', name: 'Products', icon: Package, component: null },
-    { id: 'reports', name: 'Reports', icon: FileText, component: null },
+    { id: 'success', name: 'Success', icon: Heart, component: CustomerSuccess },
+    { id: 'marketing', name: 'Marketing', icon: Megaphone, component: MarketingModule },
+    { id: 'products', name: 'Products', icon: Package, component: ProductCatalog },
+    { id: 'reports', name: 'Reports', icon: FileText, component: CRMReports },
     { id: 'analytics', name: 'Analytics', icon: BarChart3, component: CRMAnalytics },
   ];
 
@@ -101,6 +118,12 @@ const CRMModule: React.FC<CRMModuleProps> = ({
         );
       case 'contacts':
         return <Component />;
+      case 'companies':
+        return <Component companies={companies} />;
+      case 'deals':
+        return <Component deals={deals} />;
+      case 'activities':
+        return <Component activities={activities} />;
       case 'pipeline':
         return <Component leads={leads} />;
       case 'support':
@@ -113,6 +136,14 @@ const CRMModule: React.FC<CRMModuleProps> = ({
             supportTickets={supportTickets}
           />
         );
+      case 'success':
+        return <Component companies={companies} />;
+      case 'marketing':
+        return <Component campaigns={campaigns} />;
+      case 'products':
+        return <Component products={products} />;
+      case 'reports':
+        return <Component leads={leads} companies={companies} deals={deals} activities={activities} />;
       case 'analytics':
         return <Component leads={leads} supportTickets={supportTickets} />;
       default:

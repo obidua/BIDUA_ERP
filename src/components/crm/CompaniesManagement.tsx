@@ -1,0 +1,265 @@
+import React, { useState } from 'react';
+import { Plus, Search, Building2, Globe, MapPin, TrendingUp, Users, DollarSign, Eye, Edit, Trash2, Filter, Star, Phone, Mail } from 'lucide-react';
+
+interface Company {
+  id: string;
+  name: string;
+  industry: string;
+  size: string;
+  revenue: number;
+  website: string;
+  address: string;
+  country: string;
+  status: string;
+  type: string;
+  healthScore: number;
+  technologyStack: string[];
+  keyContacts: string[];
+  dealValue: number;
+  createdAt: string;
+}
+
+interface CompaniesManagementProps {
+  companies: Company[];
+  onAddCompany?: (company: any) => void;
+  onUpdateCompany?: (id: string, company: any) => void;
+  onDeleteCompany?: (id: string) => void;
+}
+
+const CompaniesManagement: React.FC<CompaniesManagementProps> = ({
+  companies,
+  onAddCompany,
+  onUpdateCompany,
+  onDeleteCompany,
+}) => {
+  const [searchTerm, setSearchTerm] = useState('');
+  const [typeFilter, setTypeFilter] = useState('all');
+  const [industryFilter, setIndustryFilter] = useState('all');
+  const [sortBy, setSortBy] = useState<'name' | 'revenue' | 'health'>('name');
+
+  const filteredCompanies = companies.filter(company => {
+    const matchesSearch = company.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         company.industry.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesType = typeFilter === 'all' || company.type === typeFilter;
+    const matchesIndustry = industryFilter === 'all' || company.industry === industryFilter;
+
+    return matchesSearch && matchesType && matchesIndustry;
+  }).sort((a, b) => {
+    if (sortBy === 'revenue') return b.revenue - a.revenue;
+    if (sortBy === 'health') return b.healthScore - a.healthScore;
+    return a.name.localeCompare(b.name);
+  });
+
+  const industries = Array.from(new Set(companies.map(c => c.industry)));
+
+  const getHealthScoreColor = (score: number) => {
+    if (score >= 80) return 'text-green-600 bg-green-100';
+    if (score >= 60) return 'text-yellow-600 bg-yellow-100';
+    return 'text-red-600 bg-red-100';
+  };
+
+  const getTypeColor = (type: string) => {
+    switch (type) {
+      case 'customer': return 'bg-green-100 text-green-800';
+      case 'prospect': return 'bg-blue-100 text-blue-800';
+      case 'partner': return 'bg-purple-100 text-purple-800';
+      default: return 'bg-gray-100 text-gray-800';
+    }
+  };
+
+  const formatCurrency = (amount: number) => {
+    if (amount >= 10000000) return `₹${(amount / 10000000).toFixed(1)}Cr`;
+    if (amount >= 100000) return `₹${(amount / 100000).toFixed(1)}L`;
+    return `₹${(amount / 1000).toFixed(0)}K`;
+  };
+
+  const totalRevenue = filteredCompanies.reduce((sum, c) => sum + c.revenue, 0);
+  const customersCount = filteredCompanies.filter(c => c.type === 'customer').length;
+  const prospectsCount = filteredCompanies.filter(c => c.type === 'prospect').length;
+  const avgHealthScore = filteredCompanies.length > 0
+    ? Math.round(filteredCompanies.reduce((sum, c) => sum + c.healthScore, 0) / filteredCompanies.length)
+    : 0;
+
+  return (
+    <div className="space-y-4 md:space-y-6">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div>
+          <h2 className="text-xl md:text-2xl font-bold text-gray-900">Companies & Accounts</h2>
+          <p className="text-sm md:text-base text-gray-600">Manage your business accounts and relationships</p>
+        </div>
+        <button
+          onClick={() => onAddCompany?.({})}
+          className="flex items-center space-x-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors text-sm"
+        >
+          <Plus className="w-4 h-4" />
+          <span>Add Company</span>
+        </button>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-100">
+          <div className="flex items-center justify-between mb-2">
+            <p className="text-sm text-gray-600">Total Companies</p>
+            <Building2 className="w-8 h-8 text-blue-500" />
+          </div>
+          <p className="text-2xl font-bold text-gray-900">{filteredCompanies.length}</p>
+          <p className="text-xs text-gray-500 mt-1">Active accounts</p>
+        </div>
+        <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-100">
+          <div className="flex items-center justify-between mb-2">
+            <p className="text-sm text-gray-600">Customers</p>
+            <Star className="w-8 h-8 text-green-500" />
+          </div>
+          <p className="text-2xl font-bold text-gray-900">{customersCount}</p>
+          <p className="text-xs text-gray-500 mt-1">{prospectsCount} prospects</p>
+        </div>
+        <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-100">
+          <div className="flex items-center justify-between mb-2">
+            <p className="text-sm text-gray-600">Total Revenue</p>
+            <DollarSign className="w-8 h-8 text-orange-500" />
+          </div>
+          <p className="text-2xl font-bold text-gray-900">{formatCurrency(totalRevenue)}</p>
+          <p className="text-xs text-gray-500 mt-1">Annual value</p>
+        </div>
+        <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-100">
+          <div className="flex items-center justify-between mb-2">
+            <p className="text-sm text-gray-600">Avg Health Score</p>
+            <TrendingUp className="w-8 h-8 text-purple-500" />
+          </div>
+          <p className="text-2xl font-bold text-gray-900">{avgHealthScore}%</p>
+          <p className="text-xs text-gray-500 mt-1">Account health</p>
+        </div>
+      </div>
+
+      <div className="bg-white p-4 md:p-6 rounded-lg shadow-sm border border-gray-100">
+        <div className="flex flex-col lg:flex-row lg:items-center gap-4">
+          <div className="flex-1">
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4 md:w-5 md:h-5" />
+              <input
+                type="text"
+                placeholder="Search companies..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="w-full pl-9 md:pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm md:text-base"
+              />
+            </div>
+          </div>
+          <div className="flex flex-wrap gap-2">
+            <select
+              value={typeFilter}
+              onChange={(e) => setTypeFilter(e.target.value)}
+              className="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+            >
+              <option value="all">All Types</option>
+              <option value="customer">Customer</option>
+              <option value="prospect">Prospect</option>
+              <option value="partner">Partner</option>
+            </select>
+            <select
+              value={industryFilter}
+              onChange={(e) => setIndustryFilter(e.target.value)}
+              className="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+            >
+              <option value="all">All Industries</option>
+              {industries.map(industry => (
+                <option key={industry} value={industry}>{industry}</option>
+              ))}
+            </select>
+            <select
+              value={sortBy}
+              onChange={(e) => setSortBy(e.target.value as any)}
+              className="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+            >
+              <option value="name">Name A-Z</option>
+              <option value="revenue">Highest Revenue</option>
+              <option value="health">Best Health</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        {filteredCompanies.map((company) => (
+          <div key={company.id} className="bg-white rounded-lg shadow-sm border border-gray-100 p-5 hover:shadow-md transition-shadow">
+            <div className="flex items-start justify-between mb-3">
+              <div className="flex items-center space-x-3">
+                <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg flex items-center justify-center">
+                  <Building2 className="w-6 h-6 text-white" />
+                </div>
+                <div>
+                  <h3 className="font-semibold text-gray-900">{company.name}</h3>
+                  <p className="text-xs text-gray-500">{company.industry}</p>
+                </div>
+              </div>
+              <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${getTypeColor(company.type)}`}>
+                {company.type}
+              </span>
+            </div>
+
+            <div className="space-y-2 mb-4">
+              <div className="flex items-center text-sm text-gray-600">
+                <MapPin className="w-4 h-4 mr-2" />
+                <span className="truncate">{company.address}</span>
+              </div>
+              <div className="flex items-center text-sm text-gray-600">
+                <Globe className="w-4 h-4 mr-2" />
+                <span className="truncate">{company.website}</span>
+              </div>
+              <div className="flex items-center text-sm text-gray-600">
+                <Users className="w-4 h-4 mr-2" />
+                <span>{company.size} employees</span>
+              </div>
+            </div>
+
+            <div className="flex items-center justify-between py-3 border-t border-gray-100">
+              <div>
+                <p className="text-xs text-gray-500">Deal Value</p>
+                <p className="text-sm font-semibold text-gray-900">{formatCurrency(company.dealValue)}</p>
+              </div>
+              <div>
+                <p className="text-xs text-gray-500">Health Score</p>
+                <div className={`text-sm font-semibold px-2 py-1 rounded ${getHealthScoreColor(company.healthScore)}`}>
+                  {company.healthScore}%
+                </div>
+              </div>
+            </div>
+
+            <div className="flex items-center space-x-2 pt-3 border-t border-gray-100">
+              <button
+                onClick={() => {}}
+                className="flex-1 flex items-center justify-center space-x-1 px-3 py-2 text-sm text-blue-600 hover:bg-blue-50 rounded transition-colors"
+              >
+                <Eye className="w-4 h-4" />
+                <span>View</span>
+              </button>
+              <button
+                onClick={() => onUpdateCompany?.(company.id, company)}
+                className="flex-1 flex items-center justify-center space-x-1 px-3 py-2 text-sm text-gray-600 hover:bg-gray-50 rounded transition-colors"
+              >
+                <Edit className="w-4 h-4" />
+                <span>Edit</span>
+              </button>
+              <button
+                onClick={() => onDeleteCompany?.(company.id)}
+                className="px-3 py-2 text-sm text-red-600 hover:bg-red-50 rounded transition-colors"
+              >
+                <Trash2 className="w-4 h-4" />
+              </button>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {filteredCompanies.length === 0 && (
+        <div className="bg-white rounded-lg p-12 text-center">
+          <Building2 className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+          <h3 className="text-lg font-semibold text-gray-900 mb-2">No companies found</h3>
+          <p className="text-gray-600">Try adjusting your filters or add a new company</p>
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default CompaniesManagement;

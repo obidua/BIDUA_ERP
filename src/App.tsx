@@ -1,18 +1,23 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { User } from './types';
-import { 
-  mockUsers, 
-  staticPassword, 
-  mockLeads, 
-  mockEmployees, 
-  mockTasks, 
-  mockAttendance, 
-  mockLeaveRequests, 
-  mockSupportTickets, 
-  mockPayroll, 
-  mockPerformance, 
-  mockDocuments 
+import {
+  mockUsers,
+  staticPassword,
+  mockLeads,
+  mockEmployees,
+  mockTasks,
+  mockAttendance,
+  mockLeaveRequests,
+  mockSupportTickets,
+  mockPayroll,
+  mockPerformance,
+  mockDocuments,
+  mockCompanies,
+  mockDeals,
+  mockActivities,
+  mockCampaigns,
+  mockProducts
 } from './data/mockData';
 import LoginForm from './components/auth/LoginForm';
 import Sidebar from './components/layout/Sidebar';
@@ -41,6 +46,11 @@ function App() {
   const [payroll, setPayroll] = useState(mockPayroll);
   const [performance, setPerformance] = useState(mockPerformance);
   const [documents, setDocuments] = useState(mockDocuments);
+  const [companies, setCompanies] = useState(mockCompanies);
+  const [deals, setDeals] = useState(mockDeals);
+  const [activities, setActivities] = useState(mockActivities);
+  const [campaigns, setCampaigns] = useState(mockCampaigns);
+  const [products, setProducts] = useState(mockProducts);
 
   useEffect(() => {
     const savedUser = localStorage.getItem('currentUser');
@@ -177,10 +187,15 @@ function App() {
         );
       case 'crm':
         return (
-          <CRMModule 
+          <CRMModule
             currentUser={currentUser}
             leads={leads}
             supportTickets={supportTickets}
+            companies={companies}
+            deals={deals}
+            activities={activities}
+            campaigns={campaigns}
+            products={products}
             onAddLead={handleAddLead}
             onUpdateLead={handleUpdateLead}
             onDeleteLead={handleDeleteLead}
