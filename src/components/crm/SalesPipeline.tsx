@@ -23,6 +23,15 @@ const SalesPipeline: React.FC<SalesPipelineProps> = ({ leads }) => {
     return stageLeads.reduce((sum, lead) => sum + (lead.value || 0), 0);
   };
 
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case 'hot': return 'bg-red-100 text-red-800';
+      case 'warm': return 'bg-yellow-100 text-yellow-800';
+      case 'cold': return 'bg-blue-100 text-blue-800';
+      default: return 'bg-gray-100 text-gray-800';
+    }
+  };
+
   const totalPipelineValue = leads.reduce((sum, lead) => sum + (lead.value || 0), 0);
   const wonDeals = getLeadsByStage('closed-won');
   const wonValue = getTotalValue(wonDeals);
