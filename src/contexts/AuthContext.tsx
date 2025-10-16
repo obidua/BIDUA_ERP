@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
-import { supabase, signIn, signUp, signOut, onAuthStateChange } from '../lib/supabase';
+import { supabase, signIn, signUp, signOut, onAuthStateChange, checkConnection } from '../lib/supabase';
 import { userAPI } from '../services/api';
 import type { User } from '@supabase/supabase-js';
 
@@ -42,7 +42,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const loadUserData = async (authUserId: string, authUserEmail: string) => {
+  const loadUserData = async (authUserId: string, authUserEmail: string, retryCount = 0) => {
+    const MAX_RETRIES = 3;
+    const RETRY_DELAY = 1000;
+
     try {
       const userData = await userAPI.getById(authUserId);
       if (userData) {
@@ -67,7 +70,20 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       }
     } catch (error: any) {
       console.error('Error loading user data:', error);
-      setError(error.message || 'Failed to load user profile. Please try again.');
+
+      if (retryCount < MAX_RETRIES && error.message?.includes('network')) {
+        console.log(`Retrying to load user data... Attempt ${retryCount + 1} of ${MAX_RETRIES}`);
+        await new Promise(resolve => setTimeout(resolve, RETRY_DELAY * (retryCount + 1)));
+        return loadUserData(authUserId, authUserEmail, retryCount + 1);
+      }
+
+      const errorMessage = error.message?.includes('network')
+        ? 'Network connection issue. Please check your internet connection and try again.'
+        : error.message?.includes('timeout')
+        ? 'Database connection timeout. Please try again.'
+        : 'Failed to load user profile. Please try again.';
+
+      setError(errorMessage);
       await supabase.auth.signOut();
       setUser(null);
       setAuthUser(null);
@@ -76,35 +92,57 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   useEffect(() => {
     let loadingTimeout: NodeJS.Timeout;
+    let mounted = true;
 
     const initializeAuth = async () => {
       try {
         loadingTimeout = setTimeout(() => {
-          if (loading) {
-            console.error('Auth initialization timeout');
-            setError('Loading timeout. Please refresh the page.');
+          if (loading && mounted) {
+            console.error('Auth initialization timeout after 20 seconds');
+            setError('Connection timeout. Please check your internet connection and refresh the page.');
             setLoading(false);
           }
-        }, 10000);
+        }, 20000);
 
-        const { data: { session } } = await supabase.auth.getSession();
+        const isConnected = await checkConnection();
+        if (!isConnected && mounted) {
+          console.warn('Database connection check failed, but continuing with auth...');
+        }
 
-        if (session?.user) {
+        const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+
+        if (sessionError) {
+          console.error('Session error:', sessionError);
+          setError('Failed to connect to authentication service. Please try again.');
+          setLoading(false);
+          return;
+        }
+
+        if (session?.user && mounted) {
           setAuthUser(session.user);
           await loadUserData(session.user.id, session.user.email || '');
         }
       } catch (error: any) {
         console.error('Error initializing auth:', error);
-        setError(error.message || 'Failed to initialize authentication.');
+        if (mounted) {
+          const errorMessage = error.message?.includes('fetch')
+            ? 'Network error. Please check your connection and try again.'
+            : error.message || 'Failed to initialize authentication.';
+          setError(errorMessage);
+        }
       } finally {
         clearTimeout(loadingTimeout);
-        setLoading(false);
+        if (mounted) {
+          setLoading(false);
+        }
       }
     };
 
     initializeAuth();
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+      if (!mounted) return;
+
       setAuthUser(session?.user || null);
 
       if (session?.user) {
@@ -118,6 +156,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     });
 
     return () => {
+      mounted = false;
       subscription.unsubscribe();
       if (loadingTimeout) {
         clearTimeout(loadingTimeout);

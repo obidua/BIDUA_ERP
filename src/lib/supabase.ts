@@ -53,3 +53,13 @@ export const onAuthStateChange = (callback: (user: any) => void) => {
     callback(session?.user || null);
   });
 };
+
+export const checkConnection = async (): Promise<boolean> => {
+  try {
+    const { error } = await supabase.from('companies').select('id').limit(1);
+    return !error;
+  } catch (error) {
+    console.error('Connection check failed:', error);
+    return false;
+  }
+};
