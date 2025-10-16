@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Plus, Search, Filter, MoreVertical, Phone, Mail, Building, Tag, Calendar, TrendingUp, Star, Download, Upload, Eye, Edit, Trash2, UserPlus, DollarSign, Clock } from 'lucide-react';
+import { Plus, Search, Filter, MoreVertical, Phone, Mail, Building, Tag, Calendar, TrendingUp, Star, Download, Upload, Eye, Edit, Trash2, UserPlus, DollarSign, Clock, X } from 'lucide-react';
 
 interface LeadsManagementProps {
   currentUser: any;
@@ -23,6 +23,8 @@ const LeadsManagement: React.FC<LeadsManagementProps> = ({
   const [sortBy, setSortBy] = useState<'recent' | 'value' | 'name'>('recent');
   const [showBulkActions, setShowBulkActions] = useState(false);
   const [selectedLeads, setSelectedLeads] = useState<string[]>([]);
+  const [viewingLead, setViewingLead] = useState<any>(null);
+  const [editingLead, setEditingLead] = useState<any>(null);
 
   const filteredLeads = leads.filter(lead => {
     const matchesSearch = lead.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -319,14 +321,14 @@ const LeadsManagement: React.FC<LeadsManagementProps> = ({
                   <td className="px-3 md:px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                     <div className="flex items-center justify-end space-x-2">
                       <button
-                        onClick={() => {}}
+                        onClick={() => setViewingLead(lead)}
                         className="p-1 text-blue-600 hover:bg-blue-50 rounded transition-colors"
                         title="View Details"
                       >
                         <Eye className="w-4 h-4" />
                       </button>
                       <button
-                        onClick={() => onUpdateLead(lead.id, lead)}
+                        onClick={() => setEditingLead(lead)}
                         className="p-1 text-gray-600 hover:bg-gray-50 rounded transition-colors"
                         title="Edit"
                       >
@@ -347,6 +349,279 @@ const LeadsManagement: React.FC<LeadsManagementProps> = ({
           </table>
         </div>
       </div>
+
+      {/* View Lead Modal */}
+      {viewingLead && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-xl shadow-xl max-w-3xl w-full max-h-[90vh] overflow-y-auto">
+            <div className="flex items-center justify-between p-6 border-b border-gray-200">
+              <h3 className="text-xl font-semibold text-gray-900">Lead Details</h3>
+              <button
+                onClick={() => setViewingLead(null)}
+                className="p-1 text-gray-400 hover:text-gray-600 transition-colors"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <div className="p-6 space-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <h4 className="text-sm font-medium text-gray-500 mb-1">Full Name</h4>
+                  <p className="text-base text-gray-900">{viewingLead.name}</p>
+                </div>
+                <div>
+                  <h4 className="text-sm font-medium text-gray-500 mb-1">Email</h4>
+                  <p className="text-base text-gray-900">{viewingLead.email}</p>
+                </div>
+                <div>
+                  <h4 className="text-sm font-medium text-gray-500 mb-1">Phone</h4>
+                  <p className="text-base text-gray-900">{viewingLead.phone}</p>
+                </div>
+                <div>
+                  <h4 className="text-sm font-medium text-gray-500 mb-1">Company</h4>
+                  <p className="text-base text-gray-900">{viewingLead.company}</p>
+                </div>
+                <div>
+                  <h4 className="text-sm font-medium text-gray-500 mb-1">Status</h4>
+                  <span className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${getStatusColor(viewingLead.status)}`}>
+                    {viewingLead.status}
+                  </span>
+                </div>
+                <div>
+                  <h4 className="text-sm font-medium text-gray-500 mb-1">Stage</h4>
+                  <span className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${getStageColor(viewingLead.stage)}`}>
+                    {viewingLead.stage}
+                  </span>
+                </div>
+                <div>
+                  <h4 className="text-sm font-medium text-gray-500 mb-1">Value</h4>
+                  <p className="text-base text-gray-900">₹{viewingLead.value?.toLocaleString()}</p>
+                </div>
+                <div>
+                  <h4 className="text-sm font-medium text-gray-500 mb-1">Source</h4>
+                  <p className="text-base text-gray-900">{viewingLead.source || 'N/A'}</p>
+                </div>
+                <div>
+                  <h4 className="text-sm font-medium text-gray-500 mb-1">Assigned To</h4>
+                  <p className="text-base text-gray-900">{viewingLead.assignedTo}</p>
+                </div>
+                <div>
+                  <h4 className="text-sm font-medium text-gray-500 mb-1">Last Contact</h4>
+                  <p className="text-base text-gray-900">{viewingLead.lastContact || 'N/A'}</p>
+                </div>
+                <div>
+                  <h4 className="text-sm font-medium text-gray-500 mb-1">Next Follow-up</h4>
+                  <p className="text-base text-gray-900">{viewingLead.nextFollowUp || 'N/A'}</p>
+                </div>
+                <div>
+                  <h4 className="text-sm font-medium text-gray-500 mb-1">Created At</h4>
+                  <p className="text-base text-gray-900">{viewingLead.createdAt}</p>
+                </div>
+              </div>
+
+              {viewingLead.notes && (
+                <div>
+                  <h4 className="text-sm font-medium text-gray-500 mb-2">Notes</h4>
+                  <p className="text-base text-gray-900 bg-gray-50 p-4 rounded-lg">{viewingLead.notes}</p>
+                </div>
+              )}
+            </div>
+
+            <div className="flex items-center justify-end space-x-3 p-6 border-t border-gray-200">
+              <button
+                onClick={() => setViewingLead(null)}
+                className="px-4 py-2 text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+              >
+                Close
+              </button>
+              <button
+                onClick={() => {
+                  setEditingLead(viewingLead);
+                  setViewingLead(null);
+                }}
+                className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+              >
+                Edit Lead
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Edit Lead Modal */}
+      {editingLead && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-xl shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+            <div className="flex items-center justify-between p-6 border-b border-gray-200">
+              <h3 className="text-xl font-semibold text-gray-900">Edit Lead</h3>
+              <button
+                onClick={() => setEditingLead(null)}
+                className="p-1 text-gray-400 hover:text-gray-600 transition-colors"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                onUpdateLead(editingLead.id, editingLead);
+                setEditingLead(null);
+              }}
+              className="p-6 space-y-4"
+            >
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Full Name *</label>
+                  <input
+                    type="text"
+                    value={editingLead.name}
+                    onChange={(e) => setEditingLead({ ...editingLead, name: e.target.value })}
+                    required
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Email *</label>
+                  <input
+                    type="email"
+                    value={editingLead.email}
+                    onChange={(e) => setEditingLead({ ...editingLead, email: e.target.value })}
+                    required
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Phone</label>
+                  <input
+                    type="tel"
+                    value={editingLead.phone}
+                    onChange={(e) => setEditingLead({ ...editingLead, phone: e.target.value })}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Company *</label>
+                  <input
+                    type="text"
+                    value={editingLead.company}
+                    onChange={(e) => setEditingLead({ ...editingLead, company: e.target.value })}
+                    required
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Status</label>
+                  <select
+                    value={editingLead.status}
+                    onChange={(e) => setEditingLead({ ...editingLead, status: e.target.value })}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  >
+                    <option value="hot">Hot</option>
+                    <option value="warm">Warm</option>
+                    <option value="cold">Cold</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Stage</label>
+                  <select
+                    value={editingLead.stage}
+                    onChange={(e) => setEditingLead({ ...editingLead, stage: e.target.value })}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  >
+                    <option value="lead">Lead</option>
+                    <option value="qualified">Qualified</option>
+                    <option value="proposal">Proposal</option>
+                    <option value="negotiation">Negotiation</option>
+                    <option value="closed-won">Closed Won</option>
+                    <option value="closed-lost">Closed Lost</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Value (₹)</label>
+                  <input
+                    type="number"
+                    value={editingLead.value}
+                    onChange={(e) => setEditingLead({ ...editingLead, value: Number(e.target.value) })}
+                    min="0"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Source</label>
+                  <select
+                    value={editingLead.source || ''}
+                    onChange={(e) => setEditingLead({ ...editingLead, source: e.target.value })}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  >
+                    <option value="">Select source</option>
+                    <option value="Website">Website</option>
+                    <option value="Referral">Referral</option>
+                    <option value="Cold Call">Cold Call</option>
+                    <option value="Social Media">Social Media</option>
+                    <option value="Trade Show">Trade Show</option>
+                    <option value="Other">Other</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Assigned To</label>
+                  <input
+                    type="text"
+                    value={editingLead.assignedTo}
+                    onChange={(e) => setEditingLead({ ...editingLead, assignedTo: e.target.value })}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Last Contact</label>
+                  <input
+                    type="date"
+                    value={editingLead.lastContact || ''}
+                    onChange={(e) => setEditingLead({ ...editingLead, lastContact: e.target.value })}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Next Follow-up</label>
+                  <input
+                    type="date"
+                    value={editingLead.nextFollowUp || ''}
+                    onChange={(e) => setEditingLead({ ...editingLead, nextFollowUp: e.target.value })}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Notes</label>
+                <textarea
+                  value={editingLead.notes || ''}
+                  onChange={(e) => setEditingLead({ ...editingLead, notes: e.target.value })}
+                  rows={3}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
+                />
+              </div>
+
+              <div className="flex items-center justify-end space-x-3 pt-4 border-t border-gray-200">
+                <button
+                  type="button"
+                  onClick={() => setEditingLead(null)}
+                  className="px-4 py-2 text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                >
+                  Update Lead
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
