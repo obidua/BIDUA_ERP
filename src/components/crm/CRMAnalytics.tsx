@@ -18,6 +18,7 @@ const CRMAnalytics: React.FC<CRMAnalyticsProps> = ({ leads, supportTickets }) =>
   const coldLeads = leads.filter(lead => lead.status === 'cold').length;
   const closedWonLeads = leads.filter(lead => lead.stage === 'closed-won').length;
   const closedLostLeads = leads.filter(lead => lead.stage === 'closed-lost').length;
+  const qualifiedLeadsCount = leads.filter(lead => lead.stage === 'qualified').length;
   const totalValue = leads.reduce((sum, lead) => sum + lead.value, 0);
   const wonValue = leads.filter(l => l.stage === 'closed-won').reduce((sum, lead) => sum + lead.value, 0);
   const avgDealSize = totalLeads > 0 ? totalValue / totalLeads : 0;
