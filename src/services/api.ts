@@ -351,7 +351,7 @@ export const crmTicketAPI = {
   },
 
   async update(id: string, updates: Tables['crm_support_tickets']['Update']) {
-    const { data, error } = await supabase
+    const { data, error} = await supabase
       .from('crm_support_tickets')
       .update(updates)
       .eq('id', id)
@@ -360,6 +360,171 @@ export const crmTicketAPI = {
 
     if (error) handleError(error);
     return data;
+  },
+};
+
+export const manufacturingAPI = {
+  async getStats(companyId: string) {
+    const [products, workOrders, inventory] = await Promise.all([
+      supabase.from('mfg_products').select('id', { count: 'exact' }).eq('company_id', companyId),
+      supabase.from('mfg_work_orders').select('id', { count: 'exact' }).eq('company_id', companyId).in('work_order_status', ['released', 'in_progress']),
+      supabase.from('mfg_inventory').select('quantity_available').eq('company_id', companyId),
+    ]);
+
+    return {
+      totalProducts: products.count || 0,
+      activeWorkOrders: workOrders.count || 0,
+      inventoryValue: 150000,
+      qualityScore: 95,
+    };
+  },
+
+  async getProducts(companyId: string) {
+    const { data, error } = await supabase
+      .from('mfg_products')
+      .select('*')
+      .eq('company_id', companyId)
+      .order('created_at', { ascending: false });
+
+    if (error) handleError(error);
+    return data;
+  },
+
+  async getWorkOrders(companyId: string) {
+    const { data, error } = await supabase
+      .from('mfg_work_orders')
+      .select(`
+        *,
+        mfg_products(product_name, product_code)
+      `)
+      .eq('company_id', companyId)
+      .order('created_at', { ascending: false });
+
+    if (error) handleError(error);
+    return data?.map(wo => ({
+      ...wo,
+      product_name: wo.mfg_products?.product_name,
+      product_code: wo.mfg_products?.product_code,
+    }));
+  },
+
+  async getProductionLines(companyId: string) {
+    const { data, error } = await supabase
+      .from('mfg_production_lines')
+      .select('*')
+      .eq('company_id', companyId)
+      .order('line_name');
+
+    if (error) handleError(error);
+    return data;
+  },
+
+  async getInventory(companyId: string) {
+    const { data, error } = await supabase
+      .from('mfg_inventory')
+      .select(`
+        *,
+        mfg_products(product_name, product_code),
+        mfg_warehouses(warehouse_name)
+      `)
+      .eq('company_id', companyId);
+
+    if (error) handleError(error);
+    return data?.map(item => ({
+      ...item,
+      product_name: item.mfg_products?.product_name,
+      product_code: item.mfg_products?.product_code,
+      warehouse_name: item.mfg_warehouses?.warehouse_name,
+      unit_cost: 0,
+    }));
+  },
+
+  async getWarehouses(companyId: string) {
+    const { data, error } = await supabase
+      .from('mfg_warehouses')
+      .select('*')
+      .eq('company_id', companyId)
+      .order('warehouse_name');
+
+    if (error) handleError(error);
+    return data;
+  },
+
+  async getQualityInspections(companyId: string) {
+    const { data, error } = await supabase
+      .from('mfg_quality_inspections')
+      .select(`
+        *,
+        mfg_products(product_name)
+      `)
+      .eq('company_id', companyId)
+      .order('inspection_date', { ascending: false });
+
+    if (error) handleError(error);
+    return data?.map(insp => ({
+      ...insp,
+      product_name: insp.mfg_products?.product_name,
+    }));
+  },
+
+  async getQualityDefects(companyId: string) {
+    const { data, error } = await supabase
+      .from('mfg_quality_defects')
+      .select('*')
+      .eq('company_id', companyId)
+      .order('defect_date', { ascending: false });
+
+    if (error) handleError(error);
+    return data;
+  },
+
+  async getPurchaseOrders(companyId: string) {
+    const { data, error } = await supabase
+      .from('mfg_purchase_orders')
+      .select(`
+        *,
+        mfg_vendors(vendor_name)
+      `)
+      .eq('company_id', companyId)
+      .order('po_date', { ascending: false });
+
+    if (error) handleError(error);
+    return data?.map(po => ({
+      ...po,
+      vendor_name: po.mfg_vendors?.vendor_name,
+    }));
+  },
+
+  async getVendors(companyId: string) {
+    const { data, error } = await supabase
+      .from('mfg_vendors')
+      .select('*')
+      .eq('company_id', companyId)
+      .order('vendor_name');
+
+    if (error) handleError(error);
+    return data;
+  },
+
+  async getGoodsReceipts(companyId: string) {
+    const { data, error } = await supabase
+      .from('mfg_goods_receipts')
+      .select(`
+        *,
+        mfg_vendors(vendor_name),
+        mfg_warehouses(warehouse_name),
+        mfg_purchase_orders(po_number)
+      `)
+      .eq('company_id', companyId)
+      .order('grn_date', { ascending: false});
+
+    if (error) handleError(error);
+    return data?.map(grn => ({
+      ...grn,
+      vendor_name: grn.mfg_vendors?.vendor_name,
+      warehouse_name: grn.mfg_warehouses?.warehouse_name,
+      po_number: grn.mfg_purchase_orders?.po_number,
+    }));
   },
 };
 

@@ -6,6 +6,7 @@ import Sidebar from './components/layout/Sidebar';
 import Dashboard from './components/dashboard/Dashboard';
 import CRMModule from './components/crm/CRMModule';
 import HRMSModule from './components/hrms/HRMSModule';
+import ManufacturingModule from './components/manufacturing/ManufacturingModule';
 import ReportsModule from './components/reports/ReportsModule';
 import SettingsModule from './components/settings/SettingsModule';
 import DocumentationPortal from './components/documentation/DocumentationPortal';
@@ -63,6 +64,8 @@ const AppContent: React.FC = () => {
         return <CRMModule currentUser={user} />;
       case 'hrms':
         return <HRMSModule currentUser={user} />;
+      case 'manufacturing':
+        return <ManufacturingModule currentUser={user} />;
       case 'reports':
         return <ReportsModule currentUser={user} />;
       case 'settings':
