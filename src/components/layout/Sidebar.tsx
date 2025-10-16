@@ -1,10 +1,10 @@
 import React from 'react';
-import {
-  LayoutDashboard,
-  Users,
-  UserCheck,
-  FileText,
-  Settings,
+import { 
+  LayoutDashboard, 
+  Users, 
+  UserCheck, 
+  FileText, 
+  Settings, 
   LogOut,
   Building2,
   Menu,
@@ -22,8 +22,7 @@ import {
   Zap,
   Smartphone,
   Target,
-  AlertTriangle,
-  Factory
+  AlertTriangle
 } from 'lucide-react';
 import { documentationSections } from '../../data/mockData';
 
@@ -48,7 +47,6 @@ const Sidebar: React.FC<SidebarProps> = ({
     { id: 'dashboard', name: 'Dashboard', icon: LayoutDashboard },
     { id: 'crm', name: 'CRM', icon: Users },
     { id: 'hrms', name: 'HRMS', icon: UserCheck },
-    { id: 'manufacturing', name: 'Manufacturing', icon: Factory },
     { id: 'reports', name: 'Reports', icon: FileText },
     { id: 'settings', name: 'Settings', icon: Settings },
   ];
