@@ -1,5 +1,5 @@
-import React from 'react';
-import { BarChart3, TrendingUp, Users, DollarSign, Calendar, Target, Award, Clock } from 'lucide-react';
+import React, { useState } from 'react';
+import { BarChart3, TrendingUp, Users, DollarSign, Calendar, Target, Award, Clock, Activity, Phone, Mail, CheckCircle, XCircle, Percent, ArrowUp, ArrowDown, Filter } from 'lucide-react';
 import { Lead, SupportTicket } from '../../types';
 
 interface CRMAnalyticsProps {
@@ -8,15 +8,21 @@ interface CRMAnalyticsProps {
 }
 
 const CRMAnalytics: React.FC<CRMAnalyticsProps> = ({ leads, supportTickets }) => {
+  const [timeRange, setTimeRange] = useState<'week' | 'month' | 'quarter' | 'year'>('month');
+  const [selectedMetric, setSelectedMetric] = useState<'leads' | 'revenue' | 'conversion'>('leads');
+
   // Calculate metrics from leads data
   const totalLeads = leads.length;
   const hotLeads = leads.filter(lead => lead.status === 'hot').length;
   const warmLeads = leads.filter(lead => lead.status === 'warm').length;
   const coldLeads = leads.filter(lead => lead.status === 'cold').length;
   const closedWonLeads = leads.filter(lead => lead.stage === 'closed-won').length;
+  const closedLostLeads = leads.filter(lead => lead.stage === 'closed-lost').length;
   const totalValue = leads.reduce((sum, lead) => sum + lead.value, 0);
+  const wonValue = leads.filter(l => l.stage === 'closed-won').reduce((sum, lead) => sum + lead.value, 0);
   const avgDealSize = totalLeads > 0 ? totalValue / totalLeads : 0;
   const conversionRate = totalLeads > 0 ? (closedWonLeads / totalLeads) * 100 : 0;
+  const winRate = (closedWonLeads + closedLostLeads) > 0 ? (closedWonLeads / (closedWonLeads + closedLostLeads)) * 100 : 0;
 
   // Calculate support metrics
   const totalTickets = supportTickets.length;
@@ -33,8 +39,38 @@ const CRMAnalytics: React.FC<CRMAnalyticsProps> = ({ leads, supportTickets }) =>
     { name: 'Closed Won', count: leads.filter(l => l.stage === 'closed-won').length, color: 'bg-green-500' },
   ];
 
+  const formatCurrency = (amount: number) => {
+    if (amount >= 10000000) return `₹${(amount / 10000000).toFixed(1)}Cr`;
+    if (amount >= 100000) return `₹${(amount / 100000).toFixed(1)}L`;
+    return `₹${(amount / 1000).toFixed(0)}K`;
+  };
+
   return (
     <div className="space-y-4 md:space-y-6">
+      {/* Header with Filters */}
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div>
+          <h2 className="text-2xl font-bold text-gray-900">CRM Analytics & Reports</h2>
+          <p className="text-gray-600">Comprehensive insights into your sales performance</p>
+        </div>
+        <div className="flex items-center space-x-2">
+          <select
+            value={timeRange}
+            onChange={(e) => setTimeRange(e.target.value as any)}
+            className="px-4 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+          >
+            <option value="week">This Week</option>
+            <option value="month">This Month</option>
+            <option value="quarter">This Quarter</option>
+            <option value="year">This Year</option>
+          </select>
+          <button className="flex items-center space-x-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm">
+            <Filter className="w-4 h-4" />
+            <span>Export Report</span>
+          </button>
+        </div>
+      </div>
+
       {/* Key Metrics */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
         <div className="bg-white p-4 md:p-6 rounded-lg shadow-sm border">
@@ -56,9 +92,9 @@ const CRMAnalytics: React.FC<CRMAnalyticsProps> = ({ leads, supportTickets }) =>
         <div className="bg-white p-4 md:p-6 rounded-lg shadow-sm border">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-xs md:text-sm font-medium text-gray-600">Total Value</p>
+              <p className="text-xs md:text-sm font-medium text-gray-600">Won Revenue</p>
               <p className="text-xl md:text-2xl font-bold text-gray-900">
-                ₹{(totalValue / 100000).toFixed(1)}L
+                {formatCurrency(wonValue)}
               </p>
             </div>
             <div className="h-10 w-10 md:h-12 md:w-12 bg-green-100 rounded-lg flex items-center justify-center">
@@ -66,24 +102,24 @@ const CRMAnalytics: React.FC<CRMAnalyticsProps> = ({ leads, supportTickets }) =>
             </div>
           </div>
           <div className="mt-2 md:mt-4 flex items-center">
-            <TrendingUp className="h-3 w-3 md:h-4 md:w-4 text-green-500 mr-1" />
-            <span className="text-xs md:text-sm text-green-600">+8% from last month</span>
+            <ArrowUp className="h-3 w-3 md:h-4 md:w-4 text-green-500 mr-1" />
+            <span className="text-xs md:text-sm text-green-600">+18% from last {timeRange}</span>
           </div>
         </div>
 
         <div className="bg-white p-4 md:p-6 rounded-lg shadow-sm border">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-xs md:text-sm font-medium text-gray-600">Conversion Rate</p>
-              <p className="text-xl md:text-2xl font-bold text-gray-900">{conversionRate.toFixed(1)}%</p>
+              <p className="text-xs md:text-sm font-medium text-gray-600">Win Rate</p>
+              <p className="text-xl md:text-2xl font-bold text-gray-900">{winRate.toFixed(1)}%</p>
             </div>
             <div className="h-10 w-10 md:h-12 md:w-12 bg-purple-100 rounded-lg flex items-center justify-center">
-              <Target className="h-5 w-5 md:h-6 md:w-6 text-purple-600" />
+              <Percent className="h-5 w-5 md:h-6 md:w-6 text-purple-600" />
             </div>
           </div>
           <div className="mt-2 md:mt-4 flex items-center">
-            <TrendingUp className="h-3 w-3 md:h-4 md:w-4 text-green-500 mr-1" />
-            <span className="text-xs md:text-sm text-green-600">+3% from last month</span>
+            <ArrowUp className="h-3 w-3 md:h-4 md:w-4 text-green-500 mr-1" />
+            <span className="text-xs md:text-sm text-green-600">+5.2% from last {timeRange}</span>
           </div>
         </div>
 
@@ -92,7 +128,7 @@ const CRMAnalytics: React.FC<CRMAnalyticsProps> = ({ leads, supportTickets }) =>
             <div>
               <p className="text-xs md:text-sm font-medium text-gray-600">Avg Deal Size</p>
               <p className="text-xl md:text-2xl font-bold text-gray-900">
-                ₹{(avgDealSize / 100000).toFixed(1)}L
+                {formatCurrency(avgDealSize)}
               </p>
             </div>
             <div className="h-10 w-10 md:h-12 md:w-12 bg-orange-100 rounded-lg flex items-center justify-center">
@@ -100,8 +136,101 @@ const CRMAnalytics: React.FC<CRMAnalyticsProps> = ({ leads, supportTickets }) =>
             </div>
           </div>
           <div className="mt-2 md:mt-4 flex items-center">
-            <TrendingUp className="h-3 w-3 md:h-4 md:w-4 text-green-500 mr-1" />
-            <span className="text-xs md:text-sm text-green-600">+5% from last month</span>
+            <ArrowUp className="h-3 w-3 md:h-4 md:w-4 text-green-500 mr-1" />
+            <span className="text-xs md:text-sm text-green-600">+12% from last {timeRange}</span>
+          </div>
+        </div>
+      </div>
+
+      {/* Additional Performance Metrics */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
+        <div className="bg-white p-4 md:p-6 rounded-lg shadow-sm border">
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="text-base md:text-lg font-semibold text-gray-900">Sales Velocity</h3>
+            <Activity className="w-5 h-5 text-blue-500" />
+          </div>
+          <div className="space-y-3">
+            <div>
+              <div className="flex items-center justify-between mb-1">
+                <span className="text-sm text-gray-600">Pipeline Value</span>
+                <span className="text-sm font-semibold text-gray-900">{formatCurrency(totalValue)}</span>
+              </div>
+              <div className="w-full bg-gray-200 rounded-full h-2">
+                <div className="bg-blue-500 h-2 rounded-full" style={{ width: '75%' }}></div>
+              </div>
+            </div>
+            <div>
+              <div className="flex items-center justify-between mb-1">
+                <span className="text-sm text-gray-600">Avg Sales Cycle</span>
+                <span className="text-sm font-semibold text-gray-900">28 days</span>
+              </div>
+            </div>
+            <div>
+              <div className="flex items-center justify-between mb-1">
+                <span className="text-sm text-gray-600">Velocity Score</span>
+                <span className="text-sm font-semibold text-green-600">+32%</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="bg-white p-4 md:p-6 rounded-lg shadow-sm border">
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="text-base md:text-lg font-semibold text-gray-900">Lead Quality</h3>
+            <Target className="w-5 h-5 text-green-500" />
+          </div>
+          <div className="space-y-3">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center">
+                <CheckCircle className="w-4 h-4 text-green-500 mr-2" />
+                <span className="text-sm text-gray-600">Qualified Rate</span>
+              </div>
+              <span className="text-sm font-semibold text-gray-900">{((qualifiedLeadsCount / totalLeads) * 100 || 0).toFixed(1)}%</span>
+            </div>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center">
+                <CheckCircle className="w-4 h-4 text-blue-500 mr-2" />
+                <span className="text-sm text-gray-600">MQL to SQL</span>
+              </div>
+              <span className="text-sm font-semibold text-gray-900">68%</span>
+            </div>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center">
+                <XCircle className="w-4 h-4 text-red-500 mr-2" />
+                <span className="text-sm text-gray-600">Lost Rate</span>
+              </div>
+              <span className="text-sm font-semibold text-gray-900">{((closedLostLeads / totalLeads) * 100 || 0).toFixed(1)}%</span>
+            </div>
+          </div>
+        </div>
+
+        <div className="bg-white p-4 md:p-6 rounded-lg shadow-sm border">
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="text-base md:text-lg font-semibold text-gray-900">Activity Metrics</h3>
+            <Phone className="w-5 h-5 text-purple-500" />
+          </div>
+          <div className="space-y-3">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center">
+                <Phone className="w-4 h-4 text-blue-500 mr-2" />
+                <span className="text-sm text-gray-600">Calls Made</span>
+              </div>
+              <span className="text-sm font-semibold text-gray-900">342</span>
+            </div>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center">
+                <Mail className="w-4 h-4 text-green-500 mr-2" />
+                <span className="text-sm text-gray-600">Emails Sent</span>
+              </div>
+              <span className="text-sm font-semibold text-gray-900">1,248</span>
+            </div>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center">
+                <Calendar className="w-4 h-4 text-purple-500 mr-2" />
+                <span className="text-sm text-gray-600">Meetings</span>
+              </div>
+              <span className="text-sm font-semibold text-gray-900">87</span>
+            </div>
           </div>
         </div>
       </div>
