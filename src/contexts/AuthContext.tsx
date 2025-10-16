@@ -19,6 +19,7 @@ interface AuthContextType {
   user: AuthUser | null;
   authUser: User | null;
   loading: boolean;
+  error: string | null;
   signIn: (email: string, password: string) => Promise<void>;
   signUp: (email: string, password: string, userData: any) => Promise<void>;
   signOut: () => Promise<void>;
@@ -39,8 +40,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [user, setUser] = useState<AuthUser | null>(null);
   const [authUser, setAuthUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  const loadUserData = async (authUserId: string) => {
+  const loadUserData = async (authUserId: string, authUserEmail: string) => {
     try {
       const userData = await userAPI.getById(authUserId);
       if (userData) {
@@ -55,25 +57,47 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           avatar_url: userData.avatar_url,
           is_active: userData.is_active,
         });
+        setError(null);
+      } else {
+        console.error('User profile not found in database for auth user:', authUserId);
+        setError('User profile not found. Please contact your administrator.');
+        await supabase.auth.signOut();
+        setUser(null);
+        setAuthUser(null);
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error loading user data:', error);
+      setError(error.message || 'Failed to load user profile. Please try again.');
+      await supabase.auth.signOut();
       setUser(null);
+      setAuthUser(null);
     }
   };
 
   useEffect(() => {
+    let loadingTimeout: NodeJS.Timeout;
+
     const initializeAuth = async () => {
       try {
+        loadingTimeout = setTimeout(() => {
+          if (loading) {
+            console.error('Auth initialization timeout');
+            setError('Loading timeout. Please refresh the page.');
+            setLoading(false);
+          }
+        }, 10000);
+
         const { data: { session } } = await supabase.auth.getSession();
 
         if (session?.user) {
           setAuthUser(session.user);
-          await loadUserData(session.user.id);
+          await loadUserData(session.user.id, session.user.email || '');
         }
-      } catch (error) {
+      } catch (error: any) {
         console.error('Error initializing auth:', error);
+        setError(error.message || 'Failed to initialize authentication.');
       } finally {
+        clearTimeout(loadingTimeout);
         setLoading(false);
       }
     };
@@ -84,32 +108,39 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       setAuthUser(session?.user || null);
 
       if (session?.user) {
-        await loadUserData(session.user.id);
+        setLoading(true);
+        await loadUserData(session.user.id, session.user.email || '');
+        setLoading(false);
       } else {
         setUser(null);
+        setError(null);
       }
-
-      setLoading(false);
     });
 
     return () => {
       subscription.unsubscribe();
+      if (loadingTimeout) {
+        clearTimeout(loadingTimeout);
+      }
     };
   }, []);
 
   const handleSignIn = async (email: string, password: string) => {
     try {
+      setError(null);
       const { user: authUser } = await signIn(email, password);
       if (authUser) {
-        await loadUserData(authUser.id);
+        await loadUserData(authUser.id, authUser.email || '');
       }
     } catch (error: any) {
+      setError(error.message || 'Failed to sign in');
       throw new Error(error.message || 'Failed to sign in');
     }
   };
 
   const handleSignUp = async (email: string, password: string, userData: any) => {
     try {
+      setError(null);
       const { user: authUser } = await signUp(email, password, userData);
       if (authUser) {
         await userAPI.create({
@@ -117,9 +148,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           email,
           ...userData,
         });
-        await loadUserData(authUser.id);
+        await loadUserData(authUser.id, authUser.email || '');
       }
     } catch (error: any) {
+      setError(error.message || 'Failed to sign up');
       throw new Error(error.message || 'Failed to sign up');
     }
   };
@@ -129,6 +161,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       await signOut();
       setUser(null);
       setAuthUser(null);
+      setError(null);
     } catch (error: any) {
       throw new Error(error.message || 'Failed to sign out');
     }
@@ -136,7 +169,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const refreshUser = async () => {
     if (authUser) {
-      await loadUserData(authUser.id);
+      await loadUserData(authUser.id, authUser.email || '');
     }
   };
 
@@ -144,6 +177,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     user,
     authUser,
     loading,
+    error,
     signIn: handleSignIn,
     signUp: handleSignUp,
     signOut: handleSignOut,

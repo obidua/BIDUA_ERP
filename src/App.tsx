@@ -13,7 +13,7 @@ import DocumentationPortal from './components/documentation/DocumentationPortal'
 import { Menu, X } from 'lucide-react';
 
 const AppContent: React.FC = () => {
-  const { user, loading, signOut } = useAuth();
+  const { user, loading, error, signOut } = useAuth();
   const [activeModule, setActiveModule] = React.useState('dashboard');
   const [isSidebarOpen, setIsSidebarOpen] = React.useState(false);
 
@@ -47,13 +47,33 @@ const AppContent: React.FC = () => {
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
           <p className="text-gray-600">Loading...</p>
+          {error && (
+            <div className="mt-4 p-4 bg-red-50 border border-red-200 rounded-lg max-w-md mx-auto">
+              <p className="text-red-600 text-sm">{error}</p>
+              <button
+                onClick={() => window.location.reload()}
+                className="mt-3 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+              >
+                Reload Page
+              </button>
+            </div>
+          )}
         </div>
       </div>
     );
   }
 
   if (!user) {
-    return <LoginForm />;
+    return (
+      <>
+        {error && (
+          <div className="fixed top-4 right-4 z-50 p-4 bg-red-50 border border-red-200 rounded-lg shadow-lg max-w-md">
+            <p className="text-red-600 text-sm">{error}</p>
+          </div>
+        )}
+        <LoginForm />
+      </>
+    );
   }
 
   const renderModule = () => {
