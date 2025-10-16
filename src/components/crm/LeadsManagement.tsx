@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Plus, Search, Filter, MoreVertical, Phone, Mail, Building, Tag, Calendar, TrendingUp, Star, Download, Upload, Eye, Edit, Trash2, UserPlus, DollarSign, Clock, X } from 'lucide-react';
+import { mockEmployees } from '../../data/mockData';
 
 interface LeadsManagementProps {
   currentUser: any;
@@ -595,12 +596,28 @@ const LeadsManagement: React.FC<LeadsManagementProps> = ({
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Assigned To</label>
-                  <input
-                    type="text"
+                  <select
                     value={editingLead.assignedTo}
                     onChange={(e) => setEditingLead({ ...editingLead, assignedTo: e.target.value })}
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  />
+                  >
+                    <option value="">-- Select Employee --</option>
+                    {Object.entries(
+                      mockEmployees.reduce((acc, emp) => {
+                        if (!acc[emp.department]) acc[emp.department] = [];
+                        acc[emp.department].push(emp);
+                        return acc;
+                      }, {} as Record<string, typeof mockEmployees>)
+                    ).map(([department, employees]) => (
+                      <optgroup key={department} label={`--- ${department} Department ---`}>
+                        {employees.map((emp) => (
+                          <option key={emp.id} value={emp.name}>
+                            {emp.name} - {emp.designation}
+                          </option>
+                        ))}
+                      </optgroup>
+                    ))}
+                  </select>
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Last Contact</label>
@@ -670,13 +687,32 @@ const LeadsManagement: React.FC<LeadsManagementProps> = ({
               <p className="text-sm text-gray-600 mb-4">
                 Assign {selectedLeads.length} selected lead{selectedLeads.length > 1 ? 's' : ''} to:
               </p>
-              <input
-                type="text"
-                value={bulkAssignTo}
-                onChange={(e) => setBulkAssignTo(e.target.value)}
-                placeholder="Enter employee name"
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
+              <div className="space-y-2">
+                <label className="block text-sm font-medium text-gray-700">Select Employee</label>
+                <select
+                  value={bulkAssignTo}
+                  onChange={(e) => setBulkAssignTo(e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  required
+                >
+                  <option value="">-- Select Employee --</option>
+                  {Object.entries(
+                    mockEmployees.reduce((acc, emp) => {
+                      if (!acc[emp.department]) acc[emp.department] = [];
+                      acc[emp.department].push(emp);
+                      return acc;
+                    }, {} as Record<string, typeof mockEmployees>)
+                  ).map(([department, employees]) => (
+                    <optgroup key={department} label={`--- ${department} Department ---`}>
+                      {employees.map((emp) => (
+                        <option key={emp.id} value={emp.name}>
+                          {emp.name} - {emp.designation}
+                        </option>
+                      ))}
+                    </optgroup>
+                  ))}
+                </select>
+              </div>
             </div>
 
             <div className="flex items-center justify-end space-x-3 p-6 border-t border-gray-200">
