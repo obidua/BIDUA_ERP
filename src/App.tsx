@@ -251,6 +251,7 @@ function App() {
             documents={documents}
             onAddLeaveRequest={handleAddLeaveRequest}
             onUpdateTask={handleUpdateTask}
+            onUpdateEmployee={handleUpdateEmployee}
             onLogout={handleLogout}
           />
         );

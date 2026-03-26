@@ -9,7 +9,8 @@ import {
   Building2,
   Menu,
   X,
-  LogOut
+  LogOut,
+  User
 } from 'lucide-react';
 import EmployeeDashboard from './EmployeeDashboard';
 import EmployeeAttendance from './EmployeeAttendance';
@@ -17,6 +18,7 @@ import EmployeeLeaves from './EmployeeLeaves';
 import EmployeeSalary from './EmployeeSalary';
 import EmployeeDocuments from './EmployeeDocuments';
 import EmployeeTaskView from './EmployeeTaskView';
+import EmployeeProfile from './EmployeeProfile';
 
 interface EmployeePortalProps {
   currentUser: any;
@@ -28,6 +30,7 @@ interface EmployeePortalProps {
   documents: any[];
   onAddLeaveRequest: (leave: any) => void;
   onUpdateTask: (id: string, task: any) => void;
+  onUpdateEmployee: (id: string, employee: any) => void;
   onLogout: () => void;
 }
 
@@ -41,6 +44,7 @@ const EmployeePortal: React.FC<EmployeePortalProps> = ({
   documents,
   onAddLeaveRequest,
   onUpdateTask,
+  onUpdateEmployee,
   onLogout
 }) => {
   const [activeView, setActiveView] = useState('dashboard');
@@ -53,6 +57,7 @@ const EmployeePortal: React.FC<EmployeePortalProps> = ({
     { id: 'salary', name: 'Salary', icon: DollarSign, component: EmployeeSalary },
     { id: 'documents', name: 'Documents', icon: FileText, component: EmployeeDocuments },
     { id: 'tasks', name: 'Tasks', icon: CheckSquare, component: EmployeeTaskView },
+    { id: 'profile', name: 'Profile', icon: User, component: EmployeeProfile },
   ];
 
   const renderActiveView = () => {
@@ -108,6 +113,18 @@ const EmployeePortal: React.FC<EmployeePortalProps> = ({
             currentUser={currentUser}
             tasks={tasks}
             onUpdateTask={onUpdateTask}
+          />
+        );
+      case 'profile':
+        const currentEmployee = employees.find(
+          (emp: any) => emp.email === currentUser.email
+        );
+        if (!currentEmployee) return <div className="text-center text-gray-500 py-8">Employee profile not found.</div>;
+        return (
+          <Component
+            user={currentUser}
+            employee={currentEmployee}
+            updateEmployee={onUpdateEmployee}
           />
         );
       default:
